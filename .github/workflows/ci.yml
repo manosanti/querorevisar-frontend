@@ -91,3 +91,41 @@ jobs:
         run: |
           pnpm api:gen --from apps/api/build/openapi.json
           git diff --exit-code packages/api-client
+
+  e2e:
+    # Full stack on the runner (embedded Postgres + API in mock mode + web), only after merges to keep CI minutes low.
+    if: github.event_name == 'push'
+    needs: [typescript, api]
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @qr/web exec playwright install --with-deps chromium
+      - name: Start the local stack (embedded Postgres, dev auth, mock payments)
+        run: |
+          node infra/scripts/dev-all.mjs --embedded > dev-all.log 2>&1 &
+          for i in $(seq 1 120); do curl -fsS http://localhost:5173 >/dev/null && break; sleep 5; done
+          curl -fsS http://localhost:8080/actuator/health
+        env:
+          FIPE_MODE: mock
+      - run: pnpm e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-report
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+            dev-all.log
+          retention-days: 7
