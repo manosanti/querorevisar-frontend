@@ -70,3 +70,15 @@ Legenda: 🔒 segredo (nunca no repositório) · ✏️ decisão ou dado não si
 - [ ] ✏️ Custo em créditos de cada consulta (protótipo: laudo 6, leilão 3, restrições 2, débitos 2, dados da placa 1, FIPE grátis).
 - [ ] ✏️ Validade dos créditos (o protótipo não define; implementação padrão: não expiram).
 - [ ] ✏️ Login com Apple: exige Apple Developer (US$ 99/ano). Fica atrás da flag `apple_login`.
+
+## Landing (apps/landing)
+
+- [ ] ✏️⛔ Texto final de `/privacidade` e `/termos` (`apps/landing/src/pages/privacidade.md` e `termos.md`). Hoje só há a estrutura com `<PREENCHER>` e o aviso "Texto em revisão"; as duas páginas ficam fora do Google (`noindex`, fora do sitemap) até o texto final. Ao publicar: remover `review: true` do frontmatter e as rotas de `NOINDEX_PATHS` em `apps/landing/src/lib/seo.ts`.
+- [ ] ✏️ E-mail de suporte no fim de `/ajuda` (`<PREENCHER: e-mail de suporte>`).
+- [ ] ✏️ Plano anual: o protótipo da landing tem o seletor Mensal/Anual (R$ 149/ano = 10 × R$ 14,90, "−17%", "Equivale a R$ 12,42 por mês"), mas `docs/domain.md` e o plano do Mercado Pago só têm o mensal. Criar o plano anual ou desligar `FEATURES.annualBilling` em `apps/landing/src/config.ts`.
+- [ ] ✏️ Botão "Apple" do protótipo da landing está escondido (`FEATURES.appleLogin`, decisão D07). Ligar junto com a flag `apple_login`.
+- [ ] ✏️ "175 itens" (faixa de números e plano grátis) é o texto do protótipo; `data/catalog.json` tem 196 itens hoje. Confirmar o número.
+- [ ] ✏️ Textos novos sem protótipo, para revisão: banner "Cookies de análise" ("Usamos cookies de análise para entender como o site é usado. Nenhum dado pessoal é enviado…", "Recusar", "Aceitar"), bloco "Rever escolha" em `/privacidade`, página 404 ("Página não encontrada"), título "Grátis e Premium" em `/precos`, "Fale com a gente" em `/ajuda`, link "Pular para o conteúdo" (acessibilidade).
+- [ ] 🔒 `PUBLIC_POSTHOG_KEY` da landing (sem ela não há banner nem analytics). ✏️ `PUBLIC_POSTHOG_HOST` é opcional (padrão `https://us.i.posthog.com`) e ainda não está em `env/landing.env.example`. No projeto PostHog, ativar "Discard client IP data" (LGPD).
+- [ ] ✏️ `PUBLIC_SITE_URL` e `PUBLIC_APP_URL` de produção no build da landing (canonical, Open Graph, sitemap e robots usam `PUBLIC_SITE_URL`).
+- Integração com o app (F06): a landing abre `PUBLIC_APP_URL/entrar` com `?mode=signup`, `?provider=google|apple`, `&plan=premium` e o e-mail digitado no fragmento (`#email=…`, nunca na query). O app precisa ler o fragmento e limpá-lo com `history.replaceState` antes de iniciar o PostHog. O botão "Consultar placa" de `/precos` abre `PUBLIC_APP_URL/consultas`.

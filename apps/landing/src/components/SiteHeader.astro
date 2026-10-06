@@ -1,4 +1,6 @@
 ---
+// The prototype header just wraps (three or four rows on a phone). Here it stays one row: section links from
+// 1024px (where they fit), "Criar conta grátis" from 768px; on phones the hero form is right below the header.
 import { Image } from 'astro:assets';
 import logo from '../assets/brand/logo-horizontal.png';
 import { APP_URL } from '../config';
@@ -32,14 +34,14 @@ const sections = [
         class="block h-7 w-auto"
       />
     </a>
-    <nav aria-label="Principal" class="hidden flex-1 flex-wrap gap-x-6 text-[15px] font-medium desktop:flex">
+    <nav aria-label="Principal" class="hidden flex-1 flex-wrap gap-x-6 text-[15px] font-medium lg:flex">
       {sections.map(([id, label]) => (
         <a href={anchor(id)} class="inline-flex min-h-11 items-center text-ink-2 hover:text-primary">
           {label}
         </a>
       ))}
     </nav>
-    <div class="ml-auto flex items-center gap-2 desktop:ml-0">
+    <div class="ml-auto flex items-center gap-2 lg:ml-0">
       <a
         href={signInUrl(APP_URL)}
         class="inline-flex min-h-11 items-center rounded-10 px-3.5 text-[15px] font-semibold text-ink hover:bg-surface-2 hover:text-ink"

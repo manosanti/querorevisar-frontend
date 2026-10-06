@@ -28,6 +28,7 @@
     "@qr/config": "workspace:*",
     "@types/node": "^26.6.4",
     "eslint-plugin-astro": "^3.2.1",
+    "eslint-plugin-jsx-a11y-x": "^0.2.0",
     "prettier-plugin-astro": "^1.1.0",
     "sharp": "^0.35.5",
     "typescript": "^5.9.3",
