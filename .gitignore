@@ -37,3 +37,7 @@ apps/web/blob-report/
 # supabase local
 infra/supabase/.branches/
 infra/supabase/.temp/
+
+# Claude Code local data (agent worktrees)
+.claude/
+packages/api-client/openapi.live.json

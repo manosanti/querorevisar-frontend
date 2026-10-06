@@ -1,0 +1,9 @@
+# Optional local services (the database and auth come from the Supabase CLI: `pnpm dev:all`).
+# Mailpit catches e-mails when the API runs with EMAIL_MODE=live against SMTP locally.
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - '8025:8025' # web UI
+      - '1025:1025' # SMTP
+    restart: unless-stopped
