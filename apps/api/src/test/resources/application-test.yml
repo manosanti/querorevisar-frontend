@@ -1,0 +1,36 @@
+# Integration tests: Postgres from Testcontainers (Docker) or zonky (no Docker), wired in TestDb.
+app:
+  auth:
+    mode: supabase
+  supabase:
+    jwt-secret: test-only-legacy-hs256-secret-0123456789abcdef
+  db:
+    auth-stub: true
+  internal:
+    token: test-internal-token
+  payments:
+    mode: mock
+    webhook-secret: test-webhook-secret
+    mock-auto-approve-delay: 300ms
+  fipe:
+    mode: mock
+    daily-budget: 1000
+  email:
+    outbox-dir: build/test-mail-outbox
+
+springdoc:
+  api-docs:
+    enabled: true
+
+logging:
+  structured:
+    format:
+      console: ""
+  level:
+    br.com.querorevisar: INFO
+    org.springframework: WARN
+    org.flywaydb: WARN
+    org.hibernate: WARN
+    com.zaxxer: WARN
+    org.testcontainers: WARN
+    io.zonky: WARN

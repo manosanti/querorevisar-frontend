@@ -1,0 +1,23 @@
+# Local development (./gradlew :apps:api:bootRun). Embedded Postgres (./gradlew :apps:api:localDb) or the Supabase
+# CLI database on 54322; without Supabase the API issues its own tokens (AUTH_MODE=dev, /dev/auth/*).
+# `pnpm dev:all` sets AUTH_MODE=supabase and DB_AUTH_STUB=false when it starts the Supabase CLI.
+app:
+  auth:
+    mode: ${AUTH_MODE:dev}
+  db:
+    auth-stub: ${DB_AUTH_STUB:true}
+  internal:
+    # Without INTERNAL_TOKEN, jobs can be triggered from this machine: curl -X POST localhost:8080/internal/jobs/daily
+    allow-loopback: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+logging:
+  structured:
+    format:
+      # LOG_FORMAT=ecs gives JSON locally too; the default here stays readable.
+      console: ${LOG_FORMAT:}
