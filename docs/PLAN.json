@@ -1,0 +1,873 @@
+{
+  "meta": {
+    "projeto": "QueroRevisar",
+    "versao_plano": "1.0",
+    "data": "2026-10-06",
+    "idioma_produto": "pt-BR",
+    "objetivo": "Construir do zero o QueroRevisar: web app responsivo (mobile, tablet, desktop) instalável como PWA, API Kotlin, banco Postgres, pagamentos Mercado Pago, consultas veiculares por crédito, alertas por push e e-mail.",
+    "como_usar": [
+      "Leia CLAUDE.md antes de qualquer coisa.",
+      "Execute as fases na ordem. Dentro de cada fase, siga a ordem das tarefas e respeite depends_on.",
+      "Ao terminar cada tarefa, rode os comandos de verificação e confira os criterios_aceite.",
+      "Nunca invente valores de segredo. Use <SEM_TOKEN> e os modos mock descritos em 'modos_execucao'.",
+      "Registre em PENDENCIAS.md tudo que depender do dono do projeto."
+    ],
+    "documentos_de_apoio": {
+      "regras_para_o_agente": "CLAUDE.md",
+      "design_system": "docs/design-system.md",
+      "telas_e_comportamento": "docs/screens.md",
+      "regras_de_negocio": "docs/domain.md",
+      "contrato_da_api": "docs/api.md",
+      "banco_de_dados": "docs/db.sql",
+      "mercado_pago": "docs/mercadopago.md",
+      "fipe_e_consulta_veicular": "docs/vehicle-data.md",
+      "variaveis_de_ambiente": "env/",
+      "pendencias_do_dono": "PENDENCIAS.md",
+      "referencia_visual": "reference/QueroRevisar v7 responsivo.dc.html (abrir no navegador; é a fonte da verdade visual)"
+    }
+  },
+
+  "convencoes": {
+    "placeholder_segredo": "<SEM_TOKEN>",
+    "placeholder_decisao_do_dono": "<PREENCHER>",
+    "regra": "Toda variável cujo valor seja <SEM_TOKEN> ou <PREENCHER> deve fazer a integração correspondente cair automaticamente no modo mock, com um log de aviso único na inicialização. A aplicação nunca deve quebrar por falta de token.",
+    "commits": "Conventional Commits (feat:, fix:, chore:, docs:, test:, refactor:). Um commit por tarefa concluída.",
+    "branch": "main protegida. Trabalhar em feature/<id-da-tarefa>.",
+    "idioma_codigo": "Código, nomes de variáveis e commits em inglês. Textos de interface, e-mails e mensagens de erro para o usuário em pt-BR, exatamente como no design.",
+    "moeda_e_datas": "BRL formatado com Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'}). Datas em America/Sao_Paulo. Valores monetários no banco em centavos (integer)."
+  },
+
+  "modos_execucao": {
+    "PAYMENTS_MODE": {
+      "valores": ["mock", "sandbox", "live"],
+      "padrao": "mock",
+      "descricao": "mock aprova pagamentos localmente após 3 s e dispara o mesmo fluxo de webhook interno. sandbox usa credenciais de teste do Mercado Pago. live usa produção."
+    },
+    "VEHICLE_DATA_MODE": {
+      "valores": ["mock", "live"],
+      "padrao": "mock",
+      "descricao": "mock devolve resultados determinísticos a partir da placa (mesma lógica do protótipo). live chama o provedor contratado."
+    },
+    "FIPE_MODE": {
+      "valores": ["mock", "live"],
+      "padrao": "live",
+      "descricao": "A API FIPE da Parallelum funciona sem token (limite diário menor). Só use mock em testes automatizados."
+    },
+    "PUSH_MODE": {
+      "valores": ["log", "live"],
+      "padrao": "log",
+      "descricao": "log apenas registra o push no console. live envia Web Push com VAPID."
+    },
+    "EMAIL_MODE": {
+      "valores": ["log", "live"],
+      "padrao": "log",
+      "descricao": "log grava o e-mail renderizado em apps/api/build/mail-outbox/. live envia pela Resend."
+    },
+    "ADS_MODE": {
+      "valores": ["placeholder", "adsense", "off"],
+      "padrao": "placeholder",
+      "descricao": "placeholder mostra a caixa tracejada 'Publicidade' do design."
+    }
+  },
+
+  "decisoes": [
+    {
+      "id": "D01",
+      "tema": "Plataforma",
+      "decisao": "Somente web, responsivo, instalável como PWA. Sem app de loja no lançamento.",
+      "motivo": "Custo zero, deploy instantâneo, sem comissão de loja. Capacitor fica como opção futura."
+    },
+    {
+      "id": "D02",
+      "tema": "Front",
+      "decisao": "React + Vite + TypeScript + TanStack Router + TanStack Query + Zustand + React Hook Form + Zod + vite-plugin-pwa.",
+      "motivo": "App atrás de login não precisa de SSR. SPA estático na CDN."
+    },
+    {
+      "id": "D03",
+      "tema": "Estilo",
+      "decisao": "Tailwind CSS v4 com tokens do design system em CSS variables, mais componentes próprios em packages/ui. Sem biblioteca de componentes pronta.",
+      "motivo": "O design é próprio e precisa ser recriado fielmente."
+    },
+    {
+      "id": "D04",
+      "tema": "Landing",
+      "decisao": "Astro estático em apps/landing.",
+      "motivo": "SEO e conteúdo como canal de aquisição."
+    },
+    {
+      "id": "D05",
+      "tema": "API",
+      "decisao": "Kotlin + Spring Boot 3.x + JVM 21. Objetivo: imagem nativa GraalVM no Cloud Run. Fallback aceito: JVM com CPU boost se algum módulo não compilar nativo.",
+      "motivo": "Cobrança por requisição exige partida rápida."
+    },
+    {
+      "id": "D06",
+      "tema": "Banco",
+      "decisao": "Postgres no Supabase (2 projetos free: dev e prod). Acesso só pela API via pooler. Migrações Flyway.",
+      "motivo": "Grátis, Postgres real, Auth incluso."
+    },
+    {
+      "id": "D07",
+      "tema": "Login",
+      "decisao": "Supabase Auth: anônimo, e-mail+senha, código/link por e-mail, Google. Apple atrás de feature flag desligada. Sem SMS.",
+      "motivo": "Apple exige conta paga de desenvolvedor; SMS é pago por envio."
+    },
+    {
+      "id": "D08",
+      "tema": "Pagamentos",
+      "decisao": "Mercado Pago. Premium por Assinaturas (preapproval com plano). Créditos por Pix (v1/payments) e cartão (Checkout Pro, preferência).",
+      "motivo": "Pedido do dono. Substitui o Asaas citado na Arquitetura v2."
+    },
+    {
+      "id": "D09",
+      "tema": "Integração MP",
+      "decisao": "Chamar a API REST do Mercado Pago com Spring RestClient, sem o SDK Java.",
+      "motivo": "Evita problemas de reflexão na imagem nativa e mantém o controle de timeouts e idempotência."
+    },
+    {
+      "id": "D10",
+      "tema": "FIPE",
+      "decisao": "API FIPE v2 da Parallelum (fipe.parallelum.com.br/api/v2), cache de 7 dias por veículo no banco e histórico mensal próprio para calcular a variação.",
+      "motivo": "Gratuita; o histórico da API é recurso pago."
+    },
+    {
+      "id": "D11",
+      "tema": "Consulta veicular",
+      "decisao": "Interface VehicleDataProvider com implementação Mock e uma implementação Live para o provedor que o dono contratar.",
+      "motivo": "O fornecedor ainda não foi escolhido."
+    },
+    {
+      "id": "D12",
+      "tema": "Hospedagem",
+      "decisao": "API no Google Cloud Run (southamerica-east1). Web e landing na Cloudflare Pages. Backups no Cloudflare R2.",
+      "motivo": "Planos grátis com uso comercial permitido."
+    },
+    {
+      "id": "D13",
+      "tema": "Jobs",
+      "decisao": "Cloud Scheduler chamando rotas internas autenticadas da API.",
+      "motivo": "A API não precisa ficar ligada."
+    },
+    {
+      "id": "D14",
+      "tema": "Push",
+      "decisao": "Web Push com VAPID, enviado pela própria API.",
+      "motivo": "Sem serviço pago no meio."
+    },
+    {
+      "id": "D15",
+      "tema": "E-mail",
+      "decisao": "Resend, também como SMTP do Supabase Auth.",
+      "motivo": "Camada grátis e envio confiável."
+    },
+    {
+      "id": "D16",
+      "tema": "Observabilidade",
+      "decisao": "Sentry (web e API), Cloud Logging, PostHog para analytics e feature flags.",
+      "motivo": "Camadas grátis."
+    },
+    {
+      "id": "D17",
+      "tema": "Monorepo",
+      "decisao": "pnpm workspaces + Turborepo para TypeScript; Gradle (Kotlin DSL) para a API, no mesmo repositório.",
+      "motivo": "Um repositório, CI só do que mudou."
+    }
+  ],
+
+  "stack": {
+    "runtime_node": "Node 22 LTS",
+    "gerenciador": "pnpm 9+ (corepack enable)",
+    "web": [
+      "react@19",
+      "react-dom@19",
+      "vite@latest",
+      "typescript@5 (strict)",
+      "@tanstack/react-router",
+      "@tanstack/router-plugin",
+      "@tanstack/react-query",
+      "@tanstack/query-sync-storage-persister ou @tanstack/query-async-storage-persister + idb-keyval",
+      "@tanstack/react-query-persist-client",
+      "zustand",
+      "react-hook-form",
+      "@hookform/resolvers",
+      "zod",
+      "tailwindcss@4 + @tailwindcss/vite",
+      "vite-plugin-pwa (workbox)",
+      "@supabase/supabase-js (somente auth)",
+      "@sentry/react",
+      "posthog-js",
+      "idb-keyval",
+      "uuid (v7)"
+    ],
+    "web_dev": [
+      "vitest",
+      "@testing-library/react",
+      "@testing-library/user-event",
+      "jsdom",
+      "playwright",
+      "eslint@9 flat config",
+      "typescript-eslint",
+      "eslint-plugin-react-hooks",
+      "prettier",
+      "lint-staged",
+      "husky",
+      "orval"
+    ],
+    "landing": ["astro@latest", "@astrojs/sitemap", "tailwindcss@4"],
+    "api": [
+      "Kotlin 2.x",
+      "Spring Boot 3.x (web, validation, security, oauth2-resource-server, data-jpa, actuator)",
+      "Flyway",
+      "PostgreSQL JDBC",
+      "springdoc-openapi-starter-webmvc-ui",
+      "Bucket4j core (em memória)",
+      "Caffeine",
+      "jackson-module-kotlin",
+      "nl.martijndwars:web-push + BouncyCastle (Web Push)",
+      "Sentry Spring Boot starter",
+      "GraalVM Native Build Tools (org.graalvm.buildtools.native)"
+    ],
+    "api_testes": [
+      "JUnit 5",
+      "Kotest assertions",
+      "MockK",
+      "Testcontainers (postgresql)",
+      "WireMock (Mercado Pago, FIPE, provedor veicular)"
+    ],
+    "infra": [
+      "Docker + docker compose (local)",
+      "Supabase CLI (local)",
+      "gcloud CLI",
+      "wrangler (Cloudflare)",
+      "GitHub Actions"
+    ],
+    "observacao_versoes": "Use sempre a versão estável mais recente no momento da instalação e deixe o lockfile versionar. Não fixe versões de memória."
+  },
+
+  "estrutura_repo": {
+    "raiz": "querorevisar/",
+    "arvore": [
+      "apps/web/                 React + Vite, PWA (app logado e onboarding)",
+      "apps/landing/             Astro, site público",
+      "apps/api/                 Kotlin + Spring Boot (Gradle)",
+      "packages/api-client/      gerado do OpenAPI pelo orval (hooks TanStack Query + Zod)",
+      "packages/core/            regras puras em TS: vencimento, km estimada, formatação, catálogo",
+      "packages/tokens/          tokens do design system (CSS variables + TS)",
+      "packages/ui/              componentes React do design system",
+      "packages/config/          tsconfig, eslint, prettier compartilhados",
+      "fixtures/                 casos de teste JSON usados por TS e Kotlin (vencimento, km, consulta mock)",
+      "data/                     catalog.json e planos.json (seed), convertidos de reference/catalog.js e reference/planos.js",
+      "infra/                    docker-compose.yml, scripts, cloudbuild/ ou deploy scripts",
+      "docs/                     cópia de docs/ deste pacote",
+      ".github/workflows/        ci.yml, deploy-dev.yml, deploy-prod.yml, backup.yml"
+    ]
+  },
+
+  "ambientes": {
+    "local": {
+      "banco_auth": "Supabase CLI (supabase start) em Docker",
+      "api": "./gradlew :apps:api:bootRun (JVM) na porta 8080",
+      "web": "pnpm --filter web dev na porta 5173",
+      "landing": "pnpm --filter landing dev na porta 4321",
+      "pagamentos": "PAYMENTS_MODE=mock",
+      "consulta": "VEHICLE_DATA_MODE=mock"
+    },
+    "dev": {
+      "banco_auth": "Projeto Supabase free nº 1 (sa-east-1)",
+      "api": "Cloud Run service 'qr-api-dev', min 0, max 1",
+      "web": "Cloudflare Pages, branch main → dev.querorevisar.<PREENCHER>",
+      "pagamentos": "PAYMENTS_MODE=sandbox"
+    },
+    "prod": {
+      "banco_auth": "Projeto Supabase free nº 2 (sa-east-1)",
+      "api": "Cloud Run service 'qr-api', min 0, max 2",
+      "web": "Cloudflare Pages produção → app.querorevisar.<PREENCHER>",
+      "landing": "querorevisar.<PREENCHER>",
+      "pagamentos": "PAYMENTS_MODE=live"
+    }
+  },
+
+  "fases": [
+    {
+      "id": "F00",
+      "nome": "Preparação (dono do projeto, fora do código)",
+      "executor": "humano",
+      "tarefas": [
+        {
+          "id": "F00.1",
+          "titulo": "Criar contas",
+          "itens": [
+            "GitHub (repositório privado querorevisar)",
+            "Supabase (2 projetos: qr-dev e qr-prod, região South America São Paulo)",
+            "Google Cloud (projeto querorevisar, faturamento ativo, alerta de orçamento US$ 1)",
+            "Cloudflare (domínio, Pages, R2)",
+            "Mercado Pago (conta vendedor, aplicação em Suas integrações)",
+            "Resend (domínio verificado)",
+            "Sentry (org + projetos web e api)",
+            "PostHog (projeto)",
+            "FIPE Online (token gratuito)",
+            "Provedor de consulta veicular (escolher e contratar)"
+          ]
+        },
+        {
+          "id": "F00.2",
+          "titulo": "Registrar domínio",
+          "itens": ["Comprar o domínio .com.br no Registro.br", "Apontar os nameservers para a Cloudflare"]
+        },
+        {
+          "id": "F00.3",
+          "titulo": "Preencher segredos",
+          "itens": [
+            "Seguir PENDENCIAS.md e substituir cada <SEM_TOKEN> nos secrets do GitHub, Cloud Run e Cloudflare. Nunca no repositório."
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F01",
+      "nome": "Monorepo e ferramentas",
+      "tarefas": [
+        {
+          "id": "F01.1",
+          "titulo": "Inicializar o repositório",
+          "passos": [
+            "git init; criar .gitignore (node_modules, dist, build, .env*, !.env.example, .turbo, .gradle, *.log, apps/api/build)",
+            "corepack enable && pnpm init; definir \"packageManager\" no package.json raiz",
+            "Criar pnpm-workspace.yaml com apps/* e packages/*",
+            "pnpm add -Dw turbo prettier lint-staged husky typescript",
+            "Criar turbo.json com pipelines: build, dev (persistent, cache false), lint, typecheck, test",
+            "Criar packages/config com tsconfig.base.json (strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes), eslint.config.js e .prettierrc",
+            "Configurar husky pre-commit rodando lint-staged (eslint --fix + prettier nos arquivos alterados)",
+            "Copiar docs/ deste pacote para docs/ do repo e reference/ para docs/reference/"
+          ],
+          "criterios_aceite": ["pnpm install sem erro", "pnpm turbo lint typecheck passa com pacotes vazios"]
+        },
+        {
+          "id": "F01.2",
+          "titulo": "Infra local",
+          "passos": [
+            "Instalar Supabase CLI; supabase init em infra/supabase; habilitar anonymous sign-ins e email OTP em config.toml",
+            "infra/docker-compose.yml opcional para serviços extras (mailpit para e-mails locais na porta 8025)",
+            "Script pnpm dev:all na raiz: sobe supabase, api e web em paralelo (turbo run dev + gradle)",
+            "Criar env/ a partir de env/*.example deste pacote: apps/web/.env.local, apps/api/src/main/resources/application-local.yml lendo variáveis de ambiente"
+          ],
+          "criterios_aceite": [
+            "supabase start sobe Postgres e Auth locais",
+            "README do repo explica como rodar tudo em 3 comandos"
+          ]
+        },
+        {
+          "id": "F01.3",
+          "titulo": "Dados de seed",
+          "passos": [
+            "Converter reference/catalog.js (window.QR_CATALOG) para data/catalog.json preservando ids, categorias, ícones (paths SVG), intervalos km/meses, tipos (car/moto) e descrições",
+            "Converter reference/planos.js (window.QR_PLANS) para data/planos.json preservando a regra [ações, inícioKm, intervaloKm, intervaloMeses, seNecessário] e a função find(brand, model)",
+            "Escrever script scripts/convert-catalog.ts que executa os .js num contexto isolado (vm) e serializa o resultado; rodar e versionar os JSON"
+          ],
+          "criterios_aceite": [
+            "data/catalog.json e data/planos.json válidos",
+            "Teste confere a contagem de itens igual à do protótipo"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F02",
+      "nome": "Design system",
+      "depends_on": ["F01"],
+      "tarefas": [
+        {
+          "id": "F02.1",
+          "titulo": "packages/tokens",
+          "passos": [
+            "Implementar exatamente os tokens de docs/design-system.md como CSS variables em tokens.css e como objeto TS exportado",
+            "Expor tema Tailwind v4 via @theme usando as variables (cores, raios, sombras, fonte Figtree)",
+            "Carregar Figtree 400/500/600/700 do Google Fonts com display=swap e preconnect"
+          ],
+          "criterios_aceite": ["Nenhuma cor hexadecimal escrita fora de packages/tokens"]
+        },
+        {
+          "id": "F02.2",
+          "titulo": "packages/ui",
+          "passos": [
+            "Criar os componentes listados em docs/design-system.md#componentes com as variações e estados descritos (hover 'água', active scale .96, focus-visible)",
+            "Button (primary, outline, ghost, danger-text, icon-round), Input, Select (equivalente ao QR Select do projeto), DatePicker (equivalente ao QR DatePicker), Chip/FilterPill, Badge de status, ProgressBar, Card, Sheet (bottom sheet no mobile, painel lateral à direita a partir de 768px), SidePanel (detalhe), Toast, Skeleton, Segmented, RadioCard, PlateInput, EmptyState, AdSlot",
+            "Ícones: usar os paths SVG do catálogo e de TAB_ICONS do protótipo como componentes; nada de biblioteca de ícones nova",
+            "Página /__ds (só em dev) mostrando todos os componentes para conferência visual"
+          ],
+          "criterios_aceite": [
+            "Cada componente com teste de render e de acessibilidade básica (role, label)",
+            "Página /__ds bate visualmente com reference/QueroRevisar Design System.dc.html e com o v7"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F03",
+      "nome": "Banco de dados",
+      "depends_on": ["F01"],
+      "tarefas": [
+        {
+          "id": "F03.1",
+          "titulo": "Migrações Flyway",
+          "passos": [
+            "Criar apps/api/src/main/resources/db/migration/V1__init.sql a partir de docs/db.sql",
+            "V2__seed_catalog.sql gerado a partir de data/catalog.json e data/planos.json por um script Gradle (ou carregar via ApplicationRunner idempotente)",
+            "Índices descritos em docs/db.sql",
+            "Todas as tabelas de usuário com user_id uuid referenciando auth.users(id) ON DELETE CASCADE"
+          ],
+          "criterios_aceite": [
+            "./gradlew :apps:api:flywayMigrate contra o Supabase local sem erro",
+            "Teste Testcontainers aplica todas as migrações do zero"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F04",
+      "nome": "API base",
+      "depends_on": ["F03"],
+      "tarefas": [
+        {
+          "id": "F04.1",
+          "titulo": "Projeto Spring Boot",
+          "passos": [
+            "Gerar apps/api com Spring Initializr (Kotlin, Gradle Kotlin DSL, Java 21): web, validation, security, oauth2-resource-server, data-jpa, actuator, flyway, postgresql",
+            "Estrutura por domínio: auth/, vehicles/, records/, catalog/, sync/, alerts/, push/, billing/, credits/, lookups/ (consultas), fipe/, internal/ (jobs), common/",
+            "Configuração por variáveis de ambiente listadas em env/api.env.example; profiles local, dev, prod",
+            "Virtual threads: spring.threads.virtual.enabled=true",
+            "Health: /actuator/health liveness e readiness"
+          ]
+        },
+        {
+          "id": "F04.2",
+          "titulo": "Autenticação",
+          "passos": [
+            "Resource server JWT validando tokens do Supabase pela JWKS em ${SUPABASE_URL}/auth/v1/.well-known/jwks.json. Fallback configurável para segredo HS256 (SUPABASE_JWT_SECRET) se o projeto ainda usar chave legada",
+            "Extrair sub (uuid do usuário) e is_anonymous do token; disponibilizar CurrentUser",
+            "Rotas públicas: /actuator/health, /v1/catalog/version, /webhooks/mercadopago. Rotas /internal/** exigem OIDC do Cloud Scheduler (audience = URL do serviço) ou header X-Internal-Token em local",
+            "CORS só para WEB_ORIGINS"
+          ],
+          "criterios_aceite": ["Teste: requisição sem token → 401; token de outro usuário nunca lê dados alheios"]
+        },
+        {
+          "id": "F04.3",
+          "titulo": "Padrões transversais",
+          "passos": [
+            "Erros em application/problem+json (RFC 9457) com title em pt-BR quando exibível ao usuário",
+            "Idempotency-Key obrigatório em POST/PUT/DELETE de recursos do usuário; tabela idempotency_keys guarda status e resposta por 24 h",
+            "Rate limit Bucket4j em memória: leituras 300/min/usuário, escritas 60/min/usuário, compras 10/min/usuário, consultas veiculares 20/min/usuário. 429 com Retry-After",
+            "ETag em GET /v1/sync e GET /v1/me; responder 304 quando If-None-Match bater",
+            "Caffeine para catálogo, planos de fabricante e flags (TTL 10 min)",
+            "Timeouts: conexão 3 s, leitura 10 s em toda chamada externa",
+            "springdoc: /v3/api-docs e /swagger-ui só em local e dev",
+            "Logs JSON com requestId; nunca logar e-mail, placa completa (mascarar ABC1***) ou tokens"
+          ]
+        },
+        {
+          "id": "F04.4",
+          "titulo": "Contrato e cliente gerado",
+          "passos": [
+            "Implementar os endpoints de docs/api.md como esqueleto (controllers + DTOs) antes da lógica",
+            "Script pnpm api:gen: baixa /v3/api-docs da API local e roda orval gerando packages/api-client (react-query + zod)",
+            "CI falha se o cliente gerado divergir do commitado"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F05",
+      "nome": "Domínio núcleo",
+      "depends_on": ["F04"],
+      "tarefas": [
+        {
+          "id": "F05.1",
+          "titulo": "packages/core (TypeScript)",
+          "passos": [
+            "Implementar as funções de docs/domain.md#vencimento: estimateKm, itemStatus, statusLine, intervalText, timeText, catalogForVehicle (mescla plano do fabricante)",
+            "Escrever fixtures/due-status.json com pelo menos 30 casos (sem registro, ok, warn 80%, over por km, over por tempo, plano de fabricante, moto e carro)",
+            "Testes Vitest lendo as fixtures"
+          ],
+          "criterios_aceite": ["100% das fixtures passam"]
+        },
+        {
+          "id": "F05.2",
+          "titulo": "Mesma regra em Kotlin",
+          "passos": [
+            "Portar as funções para apps/api/.../domain/DueCalculator.kt",
+            "Teste JUnit lendo as mesmas fixtures/due-status.json"
+          ],
+          "criterios_aceite": ["As duas suítes passam com as mesmas fixtures"]
+        },
+        {
+          "id": "F05.3",
+          "titulo": "Veículos, registros e km",
+          "passos": [
+            "CRUD de veículos com limite por plano (free: 1 ativo; premium: ilimitado). Arquivar (vendido) e restaurar",
+            "Registros de troca com UUID v7 gerado no cliente, soft delete, validações de docs/domain.md#registro",
+            "Atualização de km com recálculo de kmPerMonth (regra de docs/domain.md#km)",
+            "Catálogo servido como arquivo estático versionado: o build da web publica /catalog.v{N}.json; GET /v1/catalog/version devolve N"
+          ]
+        },
+        {
+          "id": "F05.4",
+          "titulo": "Sync",
+          "passos": [
+            "GET /v1/sync?since=<cursor> devolve tudo que mudou para o usuário (veículos, registros, plano, créditos, consultas, versão do catálogo, flags) e um novo cursor",
+            "POST /v1/sync recebe lote de mutações da fila offline, aplica em ordem, idempotente por id, last-write-wins por updated_at do servidor"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F06",
+      "nome": "Web app (telas)",
+      "depends_on": ["F02", "F05"],
+      "tarefas": [
+        {
+          "id": "F06.1",
+          "titulo": "Shell responsivo",
+          "passos": [
+            "Implementar o layout de docs/screens.md#shell: mobile (<768) abas embaixo; tablet (768–1099) trilho lateral de 88px; desktop (>=1100) barra lateral de 248px",
+            "Rotas TanStack Router: /, /onboarding, /entrar, /itens, /itens/$itemId, /historico, /conta, /consultas, /consultas/$id, /laudo/$id",
+            "Detalhe do item e Consultas: tela cheia no mobile, painel lateral à direita a partir de 768px, com a lista visível atrás",
+            "Sheets: bottom sheet no mobile, painel lateral à direita a partir de 768px"
+          ]
+        },
+        {
+          "id": "F06.2",
+          "titulo": "Telas",
+          "passos": [
+            "Onboarding (boas-vindas → tipo/marca/modelo/ano/km). Marcas e modelos vêm da FIPE (ver docs/vehicle-data.md) com cache",
+            "Painel (mobile, tablet e desktop exatamente como docs/screens.md#painel), incluindo FIPE no card do veículo e card 'Consultar uma placa'",
+            "Itens (lista agrupada no mobile, tabela a partir de 768px)",
+            "Histórico (lista no mobile, tabela a partir de 768px, filtro por veículo, busca, filtros, totais)",
+            "Conta (perfil, veículos, anteriores, consultas veiculares, planos, anúncio)",
+            "Login/cadastro (e-mail+senha, esqueceu a senha, Google; Apple atrás da flag apple_login)",
+            "Sheets: registrar troca, atualizar km, gerenciar veículo, vendido, excluir, paywall, sair, peças compatíveis (atrás da flag parts_marketplace), comprar créditos",
+            "Consultas: formulário, resultado, consultas anteriores, PDF do laudo",
+            "Toasts com os textos exatos do protótipo"
+          ],
+          "criterios_aceite": [
+            "Comparação lado a lado com reference/QueroRevisar v7 responsivo.dc.html em 390px, 834px e 1440px",
+            "Todos os textos idênticos ao protótipo"
+          ]
+        },
+        {
+          "id": "F06.3",
+          "titulo": "Dados no cliente",
+          "passos": [
+            "TanStack Query com persistQueryClient em IndexedDB (idb-keyval), staleTime 5 min para dados do usuário, Infinity para catálogo, refetchOnWindowFocus false",
+            "Query keys por domínio (qk.vehicles(), qk.records(vehicleId) ...)",
+            "Mutations otimistas com rollback; toda resposta validada pelo Zod do api-client",
+            "Supabase JS só para auth (signInAnonymously, signUp, signInWithPassword, signInWithOtp, signInWithOAuth google, linkIdentity, updateUser). Nunca consultar tabelas pelo supabase-js"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F07",
+      "nome": "PWA e offline",
+      "depends_on": ["F06"],
+      "tarefas": [
+        {
+          "id": "F07.1",
+          "titulo": "Service worker e manifesto",
+          "passos": [
+            "vite-plugin-pwa com registerType 'prompt', manifest (name 'QueroRevisar', short_name 'QueroRevisar', lang pt-BR, theme_color #125865, background_color #ffffff, display standalone, ícones 192/512/maskable gerados de brand/icone.png)",
+            "Precache do app shell; runtime cache stale-while-revalidate para /catalog.v*.json e fontes",
+            "Aviso 'Nova versão disponível' com botão Atualizar quando o SW novo estiver esperando"
+          ]
+        },
+        {
+          "id": "F07.2",
+          "titulo": "Fila offline",
+          "passos": [
+            "Outbox em IndexedDB com mutações {id, type, payload, createdAt}; enviada em lote para POST /v1/sync ao voltar a rede e ao abrir o app",
+            "navigator.storage.persist() após a instalação",
+            "Indicador discreto de offline no topo"
+          ],
+          "criterios_aceite": [
+            "Playwright: modo offline, registrar troca, voltar online, registro aparece no servidor uma única vez"
+          ]
+        },
+        {
+          "id": "F07.3",
+          "titulo": "Instalação guiada",
+          "passos": [
+            "Detectar iOS Safari não instalado: após o primeiro veículo, mostrar passo a passo 'Compartilhar → Adicionar à Tela de Início'",
+            "Android/desktop Chrome: capturar beforeinstallprompt e oferecer botão Instalar",
+            "Só pedir permissão de notificação com o app instalado (iOS) ou após ação do usuário (demais)"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F08",
+      "nome": "Alertas: jobs, push e e-mail",
+      "depends_on": ["F05", "F07"],
+      "tarefas": [
+        {
+          "id": "F08.1",
+          "titulo": "Web Push",
+          "passos": [
+            "Gerar par VAPID com script (npx web-push generate-vapid-keys) e guardar como segredo; a chave pública vai para VITE_VAPID_PUBLIC_KEY",
+            "POST /v1/push/subscriptions e DELETE; tabela push_subscriptions",
+            "Envio com web-push; remover assinaturas que retornarem 404/410"
+          ]
+        },
+        {
+          "id": "F08.2",
+          "titulo": "Jobs internos",
+          "passos": [
+            "POST /internal/jobs/daily (06:00 America/Sao_Paulo): atualizar km estimada, recalcular status, gravar alerts pendentes (um resumo por veículo)",
+            "POST /internal/jobs/send-alerts (09:00): enviar push; quem não tem push recebe e-mail",
+            "POST /internal/jobs/premium-credits: fallback para crédito mensal do Premium caso o webhook falhe",
+            "POST /internal/jobs/fipe-refresh (semanal): atualizar FIPE dos veículos com cache vencido (>7 dias), respeitando o limite diário",
+            "Todos idempotentes por data de execução (tabela job_runs)"
+          ]
+        },
+        {
+          "id": "F08.3",
+          "titulo": "E-mails",
+          "passos": [
+            "Templates em pt-BR: alerta de vencimento, boas-vindas, compra aprovada, Premium ativado, Premium cancelado",
+            "Configurar Resend como SMTP do Supabase Auth para os e-mails de login"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F09",
+      "nome": "Pagamentos com Mercado Pago",
+      "depends_on": ["F05"],
+      "referencia": "docs/mercadopago.md",
+      "tarefas": [
+        {
+          "id": "F09.1",
+          "titulo": "Cliente MP",
+          "passos": [
+            "MercadoPagoClient com RestClient, base https://api.mercadopago.com, Bearer MP_ACCESS_TOKEN, X-Idempotency-Key em todo POST",
+            "Modo mock conforme modos_execucao"
+          ]
+        },
+        {
+          "id": "F09.2",
+          "titulo": "Premium (assinatura)",
+          "passos": [
+            "Script/endpoint admin que cria o preapproval_plan 'QueroRevisar Premium' R$ 14,90 mensal e grava o id em MP_PREMIUM_PLAN_ID",
+            "POST /v1/billing/premium/checkout cria a assinatura e devolve init_point; front redireciona",
+            "Webhook trata subscription_preapproval e subscription_authorized_payment, sempre reconsultando a API",
+            "Cancelar: PUT /preapproval/{id} status cancelled; plano volta para free no fim do período pago"
+          ]
+        },
+        {
+          "id": "F09.3",
+          "titulo": "Créditos",
+          "passos": [
+            "POST /v1/credits/purchases {packId, method: pix|card}",
+            "Pix: POST /v1/payments com payment_method_id pix; devolver qr_code e qr_code_base64; tela mostra QR, copia e cola e contagem de expiração (30 min)",
+            "Cartão: POST /checkout/preferences e redirecionar para init_point",
+            "Webhook payment approved → credit_ledger +N, idempotente por payment id",
+            "Front: polling GET /v1/credits/purchases/{id} a cada 3 s até approved/expired, máx. 10 min"
+          ]
+        },
+        {
+          "id": "F09.4",
+          "titulo": "Webhook",
+          "passos": [
+            "POST /webhooks/mercadopago valida x-signature (docs/mercadopago.md#assinatura); inválido → 401",
+            "Grava em webhook_events (id único) antes de processar; responde 200 rápido e processa de forma síncrona curta",
+            "Reconsulta o recurso na API do MP; nunca confia no corpo"
+          ]
+        }
+      ],
+      "criterios_aceite": [
+        "Fluxos completos em sandbox com usuários de teste",
+        "Reenvio do mesmo webhook não duplica crédito",
+        "Assinatura inválida rejeitada em teste"
+      ]
+    },
+
+    {
+      "id": "F10",
+      "nome": "Consultas veiculares e FIPE",
+      "depends_on": ["F09"],
+      "referencia": "docs/vehicle-data.md",
+      "tarefas": [
+        {
+          "id": "F10.1",
+          "titulo": "FIPE",
+          "passos": [
+            "FipeClient para a API v2 com header X-Subscription-Token quando houver token",
+            "Cache de marcas/modelos/anos 30 dias; preço por veículo 7 dias",
+            "Snapshot mensal em fipe_price_history para a variação de 30 dias",
+            "GET /v1/vehicles/{id}/fipe → {value, referenceMonth, deltaPct30d, updatedAt}"
+          ]
+        },
+        {
+          "id": "F10.2",
+          "titulo": "Consultas",
+          "passos": [
+            "VehicleDataProvider (interface) + MockVehicleDataProvider (mesma lógica do protótipo) + LiveVehicleDataProvider (esqueleto com TODO até o dono escolher o provedor)",
+            "POST /v1/lookups {plate, product, mine}: valida placa, debita créditos numa transação, chama provedor, grava resultado; em falha do provedor, estorna créditos",
+            "GET /v1/lookups e GET /v1/lookups/{id} (reabrir não cobra)",
+            "Página /laudo/$id com CSS de impressão e botão Baixar PDF (window.print)"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F11",
+      "nome": "Landing",
+      "depends_on": ["F02"],
+      "tarefas": [
+        {
+          "id": "F11.1",
+          "titulo": "Site Astro",
+          "passos": [
+            "Recriar reference/QueroRevisar Landing.dc.html em apps/landing com os mesmos tokens",
+            "Páginas: /, /precos, /privacidade, /termos, /ajuda (Markdown)",
+            "sitemap, robots, Open Graph, favicon",
+            "CTA leva para app.querorevisar.<PREENCHER>"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F12",
+      "nome": "Observabilidade, analytics, flags, LGPD",
+      "depends_on": ["F06"],
+      "tarefas": [
+        {
+          "id": "F12.1",
+          "titulo": "Sentry",
+          "passos": ["@sentry/react com source maps no build; Sentry Spring Boot na API; release = git sha"]
+        },
+        {
+          "id": "F12.2",
+          "titulo": "PostHog",
+          "passos": [
+            "Eventos: onboarding_started, vehicle_created, record_created, km_updated, pwa_installed, push_enabled, paywall_viewed, premium_checkout_started, premium_activated, credits_purchase_started, credits_purchased, lookup_run, lookup_reopened",
+            "Sem PII nas propriedades; placa nunca vai para eventos",
+            "Consentimento: banner simples; sem consentimento, PostHog não inicia"
+          ]
+        },
+        {
+          "id": "F12.3",
+          "titulo": "Feature flags",
+          "passos": [
+            "Flags PostHog: apple_login (off), parts_marketplace (off), ads (on para free), vehicle_lookups (on), fipe_card (on)",
+            "API lê flags com cache de 10 min; web lê pelo SDK"
+          ]
+        },
+        {
+          "id": "F12.4",
+          "titulo": "LGPD",
+          "passos": [
+            "Exportar dados: GET /v1/me/export (JSON)",
+            "Excluir conta: DELETE /v1/me apaga dados e o usuário no Supabase (service role)",
+            "Páginas de privacidade e termos com texto <PREENCHER> pelo dono"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F13",
+      "nome": "CI/CD, deploy e backup",
+      "depends_on": ["F04", "F06"],
+      "tarefas": [
+        {
+          "id": "F13.1",
+          "titulo": "ci.yml (PR)",
+          "passos": [
+            "pnpm install --frozen-lockfile; turbo lint typecheck test --filter=...[origin/main]",
+            "Gradle: ./gradlew :apps:api:check (JVM, Testcontainers)",
+            "Verificar cliente gerado x OpenAPI",
+            "Build da web; preview Cloudflare Pages"
+          ]
+        },
+        {
+          "id": "F13.2",
+          "titulo": "deploy-dev.yml (push main)",
+          "passos": [
+            "Build nativo (./gradlew :apps:api:bootBuildImage com BP_NATIVE_IMAGE=true, ou nativeCompile + Dockerfile distroless)",
+            "Push para Artifact Registry southamerica-east1",
+            "flyway migrate no banco dev",
+            "gcloud run deploy qr-api-dev --region southamerica-east1 --min-instances 0 --max-instances 1 --cpu-boost",
+            "wrangler pages deploy apps/web/dist e apps/landing/dist"
+          ]
+        },
+        {
+          "id": "F13.3",
+          "titulo": "deploy-prod.yml (tag v*)",
+          "passos": [
+            "Environment 'production' com aprovação manual",
+            "Mesma imagem já testada em dev (promover por digest)",
+            "flyway migrate prod; deploy qr-api com --max-instances 2",
+            "Cloud Scheduler: criar/atualizar jobs com OIDC"
+          ]
+        },
+        {
+          "id": "F13.4",
+          "titulo": "backup.yml (diário 03:00)",
+          "passos": [
+            "pg_dump do prod pelo connection string direto, gzip + criptografia (age) e upload para R2 com retenção de 30 dias",
+            "Workflow mensal de restauração em banco temporário + suíte de testes"
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "F14",
+      "nome": "Testes finais e lançamento",
+      "depends_on": ["F06", "F07", "F08", "F09", "F10", "F12", "F13"],
+      "tarefas": [
+        {
+          "id": "F14.1",
+          "titulo": "E2E Playwright",
+          "passos": [
+            "Primeiro veículo",
+            "Registrar troca",
+            "Atualizar km",
+            "Offline e sync",
+            "Criar conta a partir do anônimo sem perder dados",
+            "Assinar Premium (mock)",
+            "Comprar créditos Pix (mock) e consultar placa",
+            "Responsivo: 390, 834, 1440"
+          ]
+        },
+        {
+          "id": "F14.2",
+          "titulo": "Checklist de lançamento",
+          "passos": [
+            "Lighthouse PWA e performance >= 90 no mobile",
+            "JS inicial < 200 KB gzip",
+            "Segurança: teste de acesso cruzado entre usuários",
+            "Alertas de orçamento ativos",
+            "Backup restaurado com sucesso ao menos uma vez",
+            "PENDENCIAS.md sem itens bloqueantes"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "segredos_e_configuracoes": {
+    "ver": "env/api.env.example, env/web.env.example, env/landing.env.example e PENDENCIAS.md"
+  }
+}

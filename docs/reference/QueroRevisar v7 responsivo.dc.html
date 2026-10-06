@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+<script src="catalog.js?v=3"></script>
+<script src="planos.js?v=2"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: #ebeceb; -webkit-font-smoothing: antialiased; }
+  a { color: #0e5a66; text-decoration: none; }
+  a:hover { color: #0a434c; text-decoration: underline; }
+  button, input, select { font: inherit; color: inherit; }
+  button:focus-visible { outline: 2px solid #0e5a66; outline-offset: 2px; }
+  input:focus, select:focus { outline: 0; border-color: #0e5a66 !important; box-shadow: 0 0 0 1px #0e5a66; }
+  @keyframes qrbar { 0% { transform: translateX(-100%); } 60% { transform: translateX(60%); } 100% { transform: translateX(100%); } }
+  [data-water] { position: relative; overflow: hidden; isolation: isolate; transition: color .4s ease, border-color .4s ease, transform .15s ease; }
+  [data-water]::before { content: ""; position: absolute; left: -50%; width: 200%; aspect-ratio: 1; top: 115%; border-radius: 41%; background: #0e5a66; z-index: -1; pointer-events: none; transition: top .7s cubic-bezier(.3,.7,.25,1); }
+  [data-water="light"]::before { background: #fff; }
+  @media (hover: hover) {
+    [data-water]:hover { color: #fff !important; border-color: #0e5a66 !important; }
+    [data-water]:hover * { color: inherit !important; transition: color .4s ease; }
+    [data-water]:hover::before { top: -70%; }
+    [data-water="light"]:hover { color: #125865 !important; border-color: #fff !important; }
+  }
+  @keyframes qrwave { to { transform: rotate(360deg); } }
+  @keyframes qrspin { to { transform: rotate(360deg); } }
+  @keyframes qrsk { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+  input[data-bare]:focus { border-color: transparent !important; box-shadow: none !important; }
+  label:has(> input[data-bare]:focus), div:has(> input[data-bare]:focus) { border-color: #0e5a66 !important; box-shadow: 0 0 0 1px #0e5a66 !important; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #ebeceb; font-family: Figtree, -apple-system, sans-serif; color: #222; font-size: 15px; line-height: 1.43; font-weight: 500;">
+<div style="max-width: {{ shellMax }}; margin: 0 auto; min-height: 100vh; background: #fff; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0,0,0,.06);">
+
+  <sc-if value="{{ showOnboarding }}" hint-placeholder-val="{{ false }}">
+    <div style="flex: 1; width: 100%; max-width: 560px; margin: 0 auto; padding: 18px 24px 32px; display: flex; flex-direction: column; gap: 26px;">
+      <div>
+        <button style-active="transform: scale(0.96)" onClick="{{ backWelcome }}" aria-label="Voltar" style="width: 40px; height: 40px; border-radius: 50%; border: 0; background: #f2f2f2; font-size: 20px; cursor: pointer; line-height: 1;">‹</button>
+        <div style="font-size: 30px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; margin-top: 18px; text-wrap: pretty;">Qual é o seu veículo?</div>
+        <div style="font-size: 15.5px; color: #6a6a6a; margin-top: 8px; text-wrap: pretty;">Com isso o app escolhe os itens e os intervalos certos.</div>
+        <sc-if value="{{ isReplacing }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 14px; border-radius: 14px; background: #e7f0f1; padding: 12px 14px; font-size: 14px; color: #0a434c; text-wrap: pretty;">Este veículo vai substituir o {{ replacingName }}. O histórico dele fica guardado em Conta › Veículos anteriores.</div>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="font-size: 13.5px; font-weight: 600;">Tipo</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button style-active="transform: scale(0.96)" onClick="{{ setTypeCar }}" style="height: 128px; border-radius: 14px; border: {{ obCarBorder }}; background: #fff; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px;"><img src="brand/icone-carro.png" alt="" style="width: 84px; height: 84px; object-fit: contain;">Carro</button>
+          <button style-active="transform: scale(0.96)" onClick="{{ setTypeMoto }}" style="height: 128px; border-radius: 14px; border: {{ obMotoBorder }}; background: #fff; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px;"><img src="brand/icone-moto.png" alt="" style="width: 84px; height: 84px; object-fit: contain;">Moto</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <dc-import name="QR Select" label="Marca" placeholder="Selecione" search-placeholder="Buscar marca" options="{{ obBrands }}" value="{{ ob.brand }}" on-change="{{ onObBrandVal }}" searchable="{{ true }}" hint-size="100%,80px"></dc-import>
+        <dc-import name="QR Select" label="Modelo" placeholder="{{ modelPlaceholder }}" search-placeholder="Buscar modelo" options="{{ obModels }}" value="{{ ob.model }}" on-change="{{ onObModelVal }}" disabled="{{ obNoBrand }}" searchable="{{ true }}" hint-size="100%,80px"></dc-import>
+      </div>
+
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 10px;">
+        <dc-import name="QR Select" label="Ano" placeholder="Ano" search-placeholder="Buscar ano" options="{{ obYears }}" value="{{ ob.year }}" on-change="{{ onObYearVal }}" searchable="{{ true }}" hint-size="100%,80px"></dc-import>
+        <label style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 13.5px; font-weight: 600;">Km atual</span>
+          <input inputMode="numeric" value="{{ ob.km }}" onChange="{{ onObKm }}" placeholder="48.000" style="height: 50px; border-radius: 8px; border: 1px solid #dddddd; padding: 0 14px; font-variant-numeric: tabular-nums;">
+        </label>
+      </div>
+
+      <sc-if value="{{ obHasPlan }}" hint-placeholder-val="{{ false }}">
+        <div style="border-radius: 14px; background: #e7f0f1; padding: 12px 14px; font-size: 14px; color: #0a434c;">Temos o plano do fabricante para este modelo. Os intervalos seguem o manual.</div>
+      </sc-if>
+
+      <div style="flex: 1;"></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button style-active="transform: scale(0.96)" onClick="{{ finishOnboarding }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; opacity: {{ obOpacity }};">Começar</button>
+        <div style="font-size: 13px; color: #6a6a6a; text-align: center;">Placa preenche tudo sozinha no Premium.</div>
+        
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showApp }}" hint-placeholder-val="{{ true }}">
+    <div style="flex: 1; display: flex; flex-direction: {{ appDir }}; min-height: 100vh;">
+      <sc-if value="{{ sideNav }}" hint-placeholder-val="{{ false }}">
+        <aside style="position: sticky; top: 0; height: 100vh; flex: none; width: {{ sideW }}; padding: {{ sidePad }}; border-right: 1px solid #dddddd; background: #fff; display: flex; flex-direction: column; gap: 20px; z-index: 10;">
+          <sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}">
+            <img src="brand/logo-horizontal.png" alt="QueroRevisar" style="height: 30px; width: auto; align-self: flex-start; margin: 4px 10px 4px;">
+            <button style-active="transform: scale(0.96)" onClick="{{ openRegisterBlank }}" style="height: 46px; border-radius: 10px; border: 0; background: #0e5a66; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Registrar troca</button>
+            <nav style="display: flex; flex-direction: column; gap: 4px;">
+              <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.go }}" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border: 0; border-radius: 10px; background: {{ t.bg }}; color: {{ t.fg }}; font-size: 15px; font-weight: 600; cursor: pointer; text-align: left;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ t.icon }}" as="p"><path d="{{ p }}"></path></sc-for></svg>{{ t.label }}</button>
+              </sc-for>
+              <button onClick="{{ openCqOther }}" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #222; font-size: 15px; font-weight: 600; cursor: pointer; text-align: left;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path><path d="m21 21-4.3-4.3"></path></svg>Consultar placa</button>
+            </nav>
+            <button onClick="{{ goConta }}" style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border: 0; border-radius: 12px; background: #f7f7f7; cursor: pointer; text-align: left;">
+              <span style="width: 36px; height: 36px; flex: none; border-radius: 50%; background: #e7f0f1; color: #0e5a66; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">{{ avatarLetter }}</span>
+              <span style="min-width: 0;"><span style="display: block; font-size: 14px; font-weight: 600;">{{ sideUser }}</span><span style="display: block; font-size: 12.5px; color: #6a6a6a;">Plano {{ planLabel }} · {{ creditsLabel }}</span></span>
+            </button>
+          </sc-if>
+          <sc-if value="{{ sideRail }}" hint-placeholder-val="{{ false }}">
+            <img src="brand/icone.png" alt="QueroRevisar" style="width: 44px; height: 44px; align-self: center;">
+            <button style-active="transform: scale(0.96)" onClick="{{ openRegisterBlank }}" aria-label="Registrar troca" title="Registrar troca" style="align-self: center; width: 52px; height: 52px; border-radius: 16px; border: 0; background: #0e5a66; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+            <nav style="display: flex; flex-direction: column; gap: 6px;">
+              <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.go }}" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 9px 0; border: 0; border-radius: 12px; background: {{ t.bg }}; color: {{ t.fg }}; font-size: 11.5px; font-weight: 600; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ t.icon }}" as="p"><path d="{{ p }}"></path></sc-for></svg>{{ t.label }}</button>
+              </sc-for>
+              <button onClick="{{ openCqOther }}" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 9px 0; border: 0; border-radius: 12px; background: transparent; color: #222; font-size: 11.5px; font-weight: 600; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path><path d="m21 21-4.3-4.3"></path></svg>Consultas</button>
+            </nav>
+          </sc-if>
+        </aside>
+      </sc-if>
+      <div style="flex: 1; min-width: 0; width: 100%; max-width: {{ mainMax }}; margin: 0 auto; display: flex; flex-direction: column;">
+      {{ routeBar }}
+
+      <sc-if value="{{ skPainel }}" hint-placeholder-val="{{ false }}">
+        <div aria-busy="true" style="flex: 1; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;"><div style="width: 150px; height: 28px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 36px; height: 36px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+          <div style="display: flex; gap: 8px;"><div style="width: 120px; height: 48px; border-radius: 24px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 120px; height: 48px; border-radius: 24px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 48px; height: 48px; border-radius: 24px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+          <div style="border-radius: 20px; padding: 18px; border: 1px solid #dddddd; display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 55%; height: 22px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 35%; height: 14px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 72px; height: 56px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px;"><div style="display: flex; flex-direction: column; gap: 8px;"><div style="width: 80px; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 130px; height: 30px; border-radius: 8px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 120px; height: 40px; border-radius: 8px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+          </div>
+          <div style="display: flex; gap: 8px;"><div style="width: 100%; height: 72px; border-radius: 14px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite; flex: 1;"></div><div style="width: 100%; height: 72px; border-radius: 14px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite; flex: 1;"></div><div style="width: 100%; height: 72px; border-radius: 14px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite; flex: 1;"></div></div>
+          <div><div style="width: 190px; height: 22px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #dddddd;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 62%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 44%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 64px; height: 24px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #dddddd;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 62%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 44%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 64px; height: 24px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #dddddd;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 62%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 44%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 64px; height: 24px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ skItens }}" hint-placeholder-val="{{ false }}">
+        <div aria-busy="true" style="flex: 1; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="width: 110px; height: 30px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 100%; height: 52px; border-radius: 8px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div>
+          <div style="display: flex; gap: 8px;"><div style="width: 70px; height: 36px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 150px; height: 36px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 80px; height: 36px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+          <div><div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 0; border-bottom: 1px solid #dddddd;"><div style="width: 40px; height: 40px; border-radius: 20px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 48%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 18px; height: 18px; border-radius: 4px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 0; border-bottom: 1px solid #dddddd;"><div style="width: 40px; height: 40px; border-radius: 20px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 48%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 18px; height: 18px; border-radius: 4px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 0; border-bottom: 1px solid #dddddd;"><div style="width: 40px; height: 40px; border-radius: 20px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 48%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 18px; height: 18px; border-radius: 4px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 0; border-bottom: 1px solid #dddddd;"><div style="width: 40px; height: 40px; border-radius: 20px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 48%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 18px; height: 18px; border-radius: 4px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 0; border-bottom: 1px solid #dddddd;"><div style="width: 40px; height: 40px; border-radius: 20px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 48%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 18px; height: 18px; border-radius: 4px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 0; border-bottom: 1px solid #dddddd;"><div style="width: 40px; height: 40px; border-radius: 20px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 48%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 18px; height: 18px; border-radius: 4px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ skHist }}" hint-placeholder-val="{{ false }}">
+        <div aria-busy="true" style="flex: 1; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;"><div style="width: 140px; height: 30px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 150px; height: 40px; border-radius: 20px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+          <div style="width: 100%; height: 66px; border-radius: 14px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 100%; height: 52px; border-radius: 8px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div>
+          <div style="display: flex; gap: 8px;"><div style="width: 70px; height: 36px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 90px; height: 36px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 120px; height: 36px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"><div style="width: 100%; height: 66px; border-radius: 14px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 100%; height: 66px; border-radius: 14px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div>
+          <div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #dddddd;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 62%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 44%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 64px; height: 24px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #dddddd;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 62%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 44%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 64px; height: 24px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #dddddd;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 62%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 44%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 64px; height: 24px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #dddddd;"><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 62%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 44%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div><div style="width: 64px; height: 24px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ skConta }}" hint-placeholder-val="{{ false }}">
+        <div aria-busy="true" style="flex: 1; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="width: 100px; height: 30px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div>
+          <div style="display: flex; align-items: center; gap: 14px;"><div style="width: 52px; height: 52px; border-radius: 26px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 40%; height: 16px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 60%; height: 13px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div></div>
+          <div style="width: 110px; height: 22px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div>
+          <div><div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd;"><div style="width: 52px; height: 52px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 45%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div></div><div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd;"><div style="width: 52px; height: 52px; border-radius: 12px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px;"><div style="width: 45%; height: 15px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 30%; height: 12px; border-radius: 6px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div></div></div></div>
+          <div style="width: 100%; height: 48px; border-radius: 8px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 100%; height: 90px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div><div style="width: 100%; height: 120px; border-radius: 18px; background: #ececec; animation: qrsk 1.3s ease-in-out infinite;"></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPainel }}" hint-placeholder-val="{{ true }}">
+        <div style="flex: 1; padding: {{ pnPad }}; display: {{ pnDisplay }}; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); flex-direction: column; gap: 18px 32px; align-items: {{ pnAlign }};">
+          <div style="display: {{ colDisplay }}; grid-column: 1 / -1; flex-direction: column; gap: 18px; min-width: 0;">
+          <div style="order: 1; margin: {{ bandMargin }}; padding: {{ bandPad }}; background: #125865; border-radius: {{ bandRadius }}; display: flex; flex-direction: column; gap: 18px;">
+          <div aria-hidden="{{ pullHidden }}" style="height: {{ pullH }}; transition: {{ pullTrans }}; overflow: hidden; display: flex; align-items: flex-end; justify-content: center; margin-bottom: -18px;"><div style="height: 56px; display: flex; align-items: center; justify-content: center; flex: none;">{{ pullSpinner }}</div></div>
+          <div style="height: 0;"></div>
+          <sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <img src="brand/logo-header-petroleo.png" alt="QueroRevisar" style="height: 30px; width: auto; display: block;">
+            <button style-active="transform: scale(0.96)" onClick="{{ goConta }}" style="width: 36px; height: 36px; border-radius: 50%; border: 0; background: #e7f0f1; color: #0e5a66; font-weight: 600; font-size: 14px; cursor: pointer;">{{ avatarLetter }}</button>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ showSwitcher }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -22px; padding: 2px 22px 4px;">
+              <sc-for list="{{ garageList }}" as="g" hint-placeholder-count="0">
+                <button style-active="transform: scale(0.96)" onClick="{{ g.pick }}" style="flex: none; display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 14px 0 6px; border-radius: 24px; border: {{ g.border }}; background: #fff; font-size: 14.5px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                  <sc-if value="{{ g.isCar }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-carro.png" alt="" style="width: 36px; height: 36px; object-fit: contain;"></sc-if><sc-if value="{{ g.isMoto }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-moto.png" alt="" style="width: 36px; height: 36px; object-fit: contain;"></sc-if>{{ g.name }}
+                </button>
+              </sc-for>
+              <button style-active="transform: scale(0.96)" onClick="{{ addVehicle }}" aria-label="Adicionar veículo" data-water="light" style="flex: none; width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.55); background: transparent; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+          </sc-if>
+          </div>
+
+          <div style="order: 1; display: {{ vcDisplay }}; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: center; position: relative; margin-top: -84px; background: #fff; border-radius: 20px; padding: {{ vcPad }}; min-height: {{ vcMinH }}; box-shadow: rgba(0,0,0,.04) 0 0 0 1px, rgba(14,90,102,.10) 0 6px 14px 0, rgba(0,0,0,.08) 0 12px 28px -8px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+              <div style="min-width: 0;">
+                <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">{{ vehicle.model }}</div>
+                <div style="font-size: 14px; color: #6a6a6a; margin-top: 2px;">{{ vehicle.brand }} · {{ vehicle.year }}</div>
+              </div>
+              <sc-if value="{{ vehIsCar }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-carro.png" alt="{{ vehicleTypeLabel }}" title="{{ vehicleTypeLabel }}" style="width: 88px; height: 88px; object-fit: contain; flex: none; margin: -14px -8px -20px 0;"></sc-if><sc-if value="{{ vehIsMoto }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-moto.png" alt="{{ vehicleTypeLabel }}" title="{{ vehicleTypeLabel }}" style="width: 88px; height: 88px; object-fit: contain; flex: none; margin: -14px -8px -20px 0;"></sc-if>
+            </div>
+            <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-top: {{ vcMt }}; padding: {{ vcSidePad }}; border-left: {{ vcBl }}; gap: 10px;">
+              <div>
+                <div style="font-size: 12.5px; color: #6a6a6a;">{{ kmLabel }}</div>
+                <div style="font-size: 30px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{ kmShown }}</div>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;"><button style-active="transform: scale(0.96)" onClick="{{ openVehicle }}" aria-label="Gerenciar veículo" data-water="" style="width: 42px; height: 42px; flex: none; border-radius: 12px; border: 1px solid #dddddd; background: #fff; color: #222; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button><button style-active="transform: scale(0.96)" onClick="{{ openKm }}" data-water="" style="padding: 10px 16px; border-radius: 12px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-size: 14px; font-weight: 600; cursor: pointer;">Atualizar km</button></div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: {{ vcMt2 }}; padding: {{ fipePad }}; border-top: {{ fipeBt }}; border-left: {{ vcBl }};">
+              <div style="min-width: 0;">
+                <div style="font-size: 12.5px; color: #6a6a6a;">Tabela FIPE · {{ fipeWhen }}</div>
+                <div style="font-size: 18px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{ fipeValue }}</div>
+              </div>
+              <span style="font-size: 12.5px; font-weight: 600; color: {{ fipeFg }}; background: {{ fipeBg }}; padding: 4px 10px; border-radius: 20px; white-space: nowrap; font-variant-numeric: tabular-nums;">{{ fipeDelta }}</span>
+            </div>
+          </div>
+
+          </div>
+          <div style="display: {{ colDisplay }}; flex-direction: column; gap: 18px; min-width: 0;">
+          <div style="order: 2; display: flex; gap: 8px;">
+            <button style-active="transform: scale(0.96)" onClick="{{ goItensVencido }}" style="flex: 1; border: 0; text-align: left; border-radius: 14px; background: #fdf1f0; padding: 12px; cursor: pointer;">
+              <div style="font-size: 24px; font-weight: 700; color: #c13515; font-variant-numeric: tabular-nums;">{{ counts.over }}</div>
+              <div style="font-size: 13px; color: #8a1c16; font-weight: 500;">vencido</div>
+            </button>
+            <button style-active="transform: scale(0.96)" onClick="{{ goItensAtencao }}" style="flex: 1; border: 0; text-align: left; border-radius: 14px; background: #fdf5e7; padding: 12px; cursor: pointer;">
+              <div style="font-size: 24px; font-weight: 700; color: #9a5b00; font-variant-numeric: tabular-nums;">{{ counts.warn }}</div>
+              <div style="font-size: 13px; color: #7a4800; font-weight: 500;">em atenção</div>
+            </button>
+            <button style-active="transform: scale(0.96)" onClick="{{ goItensOk }}" style="flex: 1; border: 0; text-align: left; border-radius: 14px; background: #f4f4f4; padding: 12px; cursor: pointer;">
+              <div style="font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ counts.ok }}</div>
+              <div style="font-size: 13px; color: #555; font-weight: 500;">em dia</div>
+            </button>
+          </div>
+
+          <sc-if value="{{ showLoginNudge }}" hint-placeholder-val="{{ false }}">
+            <div style="order: 3; border-radius: 16px; border: 1px solid #dddddd; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 15px; font-weight: 600;">Salve seus registros</div>
+                <div style="font-size: 13.5px; color: #6a6a6a;">Crie uma conta para não perder o histórico e receber os alertas.</div>
+              </div>
+              <button style-active="transform: scale(0.96)" onClick="{{ openLogin }}" style="padding: 9px 14px; border-radius: 12px; border: 0; background: #0e5a66; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;">Criar conta</button>
+            </div>
+          </sc-if>
+
+          <div style="order: 5; border-radius: 20px; background: #e7f0f1; padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+              <div style="min-width: 0;">
+                <div style="font-size: 18px; font-weight: 700; letter-spacing: -0.02em; color: #0a434c;">Consultar uma placa</div>
+                <div style="font-size: 14px; color: #0a434c; margin-top: 4px; text-wrap: pretty;">Dados, restrições, leilão e débitos de qualquer veículo. Útil antes de comprar um usado.</div>
+              </div>
+              <button onClick="{{ openCredits }}" style="flex: none; border: 0; background: #fff; color: #0e5a66; border-radius: 20px; padding: 5px 11px; font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap; font-variant-numeric: tabular-nums;">{{ creditsLabel }}</button>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button style-active="transform: scale(0.96)" onClick="{{ openCqOther }}" style="flex: 1; min-width: 140px; height: 44px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;">Consultar placa</button>
+              <button style-active="transform: scale(0.96)" onClick="{{ openCqMine }}" data-water="" style="flex: 1; min-width: 140px; height: 44px; border-radius: 8px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-size: 15px; font-weight: 600; cursor: pointer;">Conferir o meu {{ vehicle.model }}</button>
+            </div>
+          </div>
+
+          </div>
+          <div style="display: {{ colDisplay }}; flex-direction: column; gap: 18px; min-width: 0;">
+          <div style="order: 4; min-width: 0;">
+            <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px;">Precisa de atenção</div>
+            <sc-if value="{{ hasAttention }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column;">
+                <sc-for list="{{ attention }}" as="it" hint-placeholder-count="3">
+                  <button style-active="transform: scale(0.96)" onClick="{{ it.open }}" style="display: flex; flex-direction: column; gap: 8px; padding: 14px 0; border: 0; border-bottom: 1px solid #dddddd; background: none; text-align: left; cursor: pointer; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 14px; width: 100%;">
+                      <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 16px; font-weight: 600;">{{ it.name }}</div>
+                        <div style="font-size: 13.5px; color: #6a6a6a; margin-top: 2px;">{{ it.line }}</div>
+                      </div>
+                      <span style="font-size: 12.5px; font-weight: 600; color: {{ it.fg }}; background: {{ it.bg }}; padding: 4px 10px; border-radius: 20px; white-space: nowrap;">{{ it.badge }}</span>
+                    </div>
+                    <div style="height: 4px; border-radius: 4px; background: #f0f0f0; width: 100%;"><div style="width: {{ it.barW }}; height: 100%; border-radius: 4px; background: {{ it.bar }};"></div></div>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noAttention }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 18px 0; font-size: 14.5px; color: #6a6a6a;">Nada vencendo. Registre as trocas que você já fez para o app acompanhar.</div>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ hasUnregistered }}" hint-placeholder-val="{{ false }}">
+            <div style="order: 6;">
+              <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Sem registro</div>
+              <div style="font-size: 13.5px; color: #6a6a6a; margin: 2px 0 10px;">Itens principais que o app ainda não acompanha.</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <sc-for list="{{ unregisteredKey }}" as="it" hint-placeholder-count="4">
+                  <button style-active="transform: scale(0.96)" onClick="{{ it.register }}" data-water="" style="padding: 8px 14px; border-radius: 20px; border: 1px solid #dddddd; background: #fff; font-size: 14px; cursor: pointer;">+ {{ it.name }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ tabNav }}" hint-placeholder-val="{{ true }}">
+        <div style="position: sticky; bottom: 74px; padding: 0 22px 12px; background: linear-gradient(rgba(255,255,255,0), #fff 30%);">
+          <button style-active="transform: scale(0.96)" onClick="{{ openRegisterBlank }}" style="width: 100%; height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Registrar troca</button>
+        </div>
+        </sc-if>
+      </sc-if>
+
+      <sc-if value="{{ isItens }}" hint-placeholder-val="{{ false }}">
+        <div style="flex: 1; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.01em;">Itens</div>
+          <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Buscar item" style="height: 52px; border-radius: 8px; border: 1px solid #dddddd; padding: 0 16px;">
+          <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;">
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+              <button style-active="transform: scale(0.96)" onClick="{{ f.pick }}" style="padding: 8px 14px; border-radius: 20px; border: {{ f.border }}; background: #fff; font-size: 14px; font-weight: {{ f.weight }}; white-space: nowrap; cursor: pointer;">{{ f.label }}</button>
+            </sc-for>
+          </div>
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+            <div style="border-bottom: 1px solid #dddddd;">
+              <button onClick="{{ g.toggle }}" aria-expanded="{{ g.open }}" style="display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px; padding: 10px 0; border: 0; background: none; text-align: left; cursor: pointer;">
+                <span style="width: 40px; height: 40px; flex: none; border-radius: 50%; background: #f2f2f2; display: flex; align-items: center; justify-content: center;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0e5a66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ g.icon }}" as="p"><path d="{{ p }}"></path></sc-for></svg>
+                </span>
+                <span style="flex: 1; min-width: 0;">
+                  <span style="display: block; font-size: 16px; font-weight: 600;">{{ g.name }}</span>
+                  <span style="display: block; font-size: 13px; color: {{ g.sumColor }};">{{ g.summary }}</span>
+                </span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; transition: transform .2s; transform: {{ g.chev }};"><path d="m6 9 6 6 6-6"></path></svg>
+              </button>
+              <sc-if value="{{ g.open }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 0 0 8px 52px;">
+              <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="display: grid; grid-template-columns: {{ itCols }}; gap: 16px; padding: 8px 0; border-bottom: 1px solid #dddddd; font-size: 12px; font-weight: 600; color: #929292; text-transform: uppercase; letter-spacing: .04em;"><span>Item</span><span>Situação</span><span>Progresso</span><span style="text-align: right;">Status</span></div></sc-if>
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                <button style-active="transform: scale(0.98)" onClick="{{ it.open }}" style="display: grid; grid-template-columns: {{ itCols }}; align-items: center; gap: 16px; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid #dddddd; background: none; text-align: left; cursor: pointer;">
+                  <div style="min-width: 0;">
+                    <div style="font-size: 15.5px; font-weight: 500;">{{ it.name }}</div>
+                    <sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}"><div style="font-size: 13px; color: #6a6a6a;">{{ it.line }}</div></sc-if>
+                  </div>
+                  <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="font-size: 14px; color: #555; min-width: 0;">{{ it.line }}</div><div style="height: 6px; border-radius: 6px; background: #f0f0f0;"><div style="width: {{ it.barW }}; height: 100%; border-radius: 6px; background: {{ it.bar }};"></div></div></sc-if>
+                  <span style="justify-self: end; font-size: 12px; font-weight: 600; color: {{ it.fg }}; background: {{ it.bg }}; padding: 3px 9px; border-radius: 20px; white-space: nowrap;">{{ it.badge }}</span>
+                </button>
+              </sc-for>
+              </div>
+              </sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ adItens }}" hint-placeholder-val="{{ false }}">
+              <div data-ad-slot="itens-lista" style="margin: 12px 0; border: 1px dashed #c1c1c1; border-radius: 14px; background: #f7f7f7; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; padding: 0 12px;">
+                <span style="font-size: 11.5px; font-weight: 600; color: #929292; letter-spacing: .04em; text-transform: uppercase;">Publicidade</span>
+                <span style="font-size: 12.5px; color: #929292;">AdSense · in-feed responsivo · altura 100 px</span>
+                <button onClick="{{ removeAds }}" style="margin-top: 4px; border: 0; background: none; font-size: 12.5px; font-weight: 600; color: #0e5a66; text-decoration: underline; cursor: pointer; padding: 4px;">Remover anúncios</button>
+              </div>
+          </sc-if>
+          <sc-if value="{{ noGroups }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 30px 0; text-align: center; color: #6a6a6a;">Nenhum item encontrado.</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isHistorico }}" hint-placeholder-val="{{ false }}">
+        <div style="flex: 1; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.01em;">Histórico</div>
+            <button style-active="transform: scale(0.96)" onClick="{{ openRegisterBlank }}" style="height: 40px; padding: 0 14px 0 10px; border-radius: 20px; border: 0; background: #0e5a66; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Registrar troca</button>
+          </div>
+
+          <div style="position: relative;">
+            <button onClick="{{ toggleHistDD }}" aria-expanded="{{ histDDOpen }}" data-water="" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 8px; border-radius: 14px; border: 1px solid #dddddd; background: #fff; text-align: left; cursor: pointer;">
+              <span style="width: 48px; height: 48px; flex: none; border-radius: 10px; background: #f7f7f7; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <sc-if value="{{ histSel.hasIcon }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ histSel.isCar }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-carro.png" alt="" style="width: 44px; height: 44px; object-fit: contain;"></sc-if><sc-if value="{{ histSel.isMoto }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-moto.png" alt="" style="width: 44px; height: 44px; object-fit: contain;"></sc-if></sc-if>
+                <sc-if value="{{ histSel.isAll }}" hint-placeholder-val="{{ false }}"><span style="display: flex;"><img src="brand/icone-carro.png" alt="" style="width: 28px; height: 28px; object-fit: contain; margin-right: -8px;"><img src="brand/icone-moto.png" alt="" style="width: 28px; height: 28px; object-fit: contain;"></span></sc-if>
+              </span>
+              <span style="flex: 1; min-width: 0;">
+                <span style="display: block; font-size: 12px; color: #6a6a6a;">Veículo</span>
+                <span style="display: block; font-size: 16px; font-weight: 600;">{{ histSel.name }}</span>
+              </span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform .2s; transform: {{ histDDChev }};"><path d="m6 9 6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{ histDDOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 5; background: #fff; border-radius: 14px; border: 1px solid #dddddd; box-shadow: rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 6px 0, rgba(0,0,0,.1) 0 4px 8px 0; padding: 6px;">
+                <sc-for list="{{ histOptions }}" as="o" hint-placeholder-count="0">
+                  <button onClick="{{ o.pick }}" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px; border: 0; border-radius: 10px; background: {{ o.bg }}; text-align: left; cursor: pointer;">
+                    <span style="width: 40px; height: 40px; flex: none; display: flex; align-items: center; justify-content: center;">
+                      <sc-if value="{{ o.hasIcon }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ o.isCar }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-carro.png" alt="" style="width: 40px; height: 40px; object-fit: contain;"></sc-if><sc-if value="{{ o.isMoto }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-moto.png" alt="" style="width: 40px; height: 40px; object-fit: contain;"></sc-if></sc-if>
+                      <sc-if value="{{ o.isAll }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 700; color: #0e5a66;">Todos</span></sc-if>
+                    </span>
+                    <span style="flex: 1; min-width: 0;">
+                      <span style="display: block; font-size: 15px; font-weight: 600;">{{ o.name }}</span>
+                      <span style="display: block; font-size: 13px; color: #6a6a6a;">{{ o.sub }}</span>
+                    </span>
+                    <sc-if value="{{ o.selected }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0e5a66" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
+                  </button>
+                </sc-for>
+                <button onClick="{{ addVehicleFromDD }}" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 8px; border: 0; border-top: 1px solid #dddddd; border-radius: 0; background: none; text-align: left; cursor: pointer; margin-top: 4px; color: #0e5a66; font-size: 15px; font-weight: 600;">
+                  <span style="width: 40px; height: 40px; flex: none; border-radius: 50%; background: #0e5a66; color: #fff; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span>Adicionar veículo
+                </button>
+              </div>
+            </sc-if>
+          </div>
+
+          <input value="{{ histQuery }}" onChange="{{ onHistQuery }}" placeholder="Buscar troca, peça ou marca" style="height: 52px; border-radius: 8px; border: 1px solid #dddddd; padding: 0 16px;">
+          <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;">
+            <sc-for list="{{ histFilters }}" as="f" hint-placeholder-count="4">
+              <button onClick="{{ f.pick }}" style="padding: 8px 14px; border-radius: 20px; border: {{ f.border }}; background: #fff; font-size: 14px; font-weight: {{ f.weight }}; white-space: nowrap; cursor: pointer;">{{ f.label }}</button>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="border-radius: 14px; background: #f4f4f4; padding: 12px 14px;">
+              <div style="font-size: 12.5px; color: #6a6a6a;">Trocas registradas</div>
+              <div style="font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ histCount }}</div>
+            </div>
+            <div style="border-radius: 14px; background: #f4f4f4; padding: 12px 14px;">
+              <div style="font-size: 12.5px; color: #6a6a6a;">Gasto informado</div>
+              <div style="font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ histTotal }}</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="display: grid; grid-template-columns: {{ hCols }}; gap: 16px; padding: 8px 0; border-bottom: 1px solid #dddddd; font-size: 12px; font-weight: 600; color: #929292; text-transform: uppercase; letter-spacing: .04em;"><span>Data</span><span>Item</span><span>Onde</span><span>Marca</span><span style="text-align: right;">Km</span><span style="text-align: right;">Custo</span></div></sc-if>
+            <sc-for list="{{ history }}" as="h" hint-placeholder-count="0">
+              <div>
+                <sc-if value="{{ h.isAd }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin: 10px 0; border-radius: 16px; border: 1px solid #dddddd; padding: 14px; display: flex; gap: 12px; align-items: center;">
+                    <div style="width: 52px; height: 52px; flex: none; border-radius: 12px; background: #f4f4f4;"></div>
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="font-size: 11.5px; font-weight: 600; color: #929292; text-transform: uppercase; letter-spacing: .04em;">Patrocinado</div>
+                      <div style="font-size: 15px; font-weight: 600;">{{ h.title }}</div>
+                      <div style="font-size: 13px; color: #6a6a6a;">{{ h.sub }}</div>
+                    </div>
+                    <div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ h.price }}</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ h.isRec }}" hint-placeholder-val="{{ true }}">
+                  <sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}">
+                  <button style-active="transform: scale(0.96)" onClick="{{ h.open }}" style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 0; border: 0; border-bottom: 1px solid #dddddd; background: none; text-align: left; cursor: pointer;">
+                    <sc-if value="{{ h.showIcon }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ h.isCar }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-carro.png" alt="{{ h.vName }}" style="width: 40px; height: 40px; object-fit: contain; flex: none;"></sc-if><sc-if value="{{ h.isMoto }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-moto.png" alt="{{ h.vName }}" style="width: 40px; height: 40px; object-fit: contain; flex: none;"></sc-if></sc-if>
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="font-size: 15.5px; font-weight: 600;">{{ h.name }}</div>
+                      <div style="font-size: 13px; color: #6a6a6a;">{{ h.line }}</div>
+                    </div>
+                    <div style="text-align: right;">
+                      <div style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ h.km }}</div>
+                      <div style="font-size: 13px; color: #6a6a6a;">{{ h.cost }}</div>
+                    </div>
+                  </button>
+                  </sc-if>
+                  <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ h.open }}" style="display: grid; grid-template-columns: {{ hCols }}; align-items: center; gap: 16px; width: 100%; padding: 13px 0; border: 0; border-bottom: 1px solid #dddddd; background: none; text-align: left; cursor: pointer; font-size: 14.5px;">
+                    <span style="color: #6a6a6a; font-variant-numeric: tabular-nums;">{{ h.hDate }}</span>
+                    <span style="min-width: 0; font-weight: 600;">{{ h.name }}<sc-if value="{{ h.showIcon }}" hint-placeholder-val="{{ false }}"><span style="display: block; font-size: 12.5px; font-weight: 500; color: #6a6a6a;">{{ h.vName }}</span></sc-if></span>
+                    <span>{{ h.hWhere }}</span>
+                    <span style="min-width: 0; color: #555;">{{ h.hBrand }}</span>
+                    <span style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ h.km }}</span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ h.hCost }}</span>
+                  </button>
+                  </sc-if>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ adHist }}" hint-placeholder-val="{{ false }}">
+              <div data-ad-slot="historico-rodape" style="margin: 12px 0; border: 1px dashed #c1c1c1; border-radius: 14px; background: #f7f7f7; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; padding: 0 12px;">
+                <span style="font-size: 11.5px; font-weight: 600; color: #929292; letter-spacing: .04em; text-transform: uppercase;">Publicidade</span>
+                <span style="font-size: 12.5px; color: #929292;">AdSense · in-feed responsivo · altura 100 px</span>
+                <button onClick="{{ removeAds }}" style="margin-top: 4px; border: 0; background: none; font-size: 12.5px; font-weight: 600; color: #0e5a66; text-decoration: underline; cursor: pointer; padding: 4px;">Remover anúncios</button>
+              </div>
+          </sc-if>
+          <sc-if value="{{ histLocked }}" hint-placeholder-val="{{ false }}">
+            <div style="border-radius: 16px; background: #e7f0f1; padding: 14px 16px; font-size: 14px; color: #0a434c;">O plano grátis mostra os últimos 12 meses. O histórico completo está no Premium.</div>
+          </sc-if>
+          <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 30px 0; text-align: center; color: #6a6a6a;">{{ noHistoryText }}</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isConta }}" hint-placeholder-val="{{ false }}">
+        <div style="flex: 1; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.01em;">Conta</div>
+          <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
+            <div style="border-radius: 20px; border: 1px solid #dddddd; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="font-size: 17px; font-weight: 600;">Você está usando sem conta</div>
+              <div style="font-size: 14px; color: #6a6a6a;">Os registros ficam só neste aparelho. Crie uma conta para salvar e receber alertas.</div>
+              <button style-active="transform: scale(0.96)" onClick="{{ openLogin }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-weight: 600; cursor: pointer;">Criar conta</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 52px; height: 52px; border-radius: 50%; background: #e7f0f1; color: #0e5a66; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px;">{{ avatarLetter }}</div>
+              <div style="min-width: 0;">
+                <div style="font-size: 17px; font-weight: 600;">{{ userName }}</div>
+                <div style="font-size: 14px; color: #6a6a6a;">{{ userEmail }} · Plano {{ planLabel }}</div>
+              </div>
+              <button onClick="{{ askLogout }}" style="margin-left: auto; border: 0; background: none; font-size: 14px; font-weight: 600; color: #c13515; cursor: pointer; padding: 8px 0;">Sair</button>
+            </div>
+          </sc-if>
+
+          <div>
+            <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px;">Veículos</div>
+            <sc-for list="{{ garageList }}" as="g" hint-placeholder-count="0">
+              <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd;">
+                <sc-if value="{{ g.isCar }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-carro.png" alt="" style="width: 52px; height: 52px; object-fit: contain; flex: none;"></sc-if><sc-if value="{{ g.isMoto }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-moto.png" alt="" style="width: 52px; height: 52px; object-fit: contain; flex: none;"></sc-if>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-size: 15.5px; font-weight: 600;">{{ g.name }}</div>
+                  <div style="font-size: 13px; color: #6a6a6a;">{{ g.sub }}</div>
+                </div>
+                <sc-if value="{{ g.active }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-size: 12.5px; font-weight: 600; color: #0e5a66; background: #e7f0f1; padding: 4px 10px; border-radius: 20px;">Ativo</span>
+                </sc-if>
+                <sc-if value="{{ g.inactive }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ g.pick }}" style="border: 0; background: none; font-size: 14px; font-weight: 600; text-decoration: underline; cursor: pointer;">Ver</button>
+                </sc-if>
+                <button onClick="{{ g.manage }}" aria-label="Gerenciar veículo" style="width: 40px; height: 40px; flex: none; border-radius: 50%; border: 0; background: none; color: #222; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
+              </div>
+            </sc-for>
+            <button style-active="transform: scale(0.96)" onClick="{{ addVehicle }}" style="margin-top: 12px; width: 100%; height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Adicionar veículo</button>
+          </div>
+
+          <sc-if value="{{ hasPast }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Veículos anteriores</div>
+              <div style="font-size: 13.5px; color: #6a6a6a; margin: 2px 0 6px;">Vendidos ou trocados. O histórico de manutenção continua guardado.</div>
+              <sc-for list="{{ pastList }}" as="p" hint-placeholder-count="1">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd;">
+                  <sc-if value="{{ p.isCar }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-carro.png" alt="" style="width: 52px; height: 52px; object-fit: contain; flex: none; opacity: .55; filter: grayscale(1);"></sc-if><sc-if value="{{ p.isMoto }}" hint-placeholder-val="{{ false }}"><img src="brand/icone-moto.png" alt="" style="width: 52px; height: 52px; object-fit: contain; flex: none; opacity: .55; filter: grayscale(1);"></sc-if>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 15.5px; font-weight: 600;">{{ p.name }}</div>
+                    <div style="font-size: 13px; color: #6a6a6a;">{{ p.sub }}</div>
+                  </div>
+                  <button onClick="{{ p.restore }}" style="border: 0; background: none; font-size: 14px; font-weight: 600; text-decoration: underline; cursor: pointer;">Restaurar</button>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div>
+            <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px;">Consultas veiculares</div>
+            <div style="border-radius: 18px; border: 1px solid #dddddd; padding: 16px; display: flex; align-items: center; gap: 12px;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 24px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{ creditsLabel }}</div>
+                <div style="font-size: 13.5px; color: #6a6a6a;">{{ creditsSub }}</div>
+              </div>
+              <button style-active="transform: scale(0.96)" onClick="{{ openCredits }}" data-water="" style="padding: 10px 14px; border-radius: 12px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-size: 14px; font-weight: 600; cursor: pointer;">Comprar</button>
+              <button style-active="transform: scale(0.96)" onClick="{{ openCqOther }}" style="padding: 10px 14px; border-radius: 12px; border: 0; background: #0e5a66; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">Consultar</button>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px;">Planos</div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="border-radius: 18px; border: {{ freeBorder }}; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <div style="font-size: 17px; font-weight: 700;">Grátis</div>
+                  <div style="font-size: 17px; font-weight: 700;">R$ 0</div>
+                </div>
+                <div style="font-size: 14px; color: #6a6a6a; margin-top: 4px;">1 veículo · todos os alertas · histórico de 12 meses · com anúncio</div>
+              </div>
+              <div style="border-radius: 18px; border: {{ premiumBorder }}; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <div style="font-size: 17px; font-weight: 700;">Premium</div>
+                  <div style="font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums;">R$ 14,90<span style="font-size: 13px; font-weight: 500; color: #6a6a6a;">/mês</span></div>
+                </div>
+                <div style="font-size: 14px; color: #6a6a6a;">Vários veículos · histórico completo e PDF · sem anúncio · cadastro por placa · 2 créditos de consulta por mês</div>
+                <sc-if value="{{ isFree }}" hint-placeholder-val="{{ true }}">
+                  <button style-active="transform: scale(0.96)" onClick="{{ subscribe }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-weight: 600; cursor: pointer;">Assinar Premium</button>
+                </sc-if>
+                <sc-if value="{{ isPremium }}" hint-placeholder-val="{{ false }}">
+                  <button style-active="transform: scale(0.96)" onClick="{{ unsubscribe }}" data-water="" style="height: 44px; border-radius: 12px; border: 1px solid #dddddd; background: #fff; font-size: 14px; cursor: pointer;">Seu plano atual · voltar ao grátis</button>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+          <sc-if value="{{ adConta }}" hint-placeholder-val="{{ false }}">
+              <div data-ad-slot="conta-rodape" style="margin: 12px 0; border: 1px dashed #c1c1c1; border-radius: 14px; background: #f7f7f7; height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; padding: 0 12px;">
+                <span style="font-size: 11.5px; font-weight: 600; color: #929292; letter-spacing: .04em; text-transform: uppercase;">Publicidade</span>
+                <span style="font-size: 12.5px; color: #929292;">AdSense · retângulo médio 300 × 250</span>
+                <button onClick="{{ removeAds }}" style="margin-top: 4px; border: 0; background: none; font-size: 12.5px; font-weight: 600; color: #0e5a66; text-decoration: underline; cursor: pointer; padding: 4px;">Remover anúncios</button>
+              </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabNav }}" hint-placeholder-val="{{ true }}">
+      <div style="position: sticky; bottom: 0; height: 74px; flex: none; background: #fff; border-top: 1px solid #dddddd; display: grid; grid-template-columns: repeat(4, 1fr); padding-top: 8px;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+          <button style-active="transform: scale(0.96)" onClick="{{ t.go }}" style="border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: {{ t.color }}; cursor: pointer;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ t.icon }}" as="p"><path d="{{ p }}"></path></sc-for></svg>
+            {{ t.label }}
+          </button>
+        </sc-for>
+      </div>
+      </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ true }}">
+    <div style="position: fixed; inset: 0; z-index: 25; display: flex; justify-content: center; background: #ebeceb;">
+      <div style="width: 100%; max-width: 480px; background: #fff; display: flex; flex-direction: column; overflow-y: auto; box-shadow: {{ ovShadow }};">
+        <div style="height: 58px; flex: none; padding: 18px 24px 0;">
+          <sc-if value="{{ canCloseLogin }}" hint-placeholder-val="{{ false }}">
+            <button style-active="transform: scale(0.96)" onClick="{{ loginBack }}" aria-label="Fechar" style="width: 40px; height: 40px; border-radius: 50%; border: 0; background: #f2f2f2; font-size: 20px; cursor: pointer; line-height: 1;">‹</button>
+          </sc-if>
+        </div>
+
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 12px 32px 24px; gap: 28px;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;">
+            <img src="brand/icone.png" alt="" style="width: 84px; height: 84px; display: block;">
+            <div>
+              <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em;">Quero<span style="color: #0e5a66;">Revisar</span></div>
+              <div style="font-size: 15px; color: #6a6a6a; margin-top: 4px;">{{ authSub }}</div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+              <input value="{{ login.name }}" onChange="{{ onLoginName }}" placeholder="Nome" autoComplete="given-name" aria-label="Nome" style="height: 52px; border-radius: 8px; border: 1px solid #dddddd; padding: 0 16px; font-size: 16px; background: #f7f7f7; width: 100%;">
+            </sc-if>
+            <input type="email" value="{{ login.email }}" onChange="{{ onLoginEmail }}" placeholder="E-mail" autoComplete="email" aria-label="E-mail" style="height: 52px; border-radius: 8px; border: 1px solid #dddddd; padding: 0 16px; font-size: 16px; background: #f7f7f7; width: 100%;">
+            <div style="position: relative;">
+              <input type="{{ pwType }}" value="{{ login.pw }}" onChange="{{ onLoginPw }}" placeholder="Senha" autoComplete="{{ pwAuto }}" aria-label="Senha" style="height: 52px; border-radius: 8px; border: 1px solid #dddddd; padding: 0 16px; font-size: 16px; background: #f7f7f7; width: 100%; padding-right: 84px;">
+              <button onClick="{{ togglePw }}" style="position: absolute; right: 6px; top: 6px; height: 40px; padding: 0 12px; border: 0; background: none; font-size: 14px; font-weight: 600; cursor: pointer;">{{ pwToggleLabel }}</button>
+            </div>
+            <button style-active="transform: scale(0.96)" onClick="{{ submitAuth }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 6px;">{{ authCta }}</button>
+            <sc-if value="{{ isSignin }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ forgotPw }}" style="align-self: center; border: 0; background: none; padding: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">Esqueceu a senha?</button>
+            </sc-if>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 14px; font-size: 13px; font-weight: 600; color: #929292;">
+            <span style="flex: 1; height: 1px; background: #dddddd;"></span>OU<span style="flex: 1; height: 1px; background: #dddddd;"></span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button style-active="transform: scale(0.96)" onClick="{{ socialGoogle }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #dddddd; background: #fff; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8z"></path><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"></path><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8z"></path><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"></path></svg>
+              Continuar com Google
+            </button>
+            <button style-active="transform: scale(0.96)" onClick="{{ socialApple }}" style="height: 48px; border-radius: 8px; border: 0; background: #222; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+              <svg width="16" height="18" viewBox="0 0 17 20" fill="#fff"><path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9a4.8 4.8 0 0 0-3.8-2c-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9A5 5 0 0 0 1 7.3c-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.5 1.3 0 1.8-.8 3.3-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5a11 11 0 0 0 1.4-2.9 4.5 4.5 0 0 1-2.6-4zM11.6 3.1A4.4 4.4 0 0 0 12.6 0a4.6 4.6 0 0 0-3 1.5 4.2 4.2 0 0 0-1 3c1.1.1 2.3-.6 3-1.4z"></path></svg>
+              Continuar com Apple
+            </button>
+          </div>
+        </div>
+
+        <div style="flex: none; border-top: 1px solid #dddddd; padding: 16px 24px 26px; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+          <button onClick="{{ toggleAuthMode }}" style="border: 0; background: none; font-size: 15px; cursor: pointer; padding: 6px;">{{ authSwitchQ }} <span style="font-weight: 700; color: #0e5a66;">{{ authSwitchA }}</span></button>
+          <button onClick="{{ skipAuth }}" style="border: 0; background: none; font-size: 14px; color: #6a6a6a; text-decoration: underline; cursor: pointer; padding: 6px;">Continuar sem conta</button>
+          <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size: 12px; color: #6a6a6a; text-align: center; text-wrap: pretty; margin-top: 4px;">Ao criar a conta, você aceita os <a href="#" style="color: #222; text-decoration: underline;">Termos</a> e a <a href="#" style="color: #222; text-decoration: underline;">Política de privacidade</a>.</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showCq }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Consultas" style="position: fixed; inset: 0; z-index: 20; display: flex; justify-content: {{ ovJustify }}; background: {{ ovBg }};">
+      <div style="width: 100%; max-width: 480px; background: #fff; display: flex; flex-direction: column; overflow-y: auto; box-shadow: {{ ovShadow }};">
+
+        <sc-if value="{{ cqForm }}" hint-placeholder-val="{{ true }}">
+          <div style="flex: 1; padding: 18px 22px 0; display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <button style-active="transform: scale(0.96)" onClick="{{ closeCq }}" aria-label="Voltar" style="width: 40px; height: 40px; border-radius: 50%; border: 0; background: #f2f2f2; font-size: 20px; cursor: pointer; line-height: 1;">‹</button>
+              <button style-active="transform: scale(0.96)" onClick="{{ openCredits }}" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid #dddddd; background: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums;">{{ creditsLabel }}<span style="color: #0e5a66; font-size: 17px; line-height: 1;">+</span></button>
+            </div>
+            <div>
+              <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;">Consultar placa</div>
+              <div style="font-size: 15px; color: #6a6a6a; margin-top: 4px; text-wrap: pretty;">Digite a placa de qualquer veículo, o seu ou de outra pessoa.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 12px; background: #f2f2f2;">
+              <button onClick="{{ setCqOther }}" style="height: 40px; border-radius: 9px; border: 0; background: {{ cqOtherBg }}; box-shadow: {{ cqOtherShadow }}; font-size: 14px; font-weight: 600; cursor: pointer;">Outro veículo</button>
+              <button onClick="{{ setCqMine }}" style="height: 40px; border-radius: 9px; border: 0; background: {{ cqMineBg }}; box-shadow: {{ cqMineShadow }}; font-size: 14px; font-weight: 600; cursor: pointer;">Meu {{ vehicle.model }}</button>
+            </div>
+
+            <label style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13.5px; font-weight: 600;">Placa</span>
+              <input value="{{ cqPlate }}" onChange="{{ onCqPlate }}" placeholder="ABC1D23" maxLength="8" autoCapitalize="characters" autoComplete="off" spellCheck="false" style="height: 64px; border-radius: 10px; border: 2px solid #222; padding: 0 16px; font-size: 28px; font-weight: 700; letter-spacing: .14em; text-align: center; text-transform: uppercase; width: 100%; background: #fff;">
+            </label>
+
+            <div>
+              <div style="font-size: 18px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px;">O que consultar</div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ cqProducts }}" as="p" hint-placeholder-count="6">
+                  <button style-active="transform: scale(0.98)" onClick="{{ p.pick }}" style="display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 14px; border-radius: 14px; border: {{ p.border }}; background: #fff; text-align: left; cursor: pointer;">
+                    <span style="width: 20px; height: 20px; flex: none; margin-top: 2px; border-radius: 50%; border: {{ p.dot }}; background: #fff;"></span>
+                    <span style="flex: 1; min-width: 0;">
+                      <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 15.5px; font-weight: 600;">{{ p.name }}</span>
+                        <sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11.5px; font-weight: 700; color: #0e5a66; background: #e7f0f1; padding: 2px 8px; border-radius: 20px;">{{ p.tag }}</span></sc-if>
+                      </span>
+                      <span style="display: block; font-size: 13.5px; color: #6a6a6a; margin-top: 2px; text-wrap: pretty;">{{ p.desc }}</span>
+                    </span>
+                    <span style="flex: none; text-align: right;">
+                      <span style="display: block; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ p.price }}</span>
+                      <span style="display: block; font-size: 12.5px; color: #6a6a6a; white-space: nowrap;">{{ p.cost }}</span>
+                    </span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+
+            <sc-if value="{{ isFree }}" hint-placeholder-val="{{ true }}">
+              <div style="border-radius: 14px; background: #f4f4f4; padding: 12px 14px; display: flex; align-items: center; gap: 12px;">
+                <div style="flex: 1; font-size: 14px; color: #555; text-wrap: pretty;">No Premium você ganha 2 créditos de consulta todo mês.</div>
+                <button onClick="{{ goPremium }}" style="border: 0; background: none; font-size: 14px; font-weight: 600; color: #0e5a66; text-decoration: underline; cursor: pointer; padding: 6px 0; white-space: nowrap;">Ver Premium</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ hasCqHistory }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="font-size: 18px; font-weight: 600; letter-spacing: -0.02em;">Consultas anteriores</div>
+                <div style="font-size: 13.5px; color: #6a6a6a; margin: 2px 0 6px;">Abrir de novo não gasta crédito.</div>
+                <sc-for list="{{ cqHistory }}" as="h" hint-placeholder-count="0">
+                  <button style-active="transform: scale(0.98)" onClick="{{ h.open }}" style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid #dddddd; background: none; text-align: left; cursor: pointer;">
+                    <span style="flex: none; padding: 4px 8px; border-radius: 6px; border: 1.5px solid #222; font-size: 13px; font-weight: 700; letter-spacing: .08em;">{{ h.plate }}</span>
+                    <span style="flex: 1; min-width: 0;">
+                      <span style="display: block; font-size: 15px; font-weight: 600;">{{ h.title }}</span>
+                      <span style="display: block; font-size: 13px; color: #6a6a6a;">{{ h.sub }}</span>
+                    </span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#929292" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="position: sticky; bottom: 0; flex: none; padding: 16px 22px 26px; background: linear-gradient(rgba(255,255,255,0), #fff 24%); display: flex; flex-direction: column; gap: 8px;">
+            <button style-active="transform: scale(0.96)" onClick="{{ runCq }}" style="height: 50px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">{{ cqSpinner }}{{ cqCta }}</button>
+            <div style="font-size: 13px; color: #6a6a6a; text-align: center;">{{ cqBalanceLine }}</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ cqResult }}" hint-placeholder-val="{{ false }}">
+          <div style="flex: 1; padding: 18px 22px 0; display: flex; flex-direction: column; gap: 20px;">
+            <button style-active="transform: scale(0.96)" onClick="{{ cqBackToForm }}" aria-label="Voltar" style="width: 40px; height: 40px; border-radius: 50%; border: 0; background: #f2f2f2; font-size: 20px; cursor: pointer; line-height: 1;">‹</button>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <span style="align-self: flex-start; padding: 6px 12px; border-radius: 8px; border: 2px solid #222; font-size: 20px; font-weight: 700; letter-spacing: .12em;">{{ r.plate }}</span>
+              <div>
+                <div style="font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;">{{ r.model }}</div>
+                <div style="font-size: 14px; color: #6a6a6a; margin-top: 4px;">{{ r.productName }} · {{ r.when }}</div>
+              </div>
+            </div>
+            <div style="border-radius: 14px; background: {{ r.sumBg }}; color: {{ r.sumFg }}; padding: 14px 16px; font-size: 15px; font-weight: 600;">{{ r.summary }}</div>
+            <sc-for list="{{ r.sections }}" as="sec" hint-placeholder-count="2">
+              <div>
+                <div style="font-size: 18px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 2px;">{{ sec.title }}</div>
+                <sc-for list="{{ sec.rows }}" as="row" hint-placeholder-count="3">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd; font-size: 15px;">
+                    <span style="color: #6a6a6a;">{{ row.k }}</span>
+                    <sc-if value="{{ row.plain }}" hint-placeholder-val="{{ true }}"><span style="font-weight: 600; text-align: right; font-variant-numeric: tabular-nums;">{{ row.v }}</span></sc-if>
+                    <sc-if value="{{ row.badge }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: {{ row.fg }}; background: {{ row.bg }}; padding: 4px 10px; border-radius: 20px; text-align: right;">{{ row.v }}</span></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+            <div style="font-size: 12.5px; color: #929292; text-wrap: pretty;">Dados das bases consultadas no momento da pesquisa. Confira a documentação do veículo antes de fechar negócio.</div>
+          </div>
+          <div style="flex: none; padding: 20px 22px 30px; display: flex; flex-direction: column; gap: 10px;">
+            <sc-if value="{{ r.isLaudo }}" hint-placeholder-val="{{ false }}">
+              <button style-active="transform: scale(0.96)" onClick="{{ cqPdf }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;">Baixar laudo em PDF</button>
+            </sc-if>
+            <button style-active="transform: scale(0.96)" onClick="{{ cqNew }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-size: 16px; font-weight: 600; cursor: pointer;">Nova consulta</button>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 20; display: flex; justify-content: {{ ovJustify }}; background: {{ ovBg }};">
+      <div style="width: 100%; max-width: 480px; background: #fff; display: flex; flex-direction: column; overflow-y: auto; box-shadow: {{ ovShadow }};">
+        <div style="flex: 1; padding: 18px 22px 0; display: flex; flex-direction: column; gap: 20px;">
+          <button style-active="transform: scale(0.96)" onClick="{{ closeDetail }}" aria-label="Voltar" style="width: 40px; height: 40px; border-radius: 50%; border: 0; background: #f2f2f2; font-size: 20px; cursor: pointer; line-height: 1;">‹</button>
+          <div>
+            <span style="font-size: 12.5px; font-weight: 600; color: {{ d.fg }}; background: {{ d.bg }}; padding: 4px 10px; border-radius: 20px;">{{ d.statusLabel }}</span>
+            <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-top: 10px;">{{ d.name }}</div>
+            <div style="font-size: 15px; color: #6a6a6a; margin-top: 4px;">{{ d.desc }}</div>
+          </div>
+
+          <sc-if value="{{ d.hasRecord }}" hint-placeholder-val="{{ true }}">
+            <div style="border-radius: 20px; border: 1px solid #dddddd; box-shadow: rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 6px 0, rgba(0,0,0,.1) 0 4px 8px 0; padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+                <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{ d.big }}</div>
+                <div style="font-size: 14px; color: #6a6a6a; text-align: right;">{{ d.bigSub }}</div>
+              </div>
+              <div style="height: 6px; border-radius: 6px; background: #f0f0f0; margin: 14px 0 10px;"><div style="width: {{ d.barW }}; height: 100%; border-radius: 6px; background: {{ d.bar }};"></div></div>
+              <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: #6a6a6a; font-variant-numeric: tabular-nums;">
+                <span>Trocado em {{ d.lastKm }} km</span><span>Vence em {{ d.dueKm }} km</span>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ d.noRecord }}" hint-placeholder-val="{{ false }}">
+            <div style="border-radius: 20px; background: #f4f4f4; padding: 18px; font-size: 14.5px; color: #555;">Ainda sem registro. Informe o km da última troca e o app passa a acompanhar.</div>
+          </sc-if>
+
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd; font-size: 15px;">
+              <span style="color: #6a6a6a;">Intervalo</span><span style="font-weight: 600; text-align: right;">{{ d.interval }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd; font-size: 15px;">
+              <span style="color: #6a6a6a;">Fonte</span><span style="font-weight: 600; text-align: right;">{{ d.source }}</span>
+            </div>
+            <sc-if value="{{ d.hasRecord }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; font-size: 15px;">
+                <span style="color: #6a6a6a;">Última troca</span><span style="font-weight: 600; text-align: right;">{{ d.lastLine }}</span>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <div style="flex: none; padding: 20px 22px 30px; display: flex; flex-direction: column; gap: 10px;">
+          <button style-active="transform: scale(0.96)" onClick="{{ d.register }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;">Registrar troca</button>
+          <sc-if value="{{ d.showParts }}" hint-placeholder-val="{{ true }}">
+            <button style-active="transform: scale(0.96)" onClick="{{ openParts }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-size: 16px; font-weight: 600; cursor: pointer;">Ver peças compatíveis</button>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showSheet }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSheet }}" style="position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.45); display: flex; justify-content: {{ shJustify }}; align-items: {{ shAlign }};">
+      <div onClick="{{ stop }}" style="width: 100%; max-width: 480px; max-height: {{ shMaxH }}; height: {{ shH }}; overflow-y: auto; background: #fff; border-radius: {{ shRadius }}; padding: 10px 22px 30px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="align-self: center; width: 40px; height: 5px; border-radius: 3px; background: #dddddd;"></div>
+
+        <sc-if value="{{ sheetRegister }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="min-width: 0;"><div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Registrar troca</div><div style="font-size: 13.5px; color: #6a6a6a;">{{ vehicle.brand }} {{ vehicle.model }}</div></div>
+              <button style-active="transform: scale(0.96)" onClick="{{ closeSheet }}" style="border: 0; background: none; font-size: 15px; font-weight: 600; text-decoration: underline; cursor: pointer;">Cancelar</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="font-size: 13.5px; font-weight: 600;">Item</div>
+              <sc-if value="{{ reg.hasItem }}" hint-placeholder-val="{{ true }}">
+                <div style="border: 1px solid #dddddd; border-radius: 12px; padding: 13px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                  <div style="min-width: 0;">
+                    <div style="font-size: 16px; font-weight: 600;">{{ reg.itemName }}</div>
+                    <div style="font-size: 13px; color: #6a6a6a;">{{ reg.itemSub }}</div>
+                  </div>
+                  <button style-active="transform: scale(0.96)" onClick="{{ clearRegItem }}" style="border: 0; background: none; font-size: 14px; color: #6a6a6a; text-decoration: underline; cursor: pointer;">Trocar</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ reg.noItem }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <input value="{{ reg.q }}" onChange="{{ onRegQ }}" placeholder="Buscar: óleo, pastilha, filtro…" style="height: 48px; border-radius: 8px; border: 1px solid #dddddd; padding: 0 16px;">
+                  <sc-for list="{{ reg.matches }}" as="m" hint-placeholder-count="4">
+                    <button style-active="transform: scale(0.96)" onClick="{{ m.pick }}" style="display: flex; justify-content: space-between; gap: 10px; padding: 11px 4px; border: 0; border-bottom: 1px solid #dddddd; background: none; text-align: left; cursor: pointer;">
+                      <span style="font-size: 15px;">{{ m.name }}</span><span style="font-size: 13px; color: #929292;">{{ m.cat }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+
+            <label style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13.5px; font-weight: 600;">Km quando trocou</span>
+              <div style="border: 1px solid #0e5a66; border-radius: 8px; padding: 0 16px; box-shadow: 0 0 0 1px #0e5a66; display: flex; align-items: center; gap: 8px;">
+                <input data-bare="" inputMode="numeric" value="{{ reg.km }}" onChange="{{ onRegKm }}" placeholder="{{ estKmFmt }}" style="flex: 1; min-width: 0; border: 0; outline: 0; height: 54px; font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; background: none;">
+                <span style="font-size: 14px; font-weight: 500; color: #6a6a6a;">km</span>
+              </div>
+              <span style="font-size: 13px; color: #6a6a6a;">{{ reg.kmHint }}</span>
+            </label>
+
+            <div style="border-top: 1px solid #dddddd; padding-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="font-size: 13.5px; font-weight: 600; color: #6a6a6a;">Opcional</div>
+              <dc-import name="QR DatePicker" label="Data da troca" placeholder="Não lembro" clear-label="Não lembro" max="today" value="{{ reg.date }}" on-change="{{ onRegDateVal }}" hint-size="100%,80px"></dc-import>
+              <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px;">
+
+                <label style="border: 1px solid #dddddd; border-radius: 8px; padding: 8px 14px; display: flex; flex-direction: column;">
+                  <span style="font-size: 12px; color: #6a6a6a;">Custo (R$)</span>
+                  <input data-bare="" inputMode="decimal" value="{{ reg.cost }}" onChange="{{ onRegCost }}" placeholder="0,00" style="border: 0; outline: 0; padding: 2px 0; font-size: 15px; background: none; min-width: 0;">
+                </label>
+              </div>
+              <label style="border: 1px solid #dddddd; border-radius: 8px; padding: 8px 14px; display: flex; flex-direction: column;">
+                <span style="font-size: 12px; color: #6a6a6a;">Marca da peça</span>
+                <input data-bare="" value="{{ reg.brand }}" onChange="{{ onRegBrand }}" placeholder="Ex.: Mobil, Cobreq" style="border: 0; outline: 0; padding: 2px 0; font-size: 15px; background: none;">
+              </label>
+              <div style="display: flex; gap: 8px;">
+                <button style-active="transform: scale(0.96)" onClick="{{ setWhereCasa }}" style="padding: 8px 14px; border-radius: 20px; border: {{ reg.casaBorder }}; background: #fff; font-size: 14px; cursor: pointer;">Fiz em casa</button>
+                <button style-active="transform: scale(0.96)" onClick="{{ setWhereMec }}" style="padding: 8px 14px; border-radius: 20px; border: {{ reg.mecBorder }}; background: #fff; font-size: 14px; cursor: pointer;">No mecânico</button>
+              </div>
+            </div>
+
+            <button style-active="transform: scale(0.96)" onClick="{{ saveRecord }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; opacity: {{ reg.opacity }};">Salvar</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetKm }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Rodou quanto?</div>
+            <div style="font-size: 14.5px; color: #6a6a6a; margin-top: -8px;">Estimamos {{ estKmFmt }} km pela sua média de {{ kmPerMonthFmt }} km por mês.</div>
+            <div style="border: 1px solid #0e5a66; border-radius: 8px; padding: 0 16px; box-shadow: 0 0 0 1px #0e5a66; display: flex; align-items: center; gap: 8px;">
+              <input data-bare="" inputMode="numeric" value="{{ kmDraft }}" onChange="{{ onKmDraft }}" placeholder="{{ estKmFmt }}" style="flex: 1; min-width: 0; border: 0; outline: 0; height: 56px; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; background: none;">
+              <span style="font-size: 14px; color: #6a6a6a;">km no painel</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <button style-active="transform: scale(0.96)" onClick="{{ confirmEstimate }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-weight: 600; cursor: pointer;">Está certo</button>
+              <button style-active="transform: scale(0.96)" onClick="{{ saveKm }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-weight: 600; cursor: pointer;">Salvar</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetParts }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Peças compatíveis</div>
+            <div style="font-size: 14px; color: #6a6a6a; margin-top: -6px;">{{ partsFor }}</div>
+            <sc-for list="{{ parts }}" as="p" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dddddd;">
+                <div style="width: 52px; height: 52px; flex: none; border-radius: 12px; background: #f4f4f4;"></div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-size: 15px; font-weight: 600;">{{ p.name }}</div>
+                  <div style="font-size: 13px; color: #6a6a6a;">{{ p.store }}</div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ p.price }}</div>
+              </div>
+            </sc-for>
+            <div style="font-size: 12.5px; color: #929292;">Links de lojas parceiras. O QueroRevisar pode receber comissão.</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetLogin }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Criar conta</div>
+            <div style="font-size: 14.5px; color: #6a6a6a; margin-top: -4px;">Seus registros deste aparelho vão junto.</div>
+            <button style-active="transform: scale(0.96)" onClick="{{ doLogin }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-weight: 600; cursor: pointer;">Continuar com Google</button>
+            <button style-active="transform: scale(0.96)" onClick="{{ doLogin }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font-weight: 600; cursor: pointer;">Continuar com Apple</button>
+            <button style-active="transform: scale(0.96)" onClick="{{ doLogin }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-weight: 600; cursor: pointer;">Continuar com e-mail</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetVehicle }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">{{ vehicle.brand }} {{ vehicle.model }}</div>
+            <div style="font-size: 14px; color: #6a6a6a; margin-bottom: 8px;">{{ vehicle.year }} · {{ activeRecCount }}</div>
+            <button style-active="transform: scale(0.98)" onClick="{{ askSold }}" style="display: flex; align-items: center; gap: 14px; padding: 14px 4px; border: 0; border-top: 1px solid #dddddd; background: none; text-align: left; cursor: pointer; width: 100%;">
+              <span style="width: 40px; height: 40px; flex: none; border-radius: 50%; background: #e7f0f1; color: #0e5a66; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"></path><path d="M3 7h18"></path><path d="M7 21l-4-4 4-4"></path><path d="M21 17H3"></path></svg></span>
+              <span style="flex: 1; min-width: 0;"><span style="display: block; font-size: 16px; font-weight: 600;">Vendi ou troquei de veículo</span><span style="display: block; font-size: 13.5px; color: #6a6a6a;">Guarda o histórico e cadastra o novo</span></span>
+            </button>
+            <button style-active="transform: scale(0.98)" onClick="{{ askDelete }}" style="display: flex; align-items: center; gap: 14px; padding: 14px 4px; border: 0; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background: none; text-align: left; cursor: pointer; width: 100%;">
+              <span style="width: 40px; height: 40px; flex: none; border-radius: 50%; background: #fdf1f0; color: #c13515; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M6 6l1 14h10l1-14"></path></svg></span>
+              <span style="flex: 1; min-width: 0;"><span style="display: block; font-size: 16px; font-weight: 600; color: #c13515;">Excluir veículo</span><span style="display: block; font-size: 13.5px; color: #6a6a6a;">Para cadastro errado. Apaga os registros.</span></span>
+            </button>
+            <button onClick="{{ closeSheet }}" style="height: 44px; margin-top: 6px; border: 0; background: none; font-weight: 600; text-decoration: underline; cursor: pointer;">Cancelar</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetSold }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Trocou de veículo?</div>
+            <div style="font-size: 14.5px; color: #6a6a6a; text-wrap: pretty;">O {{ vehicle.model }} sai do painel e vai para Conta › Veículos anteriores, com o histórico de manutenção guardado. Dá para restaurar depois.</div>
+            <button style-active="transform: scale(0.96)" onClick="{{ replaceVehicle }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;">Cadastrar o novo veículo</button>
+            <sc-if value="{{ hasGarage }}" hint-placeholder-val="{{ false }}">
+              <button style-active="transform: scale(0.96)" onClick="{{ archiveOnly }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #dddddd; background: #fff; font-size: 15px; font-weight: 600; cursor: pointer;">Só guardar, sem cadastrar outro</button>
+            </sc-if>
+            <button onClick="{{ closeSheet }}" style="height: 44px; border: 0; background: none; font-weight: 600; text-decoration: underline; cursor: pointer;">Cancelar</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetDelete }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Excluir {{ vehicle.model }}?</div>
+            <div style="font-size: 14.5px; color: #6a6a6a; text-wrap: pretty;">O veículo e {{ activeRecCount }} serão apagados. Isso não pode ser desfeito. Se você vendeu o veículo, prefira guardar o histórico.</div>
+            <button style-active="transform: scale(0.96)" onClick="{{ deleteVehicle }}" style="height: 48px; border-radius: 8px; border: 0; background: #c13515; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;">Excluir</button>
+            <button style-active="transform: scale(0.96)" onClick="{{ askSold }}" data-water="" style="height: 48px; border-radius: 8px; border: 1px solid #dddddd; background: #fff; font-size: 15px; font-weight: 600; cursor: pointer;">Vendi, quero guardar o histórico</button>
+            <button onClick="{{ closeSheet }}" style="height: 44px; border: 0; background: none; font-weight: 600; text-decoration: underline; cursor: pointer;">Cancelar</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetLogout }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Sair da conta?</div>
+            <div style="font-size: 14.5px; color: #6a6a6a; text-wrap: pretty;">Seus veículos e registros continuam salvos na conta. Neste aparelho eles serão apagados, e você precisará entrar de novo para vê-los.</div>
+            <button style-active="transform: scale(0.96)" onClick="{{ logout }}" style="height: 48px; border-radius: 8px; border: 0; background: #c13515; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;">Sair</button>
+            <button onClick="{{ closeSheet }}" style="height: 44px; border: 0; background: none; font-weight: 600; text-decoration: underline; cursor: pointer;">Cancelar</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetCredits }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Comprar créditos</div>
+              <div style="font-size: 14.5px; color: #6a6a6a; margin-top: 4px; text-wrap: pretty;">{{ packsSub }}</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ packs }}" as="k" hint-placeholder-count="4">
+                <button style-active="transform: scale(0.98)" onClick="{{ k.pick }}" style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; border-radius: 14px; border: {{ k.border }}; background: #fff; text-align: left; cursor: pointer;">
+                  <span style="width: 20px; height: 20px; flex: none; border-radius: 50%; border: {{ k.dot }}; background: #fff;"></span>
+                  <span style="flex: 1; min-width: 0;">
+                    <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                      <span style="font-size: 16px; font-weight: 600;">{{ k.name }}</span>
+                      <sc-if value="{{ k.hasTag }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11.5px; font-weight: 700; color: #0e5a66; background: #e7f0f1; padding: 2px 8px; border-radius: 20px;">{{ k.tag }}</span></sc-if>
+                    </span>
+                    <span style="display: block; font-size: 13px; color: #6a6a6a; margin-top: 1px;">{{ k.unit }}</span>
+                  </span>
+                  <span style="flex: none; text-align: right;">
+                    <span style="display: block; font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ k.price }}</span>
+                    <sc-if value="{{ k.hasOff }}" hint-placeholder-val="{{ false }}"><span style="display: block; font-size: 12.5px; font-weight: 600; color: #0e5a66;">{{ k.off }}</span></sc-if>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <button onClick="{{ payPix }}" style="height: 44px; border-radius: 12px; border: {{ pixBorder }}; background: #fff; font-size: 14.5px; font-weight: 600; cursor: pointer;">Pix</button>
+              <button onClick="{{ payCard }}" style="height: 44px; border-radius: 12px; border: {{ cardBorder }}; background: #fff; font-size: 14.5px; font-weight: 600; cursor: pointer;">Cartão</button>
+            </div>
+            <button style-active="transform: scale(0.96)" onClick="{{ buyPack }}" style="height: 50px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;">{{ buyCta }}</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetPaywall }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">{{ paywallTitle }}</div>
+            <div style="font-size: 14.5px; color: #6a6a6a;">O plano grátis acompanha 1 veículo. Com o Premium você cadastra quantos quiser, vê o histórico completo e usa sem anúncio.</div>
+            <button style-active="transform: scale(0.96)" onClick="{{ subscribe }}" style="height: 48px; border-radius: 8px; border: 0; background: #0e5a66; color: #fff; font-weight: 600; cursor: pointer;">Assinar por R$ 14,90/mês</button>
+            <button style-active="transform: scale(0.96)" onClick="{{ closeSheet }}" style="height: 44px; border: 0; background: none; font-weight: 600; text-decoration: underline; cursor: pointer;">Agora não</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: fixed; left: 50%; top: 16px; transform: translateX(-50%); z-index: 40; width: calc(100% - 32px); max-width: 448px; background: {{ toastBg }}; color: #fff; padding: 12px 16px; border-radius: 14px; font-size: 14.5px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,.22); display: flex; align-items: center; gap: 10px;"><span style="width: 22px; height: 22px; flex: none; border-radius: 50%; background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">{{ toastIcon }}</span><span style="min-width: 0;">{{ toast }}</span></div>
+  </sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startOnboarded&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demonstração&quot;},&quot;startPlan&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;free&quot;,&quot;premium&quot;],&quot;default&quot;:&quot;free&quot;,&quot;tsType&quot;:&quot;'free' | 'premium'&quot;,&quot;section&quot;:&quot;Monetização&quot;},&quot;slowNetwork&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demonstração&quot;},&quot;slowDelay&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1800,&quot;min&quot;:400,&quot;max&quot;:5000,&quot;step&quot;:200,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Demonstração&quot;},&quot;skeleton&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demonstração&quot;},&quot;showAds&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Monetização&quot;}}">
+const KEY = 'qr-v4-state-3';
+const DAY = 864e5, MONTH = 30.44 * DAY;
+const BRANDS = {
+  car: { Chevrolet: ['Onix', 'Onix Plus', 'Tracker', 'S10', 'Spin', 'Montana'], Volkswagen: ['Gol', 'Polo', 'Virtus', 'T-Cross', 'Nivus', 'Saveiro'], Fiat: ['Argo', 'Mobi', 'Cronos', 'Strada', 'Toro', 'Pulse'], Hyundai: ['HB20', 'HB20S', 'Creta'], Toyota: ['Corolla', 'Corolla Cross', 'Hilux', 'Yaris'], Renault: ['Kwid', 'Sandero', 'Duster'], Honda: ['City', 'Civic', 'HR-V'], Jeep: ['Renegade', 'Compass'] },
+  moto: { Honda: ['CG 160', 'Biz 125', 'Pop 110i', 'CB 300F', 'XRE 300', 'PCX 160'], Yamaha: ['Fazer 250', 'Factor 150', 'Lander 250', 'NMax 160'], Bajaj: ['Pulsar N150', 'Dominar 200'], Suzuki: ['Burgman 125'], 'Royal Enfield': ['Meteor 350'] }
+};
+const KEY_ITEMS = ['Óleo do motor', 'Filtro de óleo', 'Filtro de ar', 'Velas de ignição', 'Fluido de freio', 'Pastilhas de freio dianteiras', 'Correia dentada', 'Fluido de arrefecimento', 'Kit relação (corrente, coroa e pinhão)'];
+const TAB_ICONS = {
+  painel: ['M3.05 13a9 9 0 1 1 17.9 0', 'M12 14 18 8'],
+  itens: ['M8 6h13M8 12h13M8 18h13', 'M3 6h.01M3 12h.01M3 18h.01'],
+  historico: ['M3 12a9 9 0 1 0 3-6.7L3 8', 'M3 3v5h5', 'M12 7v5l3 2'],
+  conta: ['M20 21a8 8 0 0 0-16 0', 'M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z']
+};
+const fmt = n => Math.round(n).toLocaleString('pt-BR');
+const money = n => 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const num = s => { const v = parseFloat(String(s).replace(/\./g, '').replace(',', '.')); return isNaN(v) ? null : v; };
+const iso = d => new Date(d).toISOString().slice(0, 10);
+const STATUS = {
+  over: { fg: '#c13515', bg: '#fdf1f0', bar: '#c8372d', label: 'Vencido' },
+  warn: { fg: '#9a5b00', bg: '#fdf5e7', bar: '#d9890a', label: 'Atenção' },
+  ok: { fg: '#555', bg: '#f4f4f4', bar: '#0e5a66', label: 'Em dia' },
+  none: { fg: '#929292', bg: '#fff', bar: '#dddddd', label: 'Sem registro' }
+};
+const CREDIT = 4.9;
+const CQ_PRODUCTS = [
+  { id: 'laudo', name: 'Laudo cautelar completo', desc: 'Tudo abaixo num relatório só, com PDF para levar na negociação.', cr: 6, tag: 'Antes de comprar', parts: ['basica', 'restricoes', 'leilao', 'debitos', 'fipe'] },
+  { id: 'restricoes', name: 'Restrições', desc: 'Roubo e furto, financiamento, bloqueio judicial.', cr: 2, parts: ['restricoes'] },
+  { id: 'leilao', name: 'Leilão e sinistro', desc: 'Passagem por leilão, indenização de seguradora, perda total.', cr: 3, parts: ['leilao'] },
+  { id: 'debitos', name: 'Débitos, IPVA e multas', desc: 'Valores em aberto no Detran e na Sefaz.', cr: 2, parts: ['debitos'] },
+  { id: 'basica', name: 'Dados da placa', desc: 'Marca, modelo, ano, cor, combustível e município.', cr: 1, parts: ['basica'] },
+  { id: 'fipe', name: 'Tabela FIPE', desc: 'Preço médio de mercado do modelo e ano.', cr: 0, parts: ['fipe'] }
+];
+const PACKS = [{ n: 1, price: 4.9 }, { n: 5, price: 21.9 }, { n: 12, price: 47.9, tag: 'Mais escolhido' }, { n: 30, price: 104.9 }];
+const CQ_CARS = [['Volkswagen Polo', '2021', 'Prata', 78512], ['Hyundai HB20', '2020', 'Branco', 64230], ['Fiat Argo', '2022', 'Cinza', 71890], ['Chevrolet Onix Plus', '2021', 'Preto', 76340], ['Toyota Corolla', '2019', 'Branco', 104760]];
+const TONE = { ok: { fg: '#0e5a66', bg: '#e7f0f1' }, warn: { fg: '#9a5b00', bg: '#fdf5e7' }, over: { fg: '#c13515', bg: '#fdf1f0' } };
+const credTxt = n => n === 1 ? '1 crédito' : n + ' créditos';
+const plateOk = p => /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(p);
+function cqSections(q) {
+  const h = q.plate.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const flag = q.mine ? -1 : h % 3;
+  const prod = CQ_PRODUCTS.find(p => p.id === q.product) || CQ_PRODUCTS[0];
+  const S = {
+    basica: { title: 'Dados do veículo', rows: [['Marca e modelo', q.model], ['Ano', q.year], ['Cor', q.color], ['Combustível', 'Flex'], ['Município', 'São Paulo/SP']] },
+    restricoes: { title: 'Restrições', rows: [['Roubo e furto', 'Nada consta', 'ok'], ['Financiamento', 'Nada consta', 'ok'], ['Bloqueio judicial', 'Nada consta', 'ok']] },
+    leilao: { title: 'Leilão e sinistro', rows: [['Leilão', flag === 0 ? 'Consta em 2023' : 'Nada consta', flag === 0 ? 'over' : 'ok'], ['Sinistro indenizado', 'Nada consta', 'ok'], ['Indício de perda total', 'Nada consta', 'ok']] },
+    debitos: { title: 'Débitos', rows: [['IPVA 2026', 'Pago', 'ok'], ['Licenciamento 2026', 'Pago', 'ok'], ['Multas', flag === 1 ? '2 em aberto · R$ 260,32' : 'Nada consta', flag === 1 ? 'warn' : 'ok']] },
+    fipe: { title: 'Preço de mercado', rows: [['Tabela FIPE', money(q.fipe)], ['Referência', 'outubro de 2026']] }
+  };
+  return prod.parts.map(k => ({ title: S[k].title, rows: S[k].rows.map(r => ({ k: r[0], v: r[1], plain: !r[2], badge: !!r[2], fg: r[2] ? TONE[r[2]].fg : '', bg: r[2] ? TONE[r[2]].bg : '', tone: r[2] || '' })) }));
+}
+
+function makeDemoMoto() {
+  const now = Date.now();
+  return {
+    vehicle: { type: 'moto', brand: 'Honda', model: 'CG 160', year: '2021', km: 23100, kmAt: now - 20 * DAY, kmPerMonth: 950 },
+    seed: [
+      ['Óleo do motor', 21000, now - 70 * DAY, 58, 'Mobil', 'casa'],
+      ['Kit relação (corrente, coroa e pinhão)', 2500, now - 900 * DAY, 210, 'Riffel', 'mec'],
+      ['Filtro de ar', 15000, now - 330 * DAY, 35, '', 'casa'],
+      ['Pastilhas de freio dianteiras', 14500, now - 400 * DAY, 45, 'Cobreq', 'casa']
+    ]
+  };
+}
+function demoState() {
+  const now = Date.now();
+  return {
+    vehicle: { type: 'car', brand: 'Chevrolet', model: 'Onix', year: '2019', km: 48000, kmAt: now - 61 * DAY, kmPerMonth: 1100 },
+    seed: [
+      ['Óleo do motor', 41500, now - 172 * DAY, 189, 'Lubrax', 'casa'],
+      ['Filtro de óleo', 41500, now - 172 * DAY, 32, '', 'casa'],
+      ['Pastilhas de freio dianteiras', 39700, now - 260 * DAY, 129, 'Cobreq', 'casa'],
+      ['Fluido de freio', 31000, now - 790 * DAY, 60, '', 'mec'],
+      ['Filtro de ar', 46000, now - 90 * DAY, 45, 'Tecfil', 'casa'],
+      ['Velas de ignição', 38000, null, null, 'NGK', 'casa'],
+      ['Correia dentada', 10000, now - 1300 * DAY, 480, '', 'mec']
+    ],
+    records: [], loggedIn: false, plan: null
+  };
+}
+
+class Component extends DCLogic {
+  state = this.load();
+  load() {
+    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return Object.assign(this.blank(), s, { sheet: null, detail: null, toast: null, login: null, cq: null }); } catch (e) {}
+    return this.blank();
+  }
+  blank() {
+    const onboarded = this.props.startOnboarded ?? false;
+    const base = onboarded ? demoState() : { vehicle: null, seed: [], records: [], loggedIn: false, plan: null };
+    return Object.assign(base, { v: 1, credits: 0, queries: [], cq: null, obStep: 'welcome', garage: [], past: [], adding: false, replacing: false, tab: 'painel', filter: 'todos', query: '', sheet: null, detail: null, reg: null, kmDraft: '', toast: null,
+      ob: { type: 'car', brand: '', model: '', year: '', km: '' } });
+  }
+  componentDidMount() {
+    this.onRs = () => this.setState({ vw: window.innerWidth }); window.addEventListener('resize', this.onRs);
+    this.bindPull();
+    this.kmt = setTimeout(() => this.countKm(), 250);
+    this.wait = setInterval(() => { if (window.QR_CATALOG) { clearInterval(this.wait); this.resolveSeed(); this.forceUpdate(); } }, 80);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onRs); clearInterval(this.wait); clearTimeout(this.tt); clearTimeout(this.rt); clearTimeout(this.prt); clearTimeout(this.kmt); cancelAnimationFrame(this.kraf); (this.offPull || (() => {}))(); }
+  countKm() {
+    cancelAnimationFrame(this.kraf);
+    if (!this.state.vehicle) return;
+    const to = this.estKm(), t0 = performance.now(), D = 1300;
+    const step = t => { const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 4); this.setState({ kmAnim: k < 1 ? Math.round(to * e) : null }); if (k < 1) this.kraf = requestAnimationFrame(step); };
+    this.setState({ kmAnim: 0 }); this.kraf = requestAnimationFrame(step);
+  }
+  bindPull() {
+    const y0 = e => (e.touches ? e.touches[0].clientY : e.clientY);
+    const top = () => (window.scrollY || document.documentElement.scrollTop || 0) <= 0;
+    const ok = () => { const st = this.state; return st.vehicle && !st.adding && st.tab === 'painel' && !st.sheet && !st.detail && !st.pullBusy; };
+    const down = e => { if (e.button > 0 || !ok() || !top()) return; this.ps = y0(e); this.pd = false; };
+    const move = e => {
+      if (this.ps == null) return;
+      const dy = y0(e) - this.ps;
+      if (dy <= 0) { if (this.pd) this.setState({ pull: 0 }); return; }
+      if (!this.pd && dy < 6) return;
+      this.pd = true; if (e.cancelable) e.preventDefault();
+      this.setState({ pull: Math.min(120, Math.round(dy * 0.5)), pullDrag: true });
+    };
+    const up = () => {
+      if (this.ps == null) return; this.ps = null;
+      if (!this.pd) return;
+      if ((this.state.pull || 0) >= 64) {
+        this.setState({ pull: 56, pullDrag: false, pullBusy: true });
+        this.prt = setTimeout(() => { this.setState({ pull: 0, pullBusy: false }); this.countKm(); }, 1100);
+      } else this.setState({ pull: 0, pullDrag: false });
+      const stopClick = ev => { ev.stopPropagation(); ev.preventDefault(); };
+      window.addEventListener('click', stopClick, { capture: true, once: true }); setTimeout(() => window.removeEventListener('click', stopClick, { capture: true }), 50);
+    };
+    const opt = { passive: false };
+    window.addEventListener('touchstart', down, opt); window.addEventListener('touchmove', move, opt); window.addEventListener('touchend', up);
+    window.addEventListener('mousedown', down); window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+    this.offPull = () => { window.removeEventListener('touchstart', down, opt); window.removeEventListener('touchmove', move, opt); window.removeEventListener('touchend', up); window.removeEventListener('mousedown', down); window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+  }
+  componentDidUpdate() {
+    if (window.QR_CATALOG && this.plan() !== 'free' && this.state.vehicle && !this.state.demoMoto && !(this.state.garage || []).length && !(this.state.seed || []).length) {
+      const m = makeDemoMoto();
+      this.setState({ demoMoto: true, garage: [{ vehicle: m.vehicle, records: this.resolveRecs(m.seed, m.vehicle) }] });
+      return;
+    }
+    const { vehicle, records, loggedIn, plan, tab, ob, user, garage, demoMoto, activePos, past, credits, queries } = this.state;
+    try { localStorage.setItem(KEY, JSON.stringify({ v: 1, vehicle, records, loggedIn, plan, tab, ob, user, garage, demoMoto, activePos, past, credits, queries, seed: [] })); } catch (e) {}
+  }
+  resolveSeed() {
+    if (!this.state.seed || !this.state.seed.length) return;
+    this.setState({ records: this.resolveRecs(this.state.seed, this.state.vehicle), seed: [] });
+  }
+  resolveRecs(seed, vehicle) {
+    const all = this.catalogItems(vehicle);
+    return seed.map(s => {
+      const it = all.find(i => norm(i.name) === norm(s[0])) || all.find(i => norm(i.name).startsWith(norm(s[0]).split(' ').slice(0, 2).join(' ')));
+      return it ? { id: 'r' + Math.random().toString(36).slice(2, 8), itemId: it.id, km: s[1], date: s[2] ? iso(s[2]) : null, cost: s[3], brand: s[4], where: s[5] } : null;
+    }).filter(Boolean);
+  }
+  plan() { return this.state.plan || this.props.startPlan || 'free'; }
+  catalogItems(vehicle) {
+    const C = window.QR_CATALOG; if (!C) return [];
+    const v = vehicle || this.state.vehicle; const type = v ? v.type : 'car';
+    const fab = v && window.QR_PLANS ? window.QR_PLANS.find(v.brand, v.model) : null;
+    const fabMap = {};
+    if (fab) fab.categories.forEach(c => c.items.forEach(pi => {
+      const r = (pi.rules || []).find(r => (r.acoes || []).indexOf('trocar') >= 0);
+      if (r) fabMap[norm(pi.name || pi.nome)] = { km: r.intervaloKm, months: r.intervaloMeses };
+    }));
+    const out = [];
+    C.categories.forEach(c => c.items.forEach(it => {
+      if (it.types.indexOf(type) < 0) return;
+      const f = fabMap[norm(it.name)];
+      out.push(Object.assign({}, it, { catName: c.name, icon: c.icon, km: f ? f.km : it.km, months: f ? f.months : it.months, source: f ? 'Plano ' + fab.brand : 'Média QueroRevisar' }));
+    }));
+    return out;
+  }
+  estKm() {
+    const v = this.state.vehicle; if (!v) return 0;
+    return Math.round(v.km + v.kmPerMonth * Math.max(0, (Date.now() - v.kmAt) / MONTH));
+  }
+  lastRecord(itemId) {
+    return this.state.records.filter(r => r.itemId === itemId).sort((a, b) => b.km - a.km)[0] || null;
+  }
+  status(it, est) {
+    const r = this.lastRecord(it.id);
+    if (!r) return { key: 'none', r: null };
+    const used = est - r.km;
+    const pKm = it.km ? used / it.km : 0;
+    const monthsUsed = r.date ? (Date.now() - new Date(r.date).getTime()) / MONTH : null;
+    const pT = r.date && it.months ? monthsUsed / it.months : 0;
+    const pct = Math.max(pKm, pT);
+    const key = pct >= 1 ? 'over' : pct >= 0.8 ? 'warn' : 'ok';
+    const kmLeft = it.km ? it.km - used : null;
+    const monthsLeft = r.date && it.months ? it.months - monthsUsed : null;
+    const byTime = pT > pKm;
+    return { key, r, pct, kmLeft, monthsLeft, monthsUsed, byTime, dueKm: it.km ? r.km + it.km : null };
+  }
+  timeText(kmLeft) {
+    const v = this.state.vehicle; const w = kmLeft / (v.kmPerMonth / 4.345);
+    if (w < 1.5) return 'esta semana';
+    if (w < 8) return 'cerca de ' + Math.round(w) + ' semanas';
+    return 'cerca de ' + Math.round(w / 4.345) + ' meses';
+  }
+  line(it, s) {
+    if (s.key === 'none') return 'A cada ' + this.intervalText(it);
+    if (s.key === 'over') {
+      if (s.byTime) return 'Trocado há ' + Math.round(s.monthsUsed) + ' meses · limite ' + it.months;
+      return 'Passou ' + fmt(-s.kmLeft) + ' km do limite';
+    }
+    if (s.byTime && s.monthsLeft != null) return 'Vence em ~' + Math.max(1, Math.round(s.monthsLeft)) + ' meses pelo tempo';
+    return 'Faltam ~' + fmt(s.kmLeft) + ' km · ' + this.timeText(s.kmLeft);
+  }
+  intervalText(it) {
+    const a = it.km ? fmt(it.km) + ' km' : null; const b = it.months ? it.months + ' meses' : null;
+    return [a, b].filter(Boolean).join(' ou ');
+  }
+  toast(msg, kind) { clearTimeout(this.tt); this.setState({ toast: msg, toastKind: kind || 'ok' }); this.tt = setTimeout(() => this.setState({ toast: null }), kind === 'err' ? 3200 : 2200); }
+  openRegister(itemId) {
+    const est = this.estKm();
+    this.setState({ sheet: 'register', reg: { itemId: itemId || null, q: '', km: '', date: '', cost: '', brand: '', where: 'casa' } });
+  }
+  dropActive(keepPast) {
+    const st = this.state; const g = (st.garage || []).slice();
+    const past = keepPast ? [{ vehicle: st.vehicle, records: st.records, soldAt: Date.now() }].concat(st.past || []) : (st.past || []);
+    const reset = { past, sheet: null, tab: 'painel', filter: 'todos', query: '', openCats: {}, detail: null };
+    if (g.length) this.setState(Object.assign(reset, { vehicle: g[0].vehicle, records: g[0].records, garage: g.slice(1), activePos: 0 }));
+    else this.setState(Object.assign(reset, { vehicle: null, records: [], garage: [], activePos: 0, obStep: 'form' }));
+  }
+  fullList() {
+    const st = this.state; const g = (st.garage || []).slice();
+    const pos = Math.min(st.activePos || 0, g.length);
+    g.splice(pos, 0, { vehicle: st.vehicle, records: st.records, active: true });
+    return g;
+  }
+  gIdxToFull(gi) { const pos = this.state.activePos || 0; return gi >= pos ? gi + 1 : gi; }
+  switchTo(fullIdx) {
+    const full = this.fullList(); const target = full[fullIdx];
+    if (!target || target.active) return;
+    const rest = full.filter((x, i) => i !== fullIdx).map(x => ({ vehicle: x.vehicle, records: x.records }));
+    this.setState({ vehicle: target.vehicle, records: target.records, garage: rest, activePos: fullIdx, detail: null, filter: 'todos', query: '', openCats: {} });
+  }
+  goTab(tab) {
+    if (tab === this.state.tab) return;
+    if (!this.props.slowNetwork) return this.setState({ tab });
+    clearTimeout(this.rt);
+    this.setState({ tab, routeLoading: true });
+    this.rt = setTimeout(() => this.setState({ routeLoading: false }), this.props.slowDelay ?? 1800);
+  }
+  setLogin(p) { this.setState(s => ({ login: Object.assign({ mode: 'signin', name: '', email: '', pw: '', showPw: false }, s.login, p) })); }
+  finishLogin(name, email, mode) {
+    const n = name.charAt(0).toUpperCase() + name.slice(1);
+    const restore = !this.state.vehicle && mode !== 'signin' ? { obStep: 'form' } : mode === 'signin' && !this.state.vehicle ? (() => { const d = demoState(); return { vehicle: d.vehicle, seed: d.seed, tab: 'painel' }; })() : {};
+    this.setState(Object.assign({ loggedIn: true, user: { name: n, email }, login: null, sheet: null }, restore), () => { if (restore.seed) this.resolveSeed(); });
+    this.toast(mode === 'signin' ? 'Bem-vindo de volta, ' + n : this.state.vehicle ? 'Conta criada · registros salvos' : 'Conta criada · agora cadastre seu veículo');
+  }
+  setReg(p) { this.setState(s => ({ reg: Object.assign({}, s.reg, p) })); }
+
+  layout() {
+    const vw = this.state.vw || window.innerWidth;
+    const m = vw < 768, d = vw >= 1100;
+    return { narrow: m, wide: !m, sideNav: !m, tabNav: m, sideFull: d, sideRail: !m && !d,
+      shellMax: m ? '480px' : '100%', appDir: m ? 'column' : 'row', sideW: d ? '248px' : '88px', sidePad: d ? '24px 16px' : '22px 10px',
+      mainMax: m ? '100%' : d ? '1200px' : '780px',
+      colDisplay: d ? 'flex' : 'contents', pnDisplay: d ? 'grid' : 'flex', vcDisplay: d ? 'grid' : 'block', vcPad: d ? '36px 32px' : '18px', vcMinH: d ? '200px' : '0', vcMt: d ? '0' : '18px', vcMt2: d ? '0' : '16px', vcSidePad: d ? '0 0 0 24px' : '0', vcBl: d ? '1px solid #ececec' : 'none', fipePad: d ? '0 0 0 24px' : '14px 0 0', fipeBt: d ? 'none' : '1px solid #ececec', pnAlign: d ? 'start' : 'stretch', pnPad: m ? '0 22px 24px' : d ? '28px 36px 40px' : '24px 28px 32px',
+      bandMargin: m ? '0 -22px' : '0', bandRadius: m ? '0 0 0 40px' : '24px 24px 24px 40px', bandPad: m ? '4px 22px 84px' : '20px 22px 84px',
+      ovJustify: m ? 'center' : 'flex-end', ovBg: m ? '#ebeceb' : 'rgba(0,0,0,.35)', ovShadow: m ? 'none' : '0 0 40px rgba(0,0,0,.14)',
+      shJustify: m ? 'center' : 'flex-end', shAlign: m ? 'flex-end' : 'stretch', shMaxH: m ? '92vh' : '100vh', shH: m ? 'auto' : '100vh', shRadius: m ? '20px 20px 0 0' : '0',
+      itCols: m ? 'minmax(0, 1fr) auto' : 'minmax(0, 1.1fr) minmax(0, 1.5fr) 120px 104px',
+      hCols: 'minmax(96px, .8fr) minmax(0, 1.6fr) minmax(84px, .7fr) minmax(0, 1fr) minmax(84px, .7fr) minmax(84px, .7fr)' };
+  }
+  renderVals() {
+    const st = this.state;
+    const plan = this.plan();
+    const showAds = (this.props.showAds ?? true) && plan === 'free';
+    const v = st.vehicle;
+    const ob = st.ob;
+    const obBrands = Object.keys(BRANDS[ob.type]).sort();
+    const obModels = BRANDS[ob.type][ob.brand] || [];
+    const obKm = num(ob.km), obYear = num(ob.year);
+    const obInvalid = !(ob.brand && ob.model && obKm != null && obYear && obYear > 1960 && obYear < 2030);
+    const L = Object.assign({ mode: 'signin', name: '', email: '', pw: '', showPw: false }, st.login || {});
+    const common = {
+      ob, obBrands, obModels, obInvalid, modelPlaceholder: ob.brand ? 'Selecione' : 'Escolha a marca', obOpacity: obInvalid ? 0.4 : 1,
+      obCarBorder: ob.type === 'car' ? '2px solid #0e5a66' : '1px solid #dddddd',
+      obMotoBorder: ob.type === 'moto' ? '2px solid #0e5a66' : '1px solid #dddddd',
+      obHasPlan: !!(window.QR_PLANS && window.QR_PLANS.find(ob.brand, ob.model)),
+      setTypeCar: () => this.setState({ ob: { type: 'car', brand: '', model: '', year: ob.year, km: ob.km } }),
+      setTypeMoto: () => this.setState({ ob: { type: 'moto', brand: '', model: '', year: ob.year, km: ob.km } }),
+      onObBrandVal: b => this.setState(s2 => ({ ob: Object.assign({}, s2.ob, { brand: b, model: '' }) })),
+      onObModelVal: m => this.setState(s2 => ({ ob: Object.assign({}, s2.ob, { model: m }) })),
+      onObYearVal: y => this.setState(s2 => ({ ob: Object.assign({}, s2.ob, { year: y }) })),
+      obNoBrand: !ob.brand,
+      obYears: Array.from({ length: 37 }, (_, i) => String(new Date().getFullYear() + 1 - i)),
+      onObYear: e => this.setState({ ob: Object.assign({}, ob, { year: e.target.value.replace(/\D/g, '').slice(0, 4) }) }),
+      onObKm: e => { const n = num(e.target.value); this.setState({ ob: Object.assign({}, ob, { km: n == null ? '' : fmt(n) }) }); },
+      finishOnboarding: () => {
+        if (!ob.brand || !ob.model) return this.toast('Escolha a marca e o modelo', 'err');
+        if (obKm == null) return this.toast('Informe o km atual do painel', 'err');
+        if (obInvalid) return this.toast('Ano inválido. Use 4 dígitos, ex.: 2019', 'err');
+        const nv = { type: ob.type, brand: ob.brand, model: ob.model, year: String(obYear), km: obKm, kmAt: Date.now(), kmPerMonth: ob.type === 'moto' ? 900 : 1100 };
+        const rep = !!(st.replacing && v);
+        const full = rep ? (st.garage || []) : st.adding && v ? this.fullList().map(x => ({ vehicle: x.vehicle, records: x.records })) : (st.garage || []);
+        this.setState({ vehicle: nv, records: [], garage: full, activePos: full.length, adding: false, replacing: false, past: rep ? [{ vehicle: v, records: st.records, soldAt: Date.now() }].concat(st.past || []) : (st.past || []), tab: 'painel', ob: { type: 'car', brand: '', model: '', year: '', km: '' } });
+        this.toast(rep ? 'Veículo trocado · histórico do ' + v.model + ' guardado' : 'Veículo cadastrado');
+      },
+      showOnboarding: (!v && st.obStep === 'form') || !!st.adding, showApp: !!v && !st.adding,
+      startForm: () => this.setState({ obStep: 'form' }), isReplacing: !!(st.replacing && v), replacingName: v ? v.model : '',
+      backWelcome: () => st.adding ? this.setState({ adding: false, replacing: false }) : this.setState({ obStep: 'welcome', login: null }),
+      hasToast: !!st.toast, toast: st.toast,
+      toastBg: st.toastKind === 'err' ? '#c13515' : '#1f6b45', toastIcon: st.toastKind === 'err' ? '!' : '✓',
+      stop: e => e.stopPropagation(),
+      closeSheet: () => this.setState({ sheet: null }),
+      openLogin: () => this.setState({ sheet: null, login: { mode: 'signup' } }),
+      openSignin: () => this.setState({ sheet: null, login: { mode: 'signin' } }),
+      showLogin: !!st.login || (!v && st.obStep !== 'form'), login: L,
+      canCloseLogin: !!v,
+      isSignin: L.mode === 'signin',
+      authSub: L.mode === 'signin' ? 'Entre para ver seus veículos e alertas' : 'Crie sua conta e nunca mais esqueça uma troca',
+      authCta: L.mode === 'signin' ? 'Entrar' : 'Criar conta',
+      authSwitchQ: L.mode === 'signin' ? 'Não tem conta?' : 'Já tem conta?', authSwitchA: L.mode === 'signin' ? 'Cadastre-se' : 'Entrar',
+      toggleAuthMode: () => this.setLogin({ mode: L.mode === 'signin' ? 'signup' : 'signin' }),
+      pwType: L.showPw ? 'text' : 'password', pwToggleLabel: L.showPw ? 'Ocultar' : 'Mostrar', pwAuto: L.mode === 'signin' ? 'current-password' : 'new-password',
+      togglePw: () => this.setLogin({ showPw: !L.showPw }),
+      onLoginPw: e => this.setLogin({ pw: e.target.value }),
+      forgotPw: () => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(L.email || '') ? this.toast('Enviamos um link para ' + L.email) : this.toast('Digite seu e-mail para recuperar a senha', 'err'),
+      submitAuth: () => {
+        if (L.mode === 'signup' && !(L.name || '').trim()) return this.toast('Informe seu nome', 'err');
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(L.email || '')) return this.toast('E-mail inválido. Confira e tente de novo', 'err');
+        if ((L.pw || '').length < 6) return this.toast('A senha precisa ter pelo menos 6 caracteres', 'err');
+        this.finishLogin(L.mode === 'signup' ? L.name.trim() : L.email.split('@')[0], L.email, L.mode);
+      },
+      skipAuth: () => v ? this.setState({ login: null }) : this.setState({ login: null, obStep: 'form' }),
+      loginStart: !!st.login && st.login.step === 'start', loginCode: !!st.login && st.login.step === 'code',
+      isSignup: !!st.login && st.login.mode === 'signup',
+      loginTitle: st.login && st.login.mode === 'signin' ? 'Bem-vindo de volta' : 'Salve seus registros',
+      loginSub: st.login && st.login.mode === 'signin' ? 'Entre para ver seus veículos e o histórico de trocas.' : (v ? 'Seus registros deste aparelho vão junto para a conta, e você passa a receber os alertas.' : 'Crie sua conta para receber os alertas e não perder o histórico.'),
+      signupBg: st.login && st.login.mode === 'signup' ? '#fff' : 'transparent', signinBg: st.login && st.login.mode === 'signin' ? '#fff' : 'transparent',
+      signupShadow: st.login && st.login.mode === 'signup' ? 'rgba(0,0,0,.08) 0 1px 4px' : 'none', signinShadow: st.login && st.login.mode === 'signin' ? 'rgba(0,0,0,.08) 0 1px 4px' : 'none',
+      showSkip: !!v,
+      verifyLabel: st.login && st.login.mode === 'signin' ? 'Entrar' : 'Criar conta',
+      setModeSignup: () => this.setLogin({ mode: 'signup' }), setModeSignin: () => this.setLogin({ mode: 'signin' }),
+      onLoginName: e => this.setLogin({ name: e.target.value }), onLoginEmail: e => this.setLogin({ email: e.target.value.trim() }),
+      onLoginCode: e => this.setLogin({ code: e.target.value.replace(/\D/g, '').slice(0, 6) }),
+      loginBack: () => this.setState({ login: null }),
+      changeEmail: () => this.setLogin({ step: 'start', code: '' }),
+      sendCode: () => {
+        const L = st.login;
+        if (L.mode === 'signup' && !L.name.trim()) return this.toast('Informe seu nome', 'err');
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(L.email)) return this.toast('E-mail inválido. Confira e tente de novo', 'err');
+        this.setLogin({ step: 'code', code: '' }); this.toast('Código enviado para ' + L.email);
+      },
+      resendCode: () => this.toast('Código reenviado'),
+      verifyCode: () => {
+        const L = st.login;
+        if (L.code.length !== 6) return this.toast('O código tem 6 dígitos', 'err');
+        this.finishLogin(L.mode === 'signup' ? L.name.trim() : (L.email.split('@')[0]), L.email, L.mode);
+      },
+      socialGoogle: () => this.finishLogin('Rafael', 'rafael@gmail.com', L.mode),
+      socialApple: () => this.finishLogin('Rafael', 'rafael@icloud.com', L.mode),
+      logout: () => { const email = st.user ? st.user.email : ''; this.setState({ loggedIn: false, user: null, vehicle: null, records: [], plan: null, garage: [], activePos: 0, demoMoto: false, sheet: null, detail: null, tab: 'painel', obStep: 'welcome', login: { mode: 'signin', email } }); this.toast('Você saiu da conta'); },
+      userName: st.user ? st.user.name : 'Rafael', userEmail: st.user ? st.user.email : 'rafael@email.com',
+      doLogin: () => this.finishLogin('Rafael', 'rafael@email.com', 'signup'),
+      ...this.layout(),
+      sideUser: st.loggedIn && st.user ? st.user.name : "Conta",
+      showSheet: !!st.sheet,
+      sheetRegister: st.sheet === 'register', sheetKm: st.sheet === 'km', sheetParts: st.sheet === 'parts', sheetLogin: st.sheet === 'login', sheetPaywall: st.sheet === 'paywall', sheetLogout: st.sheet === 'logout',
+      askLogout: () => this.setState({ sheet: 'logout' }),
+      showDetail: false, d: {}, reg: {}
+    };
+    if (!v) return common;
+
+    const sk = !!this.props.skeleton || !!st.routeLoading;
+    const est = this.estKm();
+    const items = this.catalogItems();
+    const rows = items.map(it => {
+      const s = this.status(it, est); const S = STATUS[s.key];
+      const pct = s.pct || 0;
+      return { it, s, id: it.id, name: it.name, line: this.line(it, s), fg: S.fg, bg: S.bg, bar: S.bar, key: s.key,
+        badge: s.key === 'warn' ? Math.round(pct * 100) + '%' : S.label, barW: Math.min(100, Math.round(pct * 100)) + '%',
+        open: () => this.setState({ detail: it.id }), register: () => this.openRegister(it.id) };
+    });
+    const counts = { over: rows.filter(r => r.key === 'over').length, warn: rows.filter(r => r.key === 'warn').length, ok: rows.filter(r => r.key === 'ok').length };
+    const attention = rows.filter(r => r.key === 'over' || r.key === 'warn').sort((a, b) => (a.key === b.key ? b.s.pct - a.s.pct : a.key === 'over' ? -1 : 1));
+    const unregisteredKey = rows.filter(r => r.key === 'none' && KEY_ITEMS.indexOf(r.name) >= 0).slice(0, 6);
+
+    const q = norm(st.query);
+    const fl = st.filter;
+    const passes = r => (!q || norm(r.name).indexOf(q) >= 0) && (fl === 'todos' || (fl === 'atencao' && (r.key === 'warn' || r.key === 'over')) || r.key === fl);
+    const gmap = {};
+    rows.filter(passes).forEach(r => { const k = r.it.catName; (gmap[k] = gmap[k] || { name: k, icon: r.it.icon, items: [] }).items.push(r); });
+    const autoOpen = !!q || fl !== 'todos';
+    const openCats = st.openCats || {};
+    const groups = Object.values(gmap).map(g => {
+      const over = g.items.filter(r => r.key === 'over').length, warn = g.items.filter(r => r.key === 'warn').length;
+      const parts = [g.items.length + (g.items.length === 1 ? ' item' : ' itens')];
+      if (over) parts.push(over + ' vencido' + (over > 1 ? 's' : ''));
+      if (warn) parts.push(warn + ' em atenção');
+      const open = openCats[g.name] ?? autoOpen;
+      return Object.assign(g, { count: g.items.length, open, chev: open ? 'rotate(180deg)' : 'none',
+        summary: parts.join(' · '), sumColor: over ? '#c13515' : warn ? '#9a5b00' : '#6a6a6a',
+        toggle: () => this.setState(s2 => ({ openCats: Object.assign({}, s2.openCats, { [g.name]: !open }) })) });
+    });
+    const filters = [['todos', 'Todos'], ['atencao', 'Precisa de atenção'], ['ok', 'Em dia'], ['none', 'Sem registro']].map(f => ({
+      label: f[1], border: fl === f[0] ? '2px solid #0e5a66' : '1px solid #dddddd', weight: fl === f[0] ? 600 : 500, pick: () => this.setState({ filter: f[0], openCats: {} })
+    }));
+
+    const byId = {}; items.forEach(i => byId[i.id] = i);
+    const cutoff = Date.now() - 365 * DAY;
+    const garage = st.garage || [];
+    const histAll = st.histVeh === 'all' && garage.length > 0;
+    const vIcon = vv => vv.type === 'moto' ? 'brand/icone-moto.png' : 'brand/icone-carro.png';
+    const srcs = [{ vehicle: v, records: st.records, idx: null, names: byId }].concat(histAll ? garage.map((g, gi) => {
+      const m = {}; this.catalogItems(g.vehicle).forEach(i => m[i.id] = i); return { vehicle: g.vehicle, records: g.records, idx: gi, names: m };
+    }) : []);
+    let pool = [];
+    srcs.forEach(src => src.records.forEach(r => pool.push({ r, src, it: src.names[r.itemId] })));
+    const allRecs = pool;
+    if (plan === 'free') pool = pool.filter(p => !p.r.date || new Date(p.r.date).getTime() >= cutoff);
+    const hq = norm(st.histQuery);
+    const hf = st.histFilter || 'todos';
+    const visible = pool.filter(p => (!hq || norm((p.it ? p.it.name : '') + ' ' + (p.r.brand || '') + ' ' + (p.it ? p.it.catName : '')).indexOf(hq) >= 0)
+      && (hf === 'todos' || (hf === 'casa' && p.r.where !== 'mec') || (hf === 'mec' && p.r.where === 'mec') || (hf === 'custo' && p.r.cost)))
+      .sort((a, b) => (b.r.date || '').localeCompare(a.r.date || '') || b.r.km - a.r.km);
+    const history = [];
+    visible.forEach((p, i) => {
+      const r = p.r, it = p.it;
+      history.push({ isRec: true, isAd: false, showIcon: histAll, icon: vIcon(p.src.vehicle), isMoto: p.src.vehicle.type === 'moto', isCar: p.src.vehicle.type !== 'moto', vName: p.src.vehicle.model,
+        name: it ? it.name : 'Item', km: fmt(r.km) + ' km', cost: r.cost ? money(r.cost) : '', hDate: r.date ? new Date(r.date + 'T12:00').toLocaleDateString('pt-BR') : '—', hWhere: r.where === 'mec' ? 'Mecânico' : 'Em casa', hBrand: r.brand || '—', hCost: r.cost ? money(r.cost) : '—',
+        line: [r.date ? new Date(r.date + 'T12:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Data não informada', r.where === 'mec' ? 'No mecânico' : 'Em casa', r.brand].filter(Boolean).join(' · '),
+        open: () => p.src.idx == null ? this.setState({ detail: r.itemId }) : (this.switchTo(this.gIdxToFull(p.src.idx)), this.setState({ detail: r.itemId })) });
+      if (i === 1 && showAds) history.push({ isAd: true, isRec: false, title: 'Óleo 5W30 sintético 1 L', sub: 'Compatível com ' + v.model + ' · Loja parceira', price: 'R$ 42,90' });
+    });
+
+    const tabs = [['painel', 'Painel'], ['itens', 'Itens'], ['historico', 'Histórico'], ['conta', 'Conta']].map(t => ({
+      label: t[1], icon: TAB_ICONS[t[0]], color: st.tab === t[0] ? '#0e5a66' : '#929292', bg: st.tab === t[0] ? '#e7f0f1' : 'transparent', fg: st.tab === t[0] ? '#0e5a66' : '#222', go: () => this.goTab(t[0])
+    }));
+
+    let d = {};
+    if (st.detail && byId[st.detail]) {
+      const it = byId[st.detail]; const s = this.status(it, est); const S = STATUS[s.key];
+      const r = s.r;
+      d = { name: it.name, desc: it.desc, fg: S.fg, bg: S.key === 'none' ? '#f4f4f4' : S.bg, statusLabel: S.label,
+        hasRecord: !!r, noRecord: !r, interval: this.intervalText(it), source: it.source,
+        showParts: !it.insp && (s.key === 'warn' || s.key === 'over' || s.key === 'none'),
+        register: () => this.setState({ detail: null }, () => this.openRegister(it.id)) };
+      if (r) {
+        if (s.key === 'over' && s.byTime) {
+          d.big = Math.round(s.monthsUsed) + ' meses';
+          d.bigSub = 'limite de ' + it.months + ' meses';
+        } else {
+          d.big = s.kmLeft >= 0 ? '~' + fmt(s.kmLeft) + ' km' : fmt(-s.kmLeft) + ' km acima';
+          d.bigSub = s.key === 'over' ? 'vencido' : s.byTime && s.monthsLeft != null ? 'ou ~' + Math.max(1, Math.round(s.monthsLeft)) + ' meses' : this.timeText(s.kmLeft);
+        }
+        d.barW = Math.min(100, Math.round(s.pct * 100)) + '%'; d.bar = S.bar;
+        d.lastKm = fmt(r.km); d.dueKm = s.dueKm ? fmt(s.dueKm) : '—';
+        d.lastLine = [r.where === 'mec' ? 'No mecânico' : 'Em casa', r.cost ? money(r.cost) : null].filter(Boolean).join(' · ');
+      }
+    }
+
+    let reg = {};
+    if (st.reg) {
+      const R = st.reg; const it = R.itemId ? byId[R.itemId] : null;
+      const km = num(R.km);
+      const qq = norm(R.q);
+      reg = Object.assign({}, R, {
+        hasItem: !!it, noItem: !it, itemName: it ? it.name : '', itemSub: it ? it.catName + ' · a cada ' + this.intervalText(it) : '',
+        matches: it ? [] : items.filter(i => !qq ? KEY_ITEMS.indexOf(i.name) >= 0 : norm(i.name).indexOf(qq) >= 0).slice(0, 6).map(i => ({ name: i.name, cat: i.catName, pick: () => this.setReg({ itemId: i.id }) })),
+        kmHint: km != null && km > est ? 'Maior que a km estimada. Vamos atualizar a km atual para ' + fmt(km) + '.' : 'O km do painel no dia da troca, não o de hoje.',
+        invalid: !it || km == null, opacity: !it || km == null ? 0.4 : 1,
+        casaBorder: R.where === 'casa' ? '1px solid #0e5a66' : '1px solid #dddddd', mecBorder: R.where === 'mec' ? '1px solid #0e5a66' : '1px solid #dddddd'
+      });
+    }
+
+    const partsItem = st.detail && byId[st.detail] ? byId[st.detail].name : '';
+    return Object.assign(common, {
+      vehicle: v, vehicleTypeLabel: v.type === 'moto' ? 'Moto' : 'Carro', vehicleIcon: v.type === 'moto' ? 'brand/icone-moto.png' : 'brand/icone-carro.png', vehIsMoto: v.type === 'moto', vehIsCar: v.type !== 'moto',
+      estKmFmt: fmt(est), kmPerMonthFmt: fmt(v.kmPerMonth),
+      kmLabel: Date.now() - v.kmAt > 3 * DAY ? 'Km estimada' : 'Km atual',
+      avatarLetter: st.loggedIn ? (st.user ? st.user.name.charAt(0).toUpperCase() : 'R') : '?',
+      counts, attention, hasAttention: attention.length > 0, noAttention: attention.length === 0,
+      unregisteredKey, hasUnregistered: unregisteredKey.length > 0,
+      showLoginNudge: !st.loggedIn && st.records.length > 0,
+      isPainel: !sk && st.tab === 'painel', isItens: !sk && st.tab === 'itens', isHistorico: !sk && st.tab === 'historico', isConta: !sk && st.tab === 'conta',
+      routeBar: st.routeLoading ? React.createElement('div', { role: 'progressbar', 'aria-label': 'Carregando', style: { position: 'sticky', top: 0, zIndex: 15, height: 3, overflow: 'hidden', background: '#e7f0f1' } },
+        React.createElement('div', { style: { width: '50%', height: '100%', background: '#0e5a66', borderRadius: 3, animation: 'qrbar 1.1s ease-in-out infinite' } })) : null,
+      skPainel: sk && st.tab === 'painel', skItens: sk && st.tab === 'itens', skHist: sk && st.tab === 'historico', skConta: sk && st.tab === 'conta',
+      goConta: () => this.goTab('conta'),
+      goItensVencido: () => (this.setState({ filter: 'atencao', query: '', openCats: {} }), this.goTab('itens')),
+      goItensAtencao: () => (this.setState({ filter: 'atencao', query: '', openCats: {} }), this.goTab('itens')),
+      goItensOk: () => (this.setState({ filter: 'ok', query: '', openCats: {} }), this.goTab('itens')),
+      openKm: () => this.setState({ sheet: 'km', kmDraft: '' }),
+      openRegisterBlank: () => this.openRegister(null),
+      query: st.query, onQuery: e => this.setState({ query: e.target.value, openCats: {} }), filters, groups, noGroups: groups.length === 0,
+      history, noHistory: history.length === 0, histCount: visible.length,
+      noHistoryText: allRecs.length ? 'Nenhuma troca encontrada com esses filtros.' : 'Nenhuma troca registrada ainda.',
+      histTotal: money(visible.reduce((a, p) => a + (p.r.cost || 0), 0)),
+      histQuery: st.histQuery || '', onHistQuery: e => this.setState({ histQuery: e.target.value }),
+      histFilters: [['todos', 'Todas'], ['casa', 'Em casa'], ['mec', 'No mecânico'], ['custo', 'Com custo']].map(f => ({
+        label: f[1], border: hf === f[0] ? '2px solid #0e5a66' : '1px solid #dddddd', weight: hf === f[0] ? 600 : 500, pick: () => this.setState({ histFilter: f[0] }) })),
+      histDDOpen: !!st.histDD, histDDChev: st.histDD ? 'rotate(180deg)' : 'none',
+      toggleHistDD: () => this.setState({ histDD: !st.histDD }),
+      histSel: histAll ? { isAll: true, hasIcon: false, name: 'Todos os veículos' } : { isAll: false, hasIcon: true, icon: vIcon(v), isMoto: v.type === 'moto', isCar: v.type !== 'moto', name: v.brand + ' ' + v.model },
+      histOptions: (garage.length ? [{ all: true }] : []).concat(this.fullList().map((g, fi) => ({ vehicle: g.vehicle, fi, active: !!g.active }))).map(o => o.all ? {
+          isAll: true, hasIcon: false, name: 'Todos os veículos', sub: (garage.length + 1) + ' veículos', selected: histAll, bg: histAll ? '#f7f7f7' : 'transparent',
+          pick: () => this.setState({ histVeh: 'all', histDD: false }) } : {
+          isAll: false, hasIcon: true, icon: vIcon(o.vehicle), isMoto: o.vehicle.type === 'moto', isCar: o.vehicle.type !== 'moto', name: o.vehicle.brand + ' ' + o.vehicle.model, sub: o.vehicle.year + ' · ' + (o.vehicle.type === 'moto' ? 'Moto' : 'Carro'),
+          selected: !histAll && o.active, bg: !histAll && o.active ? '#f7f7f7' : 'transparent',
+          pick: () => { this.setState({ histVeh: 'active', histDD: false }); if (!o.active) this.switchTo(o.fi); } }),
+      addVehicleFromDD: () => { this.setState({ histDD: false }); plan === 'free' && garage.length === 0 ? this.setState({ sheet: 'paywall', paywallWhy: 'veiculo' }) : this.setState({ adding: true, ob: { type: 'car', brand: '', model: '', year: '', km: '' } }); },
+      showSwitcher: true,
+      adItens: showAds && groups.length > 0, adHist: showAds && history.length > 0, adConta: showAds,
+      removeAds: () => this.setState({ sheet: 'paywall', paywallWhy: 'ads' }),
+      paywallTitle: st.paywallWhy === 'ads' ? 'Use sem anúncios' : 'Mais de um veículo',
+      histLocked: plan === 'free' && pool.length < allRecs.length,
+      tabs, loggedIn: st.loggedIn, loggedOut: !st.loggedIn,
+      planLabel: plan === 'free' ? 'Grátis' : 'Premium', isFree: plan === 'free', isPremium: plan !== 'free',
+      freeBorder: plan === 'free' ? '2px solid #0e5a66' : '1px solid #dddddd', premiumBorder: plan !== 'free' ? '2px solid #0e5a66' : '1px solid #dddddd',
+      subscribe: () => { this.setState({ plan: 'premium', sheet: null, credits: (st.credits || 0) + 2 }); this.toast('Premium ativado · +2 créditos de consulta'); },
+      unsubscribe: () => this.setState({ plan: 'free' }),
+      addVehicle: () => plan === 'free' && (st.garage || []).length === 0 ? this.setState({ sheet: 'paywall', paywallWhy: 'veiculo' }) : this.setState({ adding: true, ob: { type: 'car', brand: '', model: '', year: '', km: '' } }),
+      hasGarage: (st.garage || []).length > 0,
+      garageList: this.fullList().map((g, fi) => ({
+        name: g.vehicle.model, isMoto: g.vehicle.type === 'moto', isCar: g.vehicle.type !== 'moto', sub: g.vehicle.brand + ' · ' + g.vehicle.year, icon: g.vehicle.type === 'moto' ? 'brand/icone-moto.png' : 'brand/icone-carro.png',
+        border: g.active ? '2px solid #0e5a66' : '1px solid #dddddd', active: !!g.active, inactive: !g.active,
+        pick: () => g.active ? null : this.switchTo(fi),
+        manage: () => { if (!g.active) this.switchTo(fi); this.setState({ sheet: 'vehicle' }); }
+      })),
+      kmShown: st.kmAnim != null ? fmt(st.kmAnim) : fmt(est),
+      pullH: (st.pull || 0) + 'px', pullHidden: !(st.pull > 0), pullTrans: st.pullDrag ? 'none' : 'height .32s cubic-bezier(.2,.8,.2,1)',
+      pullSpinner: (() => {
+        const p = Math.min(1, (st.pull || 0) / 64), busy = !!st.pullBusy, C = 2 * Math.PI * 10;
+        return React.createElement('div', { style: { width: 34, height: 34, borderRadius: '50%', background: 'rgba(255,255,255,.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: busy ? 1 : 0.35 + p * 0.65, transform: busy ? 'none' : 'scale(' + (0.6 + p * 0.4) + ') rotate(' + Math.round((st.pull || 0) * 4) + 'deg)', transition: 'opacity .15s' } },
+          React.createElement('svg', { width: 24, height: 24, viewBox: '0 0 24 24', style: { animation: busy ? 'qrspin .8s linear infinite' : 'none' } },
+            React.createElement('circle', { cx: 12, cy: 12, r: 10, fill: 'none', stroke: 'rgba(255,255,255,.25)', strokeWidth: 2.5 }),
+            React.createElement('circle', { cx: 12, cy: 12, r: 10, fill: 'none', stroke: '#fff', strokeWidth: 2.5, strokeLinecap: 'round', strokeDasharray: C, strokeDashoffset: busy ? C * 0.72 : C * (1 - p * 0.8), transform: 'rotate(-90 12 12)' })));
+      })(),
+      ...(() => {
+        const credits = st.credits || 0, cq = st.cq;
+        const myPlate = v.plate || 'QRV2E19';
+        const openCq = (mode) => this.setState({ cq: { view: 'form', mode, plate: mode === 'mine' ? myPlate : '', product: mode === 'mine' ? 'debitos' : 'laudo' } });
+        const setCq = p => this.setState(s => ({ cq: Object.assign({}, s.cq, p) }));
+        const prod = cq ? (CQ_PRODUCTS.find(p => p.id === cq.product) || CQ_PRODUCTS[0]) : CQ_PRODUCTS[0];
+        const need = Math.max(0, prod.cr - credits);
+        const defPack = n => { const i = PACKS.findIndex(k => k.n >= n); return n ? (i < 0 ? PACKS.length - 1 : i) : 2; };
+        const openCredits = n => this.setState({ sheet: 'credits', cqNeed: n || null, pack: defPack(n || 0) });
+        const pk = PACKS[st.pack ?? 2] || PACKS[2];
+        const payBy = st.payBy || 'pix';
+        const q = cq && cq.view === 'result' ? (st.queries || []).find(x => x.id === cq.rid) : null;
+        let r = {};
+        if (q) {
+          const sections = cqSections(q);
+          const flags = sections.reduce((a, s) => a.concat(s.rows.filter(x => x.tone === 'warn' || x.tone === 'over')), []);
+          const hasOver = flags.some(x => x.tone === 'over');
+          const pName = (CQ_PRODUCTS.find(p => p.id === q.product) || {}).name;
+          r = { plate: q.plate, model: q.model + ' ' + q.year, productName: pName, when: new Date(q.at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', ''),
+            sections, isLaudo: q.product === 'laudo',
+            summary: flags.length ? (flags.length === 1 ? '1 ponto de atenção' : flags.length + ' pontos de atenção') + ': ' + flags.map(x => x.k.toLowerCase()).join(', ') : 'Nada consta nas bases consultadas',
+            sumFg: flags.length ? (hasOver ? TONE.over.fg : TONE.warn.fg) : TONE.ok.fg, sumBg: flags.length ? (hasOver ? TONE.over.bg : TONE.warn.bg) : TONE.ok.bg };
+        }
+        const mine = cq && cq.mode === 'mine';
+        const vh = (v.brand + v.model + v.year).split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+        const fipeNow = v.fipe || (v.type === 'moto' ? 14200 + (vh % 9) * 650 : 52000 + (vh % 13) * 2100);
+        const fipePct = ((vh % 7) - 4) * 0.4;
+        return {
+          fipeValue: money(fipeNow).replace(',00', ''),
+          fipeDelta: fipePct === 0 ? 'Estável em 30 dias' : (fipePct > 0 ? '▲ ' : '▼ ') + Math.abs(fipePct).toFixed(1).replace('.', ',') + '% em 30 dias',
+          fipeFg: fipePct > 0 ? '#0e5a66' : '#555', fipeBg: fipePct > 0 ? '#e7f0f1' : '#f4f4f4',
+          fipeWhen: 'atualizada há ' + (1 + vh % 6) + ' dias',
+          creditsLabel: credTxt(credits),
+          creditsSub: plan === 'free' ? 'Avulso ou em pacote. No Premium, 2 créditos por mês.' : 'Inclui 2 créditos por mês do Premium.',
+          openCqOther: () => openCq('other'), openCqMine: () => openCq('mine'),
+          openCredits: () => openCredits(0),
+          showCq: !!cq, cqForm: !!cq && cq.view === 'form', cqResult: !!q, r,
+          closeCq: () => this.setState({ cq: null }),
+          cqBackToForm: () => setCq({ view: 'form' }),
+          cqNew: () => this.setState({ cq: { view: 'form', mode: 'other', plate: '', product: 'laudo' } }),
+          cqPdf: () => this.toast('Laudo salvo em PDF'),
+          goPremium: () => { this.setState({ cq: null }); this.goTab('conta'); },
+          cqOtherBg: mine ? 'transparent' : '#fff', cqOtherShadow: mine ? 'none' : 'rgba(0,0,0,.08) 0 1px 4px',
+          cqMineBg: mine ? '#fff' : 'transparent', cqMineShadow: mine ? 'rgba(0,0,0,.08) 0 1px 4px' : 'none',
+          setCqOther: () => setCq({ mode: 'other', plate: '' }), setCqMine: () => setCq({ mode: 'mine', plate: myPlate }),
+          cqPlate: cq ? cq.plate : '',
+          onCqPlate: e => setCq({ plate: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7) }),
+          cqProducts: CQ_PRODUCTS.map(p => {
+            const sel = cq && cq.product === p.id;
+            return { name: p.name, desc: p.desc, hasTag: !!p.tag, tag: p.tag, border: sel ? '2px solid #0e5a66' : '1px solid #dddddd', dot: sel ? '6px solid #0e5a66' : '2px solid #c1c1c1',
+              price: p.cr ? money(p.cr * CREDIT) : 'Grátis', cost: p.cr ? credTxt(p.cr) + (p.id === 'laudo' ? ' · economiza 2' : '') : '', pick: () => setCq({ product: p.id }) };
+          }),
+          cqCta: cq && cq.busy ? 'Consultando…' : !prod.cr ? 'Consultar grátis' : need ? 'Comprar créditos para consultar' : 'Consultar · ' + credTxt(prod.cr),
+          cqBalanceLine: !prod.cr ? 'Não gasta crédito.' : need ? 'Você tem ' + credTxt(credits) + '. Faltam ' + need + '.' : 'Você tem ' + credTxt(credits) + '. Depois da consulta: ' + (credits - prod.cr) + '.',
+          cqSpinner: cq && cq.busy ? React.createElement('span', { style: { width: 18, height: 18, borderRadius: '50%', border: '2.5px solid rgba(255,255,255,.35)', borderTopColor: '#fff', animation: 'qrspin .8s linear infinite', display: 'inline-block' } }) : null,
+          runCq: () => {
+            if (!cq || cq.busy) return;
+            if (!plateOk(cq.plate)) return this.toast('Placa inválida. Use o formato ABC1D23', 'err');
+            if (need) return openCredits(need);
+            setCq({ busy: true });
+            clearTimeout(this.cqt);
+            this.cqt = setTimeout(() => {
+              const h = cq.plate.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+              const car = CQ_CARS[h % CQ_CARS.length];
+              const isMine = cq.mode === 'mine';
+              const rec = { id: 'q' + Date.now(), plate: cq.plate, product: cq.product, at: Date.now(), mine: isMine,
+                model: isMine ? v.brand + ' ' + v.model : car[0], year: isMine ? v.year : car[1], color: isMine ? 'Prata' : car[2], fipe: isMine ? fipeNow : car[3] };
+              this.setState(s => ({ credits: (s.credits || 0) - prod.cr, queries: [rec].concat(s.queries || []).slice(0, 20), cq: Object.assign({}, s.cq, { busy: false, view: 'result', rid: rec.id }) }));
+            }, 1400);
+          },
+          hasCqHistory: (st.queries || []).length > 0,
+          cqHistory: (st.queries || []).slice(0, 8).map(x => ({ plate: x.plate, title: x.model + ' ' + x.year,
+            sub: ((CQ_PRODUCTS.find(p => p.id === x.product) || {}).name || '') + ' · ' + new Date(x.at).toLocaleDateString('pt-BR'),
+            open: () => this.setState({ cq: { view: 'result', mode: x.mine ? 'mine' : 'other', plate: x.plate, product: x.product, rid: x.id } }) })),
+          sheetCredits: st.sheet === 'credits',
+          packsSub: st.cqNeed ? 'Faltam ' + credTxt(st.cqNeed) + ' para esta consulta. Pacotes saem mais barato que o avulso.' : 'Cada consulta custa de 1 a 6 créditos. Pacotes saem mais barato que o avulso.',
+          packs: PACKS.map((k, i) => {
+            const sel = (st.pack ?? 2) === i, off = Math.round((1 - k.price / (k.n * CREDIT)) * 100);
+            return { name: credTxt(k.n), unit: money(k.price / k.n) + ' por crédito', price: money(k.price), hasOff: off > 0, off: 'Economia de ' + off + '%', hasTag: !!k.tag, tag: k.tag,
+              border: sel ? '2px solid #0e5a66' : '1px solid #dddddd', dot: sel ? '6px solid #0e5a66' : '2px solid #c1c1c1', pick: () => this.setState({ pack: i }) };
+          }),
+          pixBorder: payBy === 'pix' ? '2px solid #0e5a66' : '1px solid #dddddd', cardBorder: payBy === 'card' ? '2px solid #0e5a66' : '1px solid #dddddd',
+          payPix: () => this.setState({ payBy: 'pix' }), payCard: () => this.setState({ payBy: 'card' }),
+          buyCta: 'Pagar ' + money(pk.price) + (payBy === 'pix' ? ' com Pix' : ' no cartão'),
+          buyPack: () => { this.setState(s => ({ credits: (s.credits || 0) + pk.n, sheet: null, cqNeed: null })); this.toast(credTxt(pk.n) + ' adicionados'); }
+        };
+      })(),
+      sheetVehicle: st.sheet === 'vehicle', sheetSold: st.sheet === 'sold', sheetDelete: st.sheet === 'vdelete',
+      activeRecCount: st.records.length === 1 ? '1 registro' : st.records.length + ' registros',
+      openVehicle: () => this.setState({ sheet: 'vehicle' }),
+      askSold: () => this.setState({ sheet: 'sold' }), askDelete: () => this.setState({ sheet: 'vdelete' }),
+      replaceVehicle: () => this.setState({ sheet: null, adding: true, replacing: true, ob: { type: 'car', brand: '', model: '', year: '', km: '' } }),
+      archiveOnly: () => { const m = v.model; this.dropActive(true); this.toast(m + ' guardado em Veículos anteriores'); },
+      deleteVehicle: () => { const m = v.model; this.dropActive(false); this.toast(m + ' excluído'); },
+      hasPast: (st.past || []).length > 0,
+      pastList: (st.past || []).map((p, pi) => ({
+        name: p.vehicle.model, isMoto: p.vehicle.type === 'moto', isCar: p.vehicle.type !== 'moto',
+        sub: p.vehicle.brand + ' · ' + p.vehicle.year + ' · ' + (p.records || []).length + ' registros · saiu em ' + new Date(p.soldAt || Date.now()).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }).replace('.', '').replace(' de ', '/'),
+        restore: () => {
+          if (plan === 'free') return this.setState({ sheet: 'paywall', paywallWhy: 'veiculo' });
+          const past = (st.past || []).filter((_, k) => k !== pi);
+          this.setState({ past, garage: (st.garage || []).concat([{ vehicle: p.vehicle, records: p.records || [] }]) });
+          this.toast(p.vehicle.model + ' restaurado');
+        }
+      })),
+      resetVehicle: () => this.setState({ vehicle: null, records: [], obStep: 'form' }),
+      showDetail: !!(st.detail && byId[st.detail]), d, closeDetail: () => this.setState({ detail: null }),
+      openParts: () => this.setState({ sheet: 'parts' }),
+      partsFor: partsItem + ' · ' + v.brand + ' ' + v.model + ' ' + v.year,
+      parts: [
+        { name: partsItem + ' · linha original', store: 'Loja parceira A', price: 'R$ 129,90' },
+        { name: partsItem + ' · marca alternativa', store: 'Loja parceira B', price: 'R$ 98,50' },
+        { name: partsItem + ' · kit com instalação', store: 'Loja parceira C', price: 'R$ 189,00' }
+      ],
+      reg,
+      clearRegItem: () => this.setReg({ itemId: null }),
+      onRegQ: e => this.setReg({ q: e.target.value }),
+      onRegKm: e => { const n = num(e.target.value); this.setReg({ km: n == null ? '' : fmt(n) }); },
+      onRegDate: e => this.setReg({ date: e.target.value }), onRegDateVal: d => this.setReg({ date: d }),
+      onRegCost: e => this.setReg({ cost: e.target.value.replace(/[^\d,]/g, '') }),
+      onRegBrand: e => this.setReg({ brand: e.target.value }),
+      setWhereCasa: () => this.setReg({ where: 'casa' }),
+      setWhereMec: () => this.setReg({ where: 'mec' }),
+      saveRecord: () => {
+        const R = st.reg; const km = num(R.km);
+        if (!R.itemId) return this.toast('Escolha o item que você trocou', 'err');
+        if (km == null || km <= 0) return this.toast('Informe o km de quando trocou', 'err');
+        if (R.date && new Date(R.date + 'T12:00').getTime() > Date.now()) return this.toast('A data não pode ser no futuro', 'err');
+        const rec = { id: 'r' + Date.now(), itemId: R.itemId, km, date: R.date || null, cost: num(R.cost), brand: R.brand.trim(), where: R.where };
+        const nv = km > est ? Object.assign({}, v, { km, kmAt: Date.now() }) : v;
+        this.setState({ records: st.records.concat(rec), vehicle: nv, sheet: null, reg: null });
+        this.toast('Troca registrada');
+      },
+      kmDraft: st.kmDraft,
+      onKmDraft: e => { const n = num(e.target.value); this.setState({ kmDraft: n == null ? '' : fmt(n) }); },
+      confirmEstimate: () => { this.setState({ vehicle: Object.assign({}, v, { km: est, kmAt: Date.now() }), sheet: null }); this.toast('Km confirmada'); },
+      saveKm: () => {
+        const n = num(st.kmDraft);
+        if (n == null) return this.toast('Digite o km do painel ou toque em "Está certo"', 'err');
+        const maxRec = st.records.reduce((a, r) => Math.max(a, r.km), 0);
+        if (n < maxRec) return this.toast('Km menor que a última troca registrada (' + fmt(maxRec) + ' km)', 'err');
+        const months = (Date.now() - v.kmAt) / MONTH;
+        const kpm = months > 0.5 && n > v.km ? Math.round((n - v.km) / months) : v.kmPerMonth;
+        this.setState({ vehicle: Object.assign({}, v, { km: n, kmAt: Date.now(), kmPerMonth: kpm }), sheet: null });
+        this.toast('Km atualizada');
+      }
+    });
+  }
+}
+</script>
+</body>
+</html>

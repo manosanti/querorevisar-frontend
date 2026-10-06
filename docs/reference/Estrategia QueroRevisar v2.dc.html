@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: #f2f2f7; -webkit-font-smoothing: antialiased; }
+  a { color: #0a84ff; text-decoration: none; }
+  a:hover { color: #0060df; text-decoration: underline; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #f2f2f7; color: #1c1c1e; font-family: Onest, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; line-height: 1.5; letter-spacing: -0.011em;">
+<div style="max-width: 880px; margin: 0 auto; padding: 30px 18px 70px;">
+
+  <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #0a84ff;">Plano de produto e monetização · v2</div>
+  <h1 style="font-size: 40px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.08; margin: 6px 0 10px;">QueroRevisar</h1>
+  <p style="font-size: 18px; line-height: 1.5; color: #48484a; margin: 0 0 8px; max-width: 62ch; text-wrap: pretty;">Um controle de manutenção para quem cuida do próprio veículo. A pessoa registra o que trocou, em casa ou no mecânico, e o app avisa <strong style="font-weight: 600; color: #1c1c1e;">quando cada item está perto de vencer.</strong></p>
+  <p style="font-size: 14px; color: #8e8e93; margin: 0 0 26px;">Outubro de 2026 · substitui a v1 de setembro · decisões fechadas na sessão de revisão</p>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">1</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">O que mudou da v1</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93;">
+        <span>v1</span><span>v2</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Marketplace de duas pontas, oficina como ~50% da receita</span><span>Produto do consumidor. A oficina entra depois, como complemento</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Consulta por placa como porta de entrada</span><span>Cadastro manual rápido, sem conta. Placa vira recurso do Premium</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Motorista genérico, frota e entregador</span><span>Quem já entende um pouco e troca o que dá em casa</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span style="color: #8e8e93;">Banner em duas posições</span><span>Anúncio só nativo e contextual, fora do painel e dos alertas</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">2</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Para quem é</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <p style="font-size: 15.5px; color: #48484a; margin: 0 0 10px; text-wrap: pretty;">Dono de carro ou moto com alguma noção de mecânica. Troca o óleo em casa, já trocou pastilha e pinça, e quando leva ao mecânico quer saber o que foi feito. O problema dele é memória: esquece com quantos km fez cada troca.</p>
+      <p style="font-size: 15.5px; color: #48484a; margin: 0; text-wrap: pretty;">Carro e moto desde o lançamento. O catálogo genérico cobre os dois e o custo de suportar ambos é quase o mesmo.</p>
+    </div>
+    <div style="background: rgba(10, 132, 255, .08); border-radius: 18px; padding: 16px; margin-top: 12px;">
+      <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Por que o consumidor vem primeiro</div>
+      <p style="font-size: 15px; color: #1c1c1e; margin: 0; text-wrap: pretty;">Quem alimenta o app é o usuário. Uma ferramenta com mecânicos e sem usuários não serve a ninguém. Com uma base ativa registrando trocas, a oficina tem motivo para entrar, e a base também produz o dado de vida útil real que nenhum concorrente tem.</p>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">3</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Como funciona</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Cadastro</div>
+        <div style="font-size: 14.5px; color: #48484a;">Marca, modelo, ano e km, em uns 20 segundos. Funciona sem conta; o login é pedido quando a pessoa quer salvar e receber alertas.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Registro de troca</div>
+        <div style="font-size: 14.5px; color: #48484a;">Obrigatórios: item e <strong style="font-weight: 600; color: #1c1c1e;">km quando trocou</strong>. Opcionais: data, custo e marca da peça. O campo diz explicitamente que é o km da troca, para quem registra com atraso. O km atual é atualizado à parte.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Vida útil</div>
+        <div style="font-size: 14.5px; color: #48484a;">O usuário não configura nada. Cada item usa uma média pesquisada, por categoria e por tipo de veículo. Quando existe plano do fabricante cadastrado para o modelo, ele tem prioridade.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Alertas</div>
+        <div style="font-size: 14.5px; color: #48484a;"><strong style="font-weight: 600; color: #1c1c1e;">Atenção</strong> em 80% da vida útil, <strong style="font-weight: 600; color: #1c1c1e;">vencido</strong> em 100%. Também vence por tempo (óleo em 6 meses, mesmo rodando pouco), o que vier primeiro.</div>
+      </div>
+      <div style="padding: 14px 0;">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Km atualizada</div>
+        <div style="font-size: 14.5px; color: #48484a;">O app estima a km pela média de uso e só pede correção quando um item se aproxima do vencimento. A notificação traz o atalho "rodou quanto?", em um toque. A foto do painel fica para a Fase 2.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">4</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">A base de médias</h2>
+    </div>
+    <p style="font-size: 15.5px; color: #48484a; margin: 0 0 14px; max-width: 66ch; text-wrap: pretty;">O alerta só tem credibilidade se a média tiver fonte. Ela é construída em três camadas, uma de cada vez.</p>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; color: #248a3d; margin-bottom: 4px;">Lançamento</div>
+        <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.025em; margin-bottom: 4px;">O que já existe</div>
+        <p style="font-size: 14.5px; color: #48484a; margin: 0;">O catálogo atual de 175 itens com intervalo de km e meses, mais os planos de fabricante já cadastrados.</p>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; color: #0060df; margin-bottom: 4px;">Contínuo</div>
+        <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.025em; margin-bottom: 4px;">Pesquisa manual</div>
+        <p style="font-size: 14.5px; color: #48484a; margin: 0;">Manuais, fabricantes de peça e fóruns, item a item. Separa carro e moto, e uso urbano e estrada quando a diferença for relevante.</p>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; color: #a85c00; margin-bottom: 4px;">Com volume</div>
+        <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.025em; margin-bottom: 4px;">Dado real da base</div>
+        <p style="font-size: 14.5px; color: #48484a; margin: 0;">O intervalo entre duas trocas do mesmo item, registradas pelos usuários, ajusta a média. Esse dado é o que fica difícil de copiar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">5</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Como o dinheiro entra</h2>
+    </div>
+    <p style="font-size: 15.5px; color: #48484a; margin: 0 0 14px; max-width: 64ch;">Quatro fontes, ativadas em ordem.</p>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: flex; align-items: flex-start; gap: 13px; padding: 15px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(52, 199, 89, .14); color: #248a3d; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px;">Lançamento</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.02em;">Premium</div>
+          <p style="font-size: 14.5px; color: #48484a; margin: 3px 0 0;">Vários veículos, histórico completo, sem anúncio e cadastro por placa. O segundo veículo é o gatilho de upgrade.</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 13px; padding: 15px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(52, 199, 89, .14); color: #248a3d; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px;">Lançamento</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.02em;">Afiliado de peças</div>
+          <p style="font-size: 14.5px; color: #48484a; margin: 3px 0 0;">"Ver peças compatíveis" no item em atenção. Quem troca em casa compra a peça, e o alerta é o momento da compra.</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 13px; padding: 15px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(52, 199, 89, .14); color: #248a3d; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px;">Lançamento</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.02em;">Anúncio no plano grátis</div>
+          <p style="font-size: 14.5px; color: #48484a; margin: 3px 0 0;">Só nativo: um card de peça ou loja com o mesmo visual do app, marcado como patrocinado. Aparece no histórico e na busca. <strong style="font-weight: 600; color: #1c1c1e;">Nunca</strong> no painel, nos alertas ou no registro.</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 13px; padding: 15px 0;">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(120, 120, 128, .14); color: #48484a; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px;">Com volume</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.02em;">Oficina por lead</div>
+          <p style="font-size: 14.5px; color: #48484a; margin: 3px 0 0;">Para quem prefere não fazer em casa, "encontrar oficina" no item. A oficina paga pelo contato. Só entra quando houver usuários suficientes num bairro para valer a venda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">6</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Os planos</h2>
+    </div>
+    <p style="font-size: 15.5px; color: #48484a; margin: 0 0 14px; max-width: 64ch;">A regra continua: <strong style="font-weight: 600; color: #1c1c1e;">o plano grátis nunca esconde um alerta.</strong></p>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+      <div style="background: #fff; border-radius: 20px; padding: 18px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <div style="font-size: 19px; font-weight: 600; letter-spacing: -0.025em;">Grátis</div>
+          <div style="font-size: 30px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;">R$ 0</div>
+        </div>
+        <div style="display: grid; gap: 6px; font-size: 14px; color: #48484a;">
+          <div><strong style="color: #1c1c1e; font-weight: 600;">1 veículo</strong> (carro ou moto)</div>
+          <div>Catálogo e alertas completos</div>
+          <div>Registro de trocas</div>
+          <div>Histórico dos últimos 12 meses</div>
+          <div style="color: #8e8e93;">Com anúncio nativo</div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 20px; padding: 18px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); border: 2px solid #0a84ff; display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <div style="font-size: 19px; font-weight: 600; letter-spacing: -0.025em;">Premium</div>
+          <div style="font-size: 30px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;">R$ 14,90<span style="font-size: 15px; font-weight: 400; color: #8e8e93;">/mês</span></div>
+          <div style="font-size: 13px; color: #8e8e93;">ou R$ 149/ano</div>
+        </div>
+        <div style="display: grid; gap: 6px; font-size: 14px; color: #48484a;">
+          <div><strong style="color: #1c1c1e; font-weight: 600;">Vários veículos</strong></div>
+          <div>Histórico completo e export PDF</div>
+          <div>Sem anúncio</div>
+          <div>Cadastro por placa</div>
+          <div>Resumo de gastos</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">7</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Por onde construir</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: flex; gap: 13px; padding: 15px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(10, 132, 255, .12); color: #0060df; font-size: 12px; font-weight: 600; white-space: nowrap; height: 24px;">Fase 1</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 15.5px; font-weight: 600; margin-bottom: 2px;">O núcleo do consumidor</div>
+          <div style="font-size: 14.5px; color: #48484a;">Cadastro manual sem conta, registro com km da troca, alertas 80/100 + tempo, estimativa de km e atalho na notificação, nova direção visual, paywall do segundo veículo.</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 13px; padding: 15px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(255, 149, 0, .16); color: #a85c00; font-size: 12px; font-weight: 600; white-space: nowrap; height: 24px;">Fase 2</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 15.5px; font-weight: 600; margin-bottom: 2px;">Receita e atrito</div>
+          <div style="font-size: 14.5px; color: #48484a;">Afiliado de peças, anúncio nativo, foto do painel para km, primeiras médias pesquisadas substituindo as do catálogo.</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 13px; padding: 15px 0;">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(120, 120, 128, .14); color: #48484a; font-size: 12px; font-weight: 600; white-space: nowrap; height: 24px;">Fase 3</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 15.5px; font-weight: 600; margin-bottom: 2px;">Dados e oficinas</div>
+          <div style="font-size: 14.5px; color: #48484a;">Média ajustada pelos registros reais, oficina por lead nos bairros com mais usuários, passaporte de manutenção para revenda.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">8</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Riscos</h2>
+    </div>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); border-top: 3px solid #ff3b30;">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px;">O usuário para de alimentar</div>
+        <p style="font-size: 14.5px; color: #48484a; margin: 0;">Sem km atualizada o alerta sai errado. Mitigação: estimativa pela média, atalho na notificação, registro com dois campos obrigatórios.</p>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); border-top: 3px solid #ff9500;">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px;">Média imprecisa</div>
+        <p style="font-size: 14.5px; color: #48484a; margin: 0;">Um alerta cedo demais ou tarde demais tira a confiança. Mitigação: mostrar a fonte da média no item e priorizar o plano do fabricante quando existir.</p>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); border-top: 3px solid #ff9500;">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px;">Anúncio degrada o produto</div>
+        <p style="font-size: 14.5px; color: #48484a; margin: 0;">Mitigação: só formato nativo, fora do painel e dos alertas, e sempre marcado como patrocinado.</p>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); border-top: 3px solid #8e8e93;">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px;">Drivvo copia</div>
+        <p style="font-size: 14.5px; color: #48484a; margin: 0;">O catálogo se copia. A média ajustada por milhares de trocas reais não, e por isso ela é o ativo de longo prazo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 26px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">9</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Métricas</h2>
+    </div>
+    <div style="display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+      <div style="background: #fff; border-radius: 16px; padding: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 25px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: #0a84ff;">&gt; 40%</div>
+        <div style="font-size: 14px; font-weight: 600; margin-top: 2px;">Km atualizada em 30 dias</div>
+        <div style="font-size: 13px; color: #8e8e93;">A métrica de vida do produto.</div>
+      </div>
+      <div style="background: #fff; border-radius: 16px; padding: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 25px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: #0a84ff;">≥ 1</div>
+        <div style="font-size: 14px; font-weight: 600; margin-top: 2px;">Troca registrada por mês</div>
+        <div style="font-size: 13px; color: #8e8e93;">Por usuário ativo. Alimenta a base de médias.</div>
+      </div>
+      <div style="background: #fff; border-radius: 16px; padding: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 25px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: #0a84ff;">&gt; 5%</div>
+        <div style="font-size: 14px; font-weight: 600; margin-top: 2px;">Grátis que vira Premium</div>
+        <div style="font-size: 13px; color: #8e8e93;">Medir onde o paywall é tocado.</div>
+      </div>
+      <div style="background: #fff; border-radius: 16px; padding: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 25px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: #0a84ff;">&gt; 10%</div>
+        <div style="font-size: 14px; font-weight: 600; margin-top: 2px;">Alerta que gera clique em peça</div>
+        <div style="font-size: 13px; color: #8e8e93;">Prova a receita de afiliado.</div>
+      </div>
+    </div>
+  </section>
+
+  <div style="background: #1c1c1e; color: #fff; border-radius: 20px; padding: 22px;">
+    <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgba(255, 255, 255, .55); margin-bottom: 6px;">A aposta em uma frase</div>
+    <p style="font-size: 20px; line-height: 1.42; margin: 0 0 14px; letter-spacing: -0.02em;">Quem cuida do próprio veículo precisa de memória confiável. O app grátis lembra por ele, o Premium e as peças pagam a conta, e cada troca registrada melhora a média que ninguém mais tem.</p>
+    <div style="font-size: 14px; color: rgba(255, 255, 255, .65);">Preços, metas e ordem das fases são hipóteses para validar.</div>
+  </div>
+
+</div>
+</div>
+</x-dc>
+</body>
+</html>

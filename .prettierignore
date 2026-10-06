@@ -1,0 +1,11 @@
+doc/
+docs/reference/
+pnpm-lock.yaml
+**/dist/
+**/build/
+**/.astro/
+apps/api/
+packages/api-client/src/generated/
+**/routeTree.gen.ts
+data/*.json
+fixtures/*.json

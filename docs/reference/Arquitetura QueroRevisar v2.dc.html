@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: #f2f2f7; -webkit-font-smoothing: antialiased; }
+  a { color: #0a84ff; text-decoration: none; }
+  a:hover { color: #0060df; text-decoration: underline; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #f2f2f7; color: #1c1c1e; font-family: Onest, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; line-height: 1.5; letter-spacing: -0.011em;">
+<div style="max-width: 880px; margin: 0 auto; padding: 30px 18px 70px;">
+
+  <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #0a84ff;">Arquitetura e stack · v2</div>
+  <h1 style="font-size: 40px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.08; margin: 6px 0 10px;">QueroRevisar</h1>
+  <p style="font-size: 18px; line-height: 1.5; color: #48484a; margin: 0 0 8px; max-width: 62ch; text-wrap: pretty;">Web app instalável (PWA) no lugar do app de loja, API em Kotlin que só roda quando é chamada, Postgres gerenciado. <strong style="font-weight: 600; color: #1c1c1e;">Custo zero até o produto pagar a própria conta.</strong></p>
+  <p style="font-size: 14px; color: #8e8e93; margin: 0 0 26px;">Outubro de 2026 · substitui a v1 · limites dos planos grátis conferidos em out/2026, revisar antes de contratar</p>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">1</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">O que mudou da v1</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93;">
+        <span>v1</span><span>v2</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">App nativo com Expo nas lojas + web</span><span>Só web, instalável como PWA no iOS e Android</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">API sempre ligada no Fly.io, 2 máquinas</span><span>API no Google Cloud Run, liga por requisição, desliga sem uso</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Supabase Pro desde o lançamento</span><span>Supabase free, com backup próprio</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Login com SMS e Apple</span><span>E-mail, código por e-mail e Google. SMS e Apple têm custo e ficam para depois</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Redis compartilhado desde o início</span><span>Cache em memória. Redis só quando a API escalar</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span style="color: #8e8e93;">~US$ 45–70/mês + lojas</span><span>US$ 0/mês. Só o domínio, ~R$ 40/ano</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">2</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Visão geral</h2>
+    </div>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93; margin-bottom: 8px;">Cliente</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px;">
+          <div><strong style="font-weight: 600;">Web app PWA</strong> · React + Vite</div>
+          <div><strong style="font-weight: 600;">Landing</strong> · Astro estático</div>
+          <div style="color: #8e8e93;">Cache local, fila offline, Web Push</div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93; margin-bottom: 8px;">Borda e API</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px;">
+          <div><strong style="font-weight: 600;">Cloudflare</strong> · Pages, CDN, DNS, R2</div>
+          <div><strong style="font-weight: 600;">API Kotlin</strong> · Cloud Run, São Paulo</div>
+          <div><strong style="font-weight: 600;">Cloud Scheduler</strong> · chama os jobs</div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93; margin-bottom: 8px;">Serviços gerenciados</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px;">
+          <div><strong style="font-weight: 600;">Supabase</strong> · Postgres + Auth (sa-east-1)</div>
+          <div><strong style="font-weight: 600;">Asaas</strong> · assinatura Premium</div>
+          <div style="color: #8e8e93;">Resend, Sentry, PostHog, Grafana</div>
+        </div>
+      </div>
+    </div>
+    <div style="background: rgba(10, 132, 255, .08); border-radius: 18px; padding: 16px; margin-top: 12px;">
+      <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Regra de ouro</div>
+      <p style="font-size: 15px; color: #1c1c1e; margin: 0; text-wrap: pretty;">O cliente só fala com a API Kotlin. O Supabase é banco e provedor de login, nunca acessado direto pelo app. Regra de negócio, cache e rate limit ficam num lugar só.</p>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">3</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">A stack</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Monorepo</span>
+        <div><strong style="font-weight: 600;">pnpm + Turborepo</strong> para o lado TypeScript, Gradle para a API, no mesmo repositório</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Web app</span>
+        <div><strong style="font-weight: 600;">React + Vite + TanStack Router</strong>, SPA<div style="color: #48484a; font-size: 14px;">PWA com <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">vite-plugin-pwa</span> (service worker, manifesto, ícones). Estático na Cloudflare Pages, que permite uso comercial no plano grátis.</div></div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Landing</span>
+        <div><strong style="font-weight: 600;">Astro</strong>, estático<div style="color: #48484a; font-size: 14px;">SEO e conteúdo sobre manutenção como canal de aquisição.</div></div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Estado no cliente</span>
+        <div><strong style="font-weight: 600;">TanStack Query</strong> para dados do servidor, <strong style="font-weight: 600;">Zustand</strong> para estado local, <strong style="font-weight: 600;">React Hook Form + Zod</strong> para formulários</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">API</span>
+        <div><strong style="font-weight: 600;">Kotlin + Spring Boot 3, compilada como imagem nativa (GraalVM)</strong><div style="color: #48484a; font-size: 14px;">Liga em menos de um segundo e usa pouca memória. É o que torna viável desligar quando não há uso.</div></div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Contrato</span>
+        <div><strong style="font-weight: 600;">OpenAPI gerado pela API</strong> (springdoc) → cliente TypeScript gerado (orval) com hooks do TanStack Query e schemas Zod</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Banco</span>
+        <div><strong style="font-weight: 600;">Postgres no Supabase</strong>, Spring Data JPA, migrações com <strong style="font-weight: 600;">Flyway</strong><div style="color: #48484a; font-size: 14px;">Conexão pelo pooler do Supabase, porque instâncias que ligam e desligam abrem muitas conexões.</div></div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Login</span>
+        <div><strong style="font-weight: 600;">Supabase Auth</strong>. A API só valida o JWT.</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Cache</span>
+        <div><strong style="font-weight: 600;">CDN da Cloudflare</strong> + <strong style="font-weight: 600;">Caffeine</strong> em memória na API + cache persistido no cliente</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Hospedagem</span>
+        <div><strong style="font-weight: 600;">Cloud Run</strong> (southamerica-east1) para a API · <strong style="font-weight: 600;">Cloudflare Pages</strong> para web e landing · <strong style="font-weight: 600;">Cloudflare R2</strong> para backups</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span style="color: #8e8e93;">CI/CD</span>
+        <div><strong style="font-weight: 600;">GitHub Actions</strong> → Artifact Registry → Cloud Run, e Cloudflare Pages</div>
+      </div>
+    </div>
+    <div style="background: rgba(255, 149, 0, .1); border-radius: 18px; padding: 16px; margin-top: 12px;">
+      <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Por que não Vercel e Railway</div>
+      <p style="font-size: 15px; color: #1c1c1e; margin: 0; text-wrap: pretty;">O plano grátis da Vercel é só para uso pessoal e não comercial, e o QueroRevisar tem Premium e anúncio. O plano grátis do Railway dá US$ 1 de crédito por mês, pouco para uma JVM ligada o mês todo, e cobra por memória e CPU ligadas, não por requisição. No Cloud Run, com a cobrança por requisição, cada chamada evitada pelo cache é economia direta.</p>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">4</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">O monorepo</h2>
+    </div>
+    <div style="background: #1c1c1e; color: #f2f2f7; border-radius: 18px; padding: 18px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; line-height: 1.7; overflow-x: auto; white-space: pre;">querorevisar/
+├─ apps/
+│  ├─ web/           <span style="color: #8e8e93;">React + Vite · PWA logado</span>
+│  ├─ landing/       <span style="color: #8e8e93;">Astro · site público</span>
+│  └─ api/           <span style="color: #8e8e93;">Kotlin + Spring Boot · Gradle · imagem nativa</span>
+├─ packages/
+│  ├─ api-client/    <span style="color: #8e8e93;">gerado do OpenAPI · hooks + Zod</span>
+│  ├─ core/          <span style="color: #8e8e93;">cálculo de vencimento, km estimada</span>
+│  ├─ tokens/        <span style="color: #8e8e93;">cores, tipografia, espaçamento</span>
+│  └─ config/        <span style="color: #8e8e93;">tsconfig, eslint, prettier</span>
+├─ fixtures/         <span style="color: #8e8e93;">casos de teste em JSON, lidos pelo TS e pelo Kotlin</span>
+└─ infra/            <span style="color: #8e8e93;">docker-compose local, scripts de deploy</span></div>
+    <div style="background: rgba(255, 149, 0, .1); border-radius: 18px; padding: 16px; margin-top: 12px;">
+      <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">A regra de vencimento existe em duas linguagens</div>
+      <p style="font-size: 15px; color: #1c1c1e; margin: 0; text-wrap: pretty;">O web app calcula "vence em 1.200 km" offline (TypeScript) e a API dispara o alerta (Kotlin). Os dois rodam a mesma bateria de casos em <span style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px;">fixtures/</span>. Se um lado mudar e o outro não, o CI falha.</p>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">5</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">PWA no iOS e no Android</h2>
+    </div>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; color: #248a3d; margin-bottom: 4px;">Android</div>
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Quase igual a um app</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div>O Chrome oferece "Instalar app" sozinho</div>
+          <div>Ícone, tela cheia, push, offline</div>
+          <div>Sincronização em segundo plano funciona</div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 12.5px; font-weight: 600; color: #c93400; margin-bottom: 4px;">iOS</div>
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Funciona, com três limites</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div>Instalação manual: Safari → Compartilhar → Adicionar à Tela de Início</div>
+          <div>Push só depois de instalado e autorizado (iOS 16.4+)</div>
+          <div>Sem sincronização em segundo plano. A fila sai quando o app abre</div>
+        </div>
+      </div>
+    </div>
+    <div style="background: rgba(10, 132, 255, .08); border-radius: 18px; padding: 16px; margin-top: 12px;">
+      <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Instalar faz parte do onboarding</div>
+      <p style="font-size: 15px; color: #1c1c1e; margin: 0; text-wrap: pretty;">Sem instalar, o iPhone não recebe alerta, e o alerta é o produto. Depois do primeiro veículo cadastrado, o app detecta o iOS e mostra o passo a passo de instalação com imagens. Ao abrir já instalado, pede permissão de notificação e chama <span style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px;">navigator.storage.persist()</span> para o sistema não apagar os dados locais.</p>
+    </div>
+    <p style="font-size: 14px; color: #8e8e93; margin: 10px 0 0;">Para entrar nas lojas depois, o mesmo web app pode ser empacotado com Capacitor. A decisão de hoje não fecha essa porta.</p>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">6</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Ambientes</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); overflow-x: auto;">
+      <div style="display: grid; grid-template-columns: minmax(90px, .8fr) repeat(3, minmax(130px, 1fr)); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93;">
+        <span></span><span>Local</span><span>Dev</span><span>Prod</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(90px, .8fr) repeat(3, minmax(130px, 1fr)); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <span style="color: #8e8e93;">Banco + Auth</span><span>Supabase CLI no Docker</span><span>Projeto Supabase free nº 1</span><span>Projeto Supabase free nº 2</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(90px, .8fr) repeat(3, minmax(130px, 1fr)); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <span style="color: #8e8e93;">API</span><span>Gradle bootRun (JVM normal)</span><span>Serviço Cloud Run "api-dev"</span><span>Serviço Cloud Run "api", máx. 2 instâncias</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(90px, .8fr) repeat(3, minmax(130px, 1fr)); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <span style="color: #8e8e93;">Web</span><span>Vite dev server</span><span>Preview por PR na Cloudflare</span><span>app.querorevisar.com.br</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(90px, .8fr) repeat(3, minmax(130px, 1fr)); gap: 14px; padding: 12px 0; font-size: 14px;">
+        <span style="color: #8e8e93;">Pagamento</span><span>Sandbox Asaas</span><span>Sandbox Asaas</span><span>Asaas produção</span>
+      </div>
+    </div>
+    <p style="font-size: 14px; color: #8e8e93; margin: 10px 0 0;">O Supabase free permite dois projetos ativos, exatamente dev e prod. A cota grátis do Cloud Run é por conta de cobrança e é dividida entre os dois serviços. Segredos no Secret Manager e nos environments do GitHub, nunca no repositório.</p>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">7</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Menos requisições</h2>
+    </div>
+    <p style="font-size: 15.5px; color: #48484a; margin: 0 0 12px; max-width: 64ch; text-wrap: pretty;">Com o Cloud Run cobrando por requisição e por tempo de processamento, aqui está o que mantém a conta em zero. Os dados do usuário mudam pouco e quase sempre por ação dele mesmo, o que permite cache agressivo.</p>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Catálogo como arquivo estático</div>
+        <div style="font-size: 14.5px; color: #48484a;">Os 175 itens e os planos de fabricante viram um JSON versionado na Cloudflare (<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">catalogo.v12.json</span>). O app baixa uma vez e guarda. Zero chamadas à API.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Uma chamada para abrir o app</div>
+        <div style="font-size: 14.5px; color: #48484a;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">GET /v1/sync?desde=…</span> devolve só o que mudou desde a última abertura: veículos, registros, plano, versão do catálogo. Na maioria das vezes volta vazio.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Cache persistido no cliente</div>
+        <div style="font-size: 14.5px; color: #48484a;">TanStack Query com <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">persistQueryClient</span> em IndexedDB e <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">staleTime</span> longo. Sem refetch ao focar a janela. Depois de salvar, atualização otimista e invalidação só da chave afetada.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">ETag e 304</div>
+        <div style="font-size: 14.5px; color: #48484a;">Respostas de leitura levam ETag. Se nada mudou, a API responde 304 sem corpo, em poucos milissegundos.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Escritas em lote</div>
+        <div style="font-size: 14.5px; color: #48484a;">A fila offline manda várias alterações num único <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">POST /v1/sync</span>.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Push em vez de polling</div>
+        <div style="font-size: 14.5px; color: #48484a;">O app nunca pergunta "tem alerta?". O job do servidor calcula e avisa por Web Push.</div>
+      </div>
+      <div style="padding: 14px 0;">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Respostas rápidas</div>
+        <div style="font-size: 14.5px; color: #48484a;">O Cloud Run cobra o tempo de cada requisição. Índices certos no Postgres, Caffeine para catálogo e flags, nada de chamada externa no caminho de leitura.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">8</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Frontend: boas práticas</h2>
+    </div>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Código</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div>TypeScript strict, sem <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">any</span></div>
+          <div>Pastas por funcionalidade (veiculos/, registros/, alertas/)</div>
+          <div>Fábrica de query keys por domínio</div>
+          <div>Toda resposta da API passa pelo Zod</div>
+          <div>ESLint + Prettier, pre-commit com lint-staged</div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Experiência</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div>Error boundary por tela, com retry</div>
+          <div>Skeleton só no primeiro carregamento</div>
+          <div>Acessibilidade: rótulos, contraste, alvos de 44px</div>
+          <div>Datas e números em pt-BR com Intl</div>
+          <div>JS inicial abaixo de 200 KB, rotas carregadas sob demanda</div>
+          <div>Aviso de "nova versão disponível" quando o service worker atualiza</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">9</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Backend: boas práticas</h2>
+    </div>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Estrutura</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div>Módulos por domínio: controller, service, repository</div>
+          <div>DTOs separados das entidades, Bean Validation</div>
+          <div>Erros no formato padrão <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">problem+json</span></div>
+          <div>Rotas em <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">/v1</span>, paginação por cursor</div>
+          <div>Migrações compatíveis com a versão anterior do web app</div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Robustez</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">Idempotency-Key</span> em toda escrita. Reenvio da fila não duplica</div>
+          <div>Timeouts em toda chamada externa</div>
+          <div>Webhooks com assinatura verificada, processamento idempotente</div>
+          <div>Sem estado na instância: qualquer uma pode atender qualquer requisição</div>
+          <div>Teste de que a imagem nativa sobe, no CI, antes do deploy</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin: 18px 0 8px;">Rate limit</div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, .8fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93;">
+        <span>Onde</span><span>Limite inicial</span><span>Por</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, .8fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span>Borda da Cloudflare, rota da API</span><span>Bloqueia abuso antes de chegar ao Cloud Run</span><span style="color: #48484a;">IP</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, .8fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span>Login e código por e-mail</span><span>Limites do Supabase Auth</span><span style="color: #48484a;">IP e e-mail</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, .8fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span>Escritas da API</span><span>60 por minuto</span><span style="color: #48484a;">Usuário</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, .8fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span>Leituras da API</span><span>300 por minuto</span><span style="color: #48484a;">Usuário</span>
+      </div>
+    </div>
+    <p style="font-size: 14px; color: #8e8e93; margin: 10px 0 0;">Na API, Bucket4j em memória. Com no máximo 2 instâncias o contador fica aproximado, o que basta no começo. Estourou, 429 com Retry-After. Também vale limitar o número máximo de instâncias no Cloud Run: é o teto de gasto se alguém atacar.</p>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">10</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Login</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <p style="font-size: 15.5px; color: #48484a; margin: 0 0 10px; text-wrap: pretty;">A pessoa entra como <strong style="font-weight: 600; color: #1c1c1e;">usuário anônimo</strong> do Supabase e já usa o app, como pede a Estratégia v2. Para guardar na nuvem ou assinar, vincula um login à mesma conta, sem perder nada.</p>
+      <p style="font-size: 15.5px; color: #48484a; margin: 0; text-wrap: pretty;"><strong style="font-weight: 600; color: #1c1c1e;">No lançamento:</strong> e-mail e senha, código ou link por e-mail, Google. <strong style="font-weight: 600; color: #1c1c1e;">Depois:</strong> SMS (pago por envio) e Apple (exige a conta de desenvolvedor de US$ 99/ano).</p>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">11</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Offline e sincronização</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">App abre sem rede</div>
+        <div style="font-size: 14.5px; color: #48484a;">O service worker guarda o app e o catálogo. Os dados do usuário ficam em IndexedDB.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">IDs criados no aparelho e fila de saída</div>
+        <div style="font-size: 14.5px; color: #48484a;">Todo registro nasce com UUID v7 gerado no cliente, que serve de ID e de chave de idempotência. Sem rede, a alteração entra na fila e a tela já mostra o resultado. Com rede, a fila sai em lote.</div>
+      </div>
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">Conflito</div>
+        <div style="font-size: 14.5px; color: #48484a;">Registros de troca são quase só inclusão. Quando há conflito, vale a última gravação por registro, com o horário do servidor. Exclusão é marcada (soft delete) para propagar entre aparelhos.</div>
+      </div>
+      <div style="padding: 14px 0;">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px;">O que funciona sem rede</div>
+        <div style="font-size: 14.5px; color: #48484a;">Ver painel e histórico, registrar troca, atualizar km. Login, assinatura e busca de oficina pedem rede.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">12</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Jobs e notificações</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Agendamento</span>
+        <div><strong style="font-weight: 600;">Cloud Scheduler</strong> chama rotas internas da API, autenticadas<div style="color: #48484a; font-size: 14px;">A API não fica ligada esperando o horário. A camada grátis cobre alguns jobs por conta.</div></div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Job diário, 6h</span>
+        <div>Atualiza a km estimada, recalcula itens perto do vencimento, grava os alertas a enviar. Também mantém o Supabase ativo, o que evita a pausa por inatividade do plano grátis</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Envio, 9h</span>
+        <div>Um resumo por veículo, não um push por item</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Push</span>
+        <div><strong style="font-weight: 600;">Web Push com chaves VAPID</strong>, enviado direto pela API. Sem serviço pago no meio</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span style="color: #8e8e93;">E-mail</span>
+        <div><strong style="font-weight: 600;">Resend</strong> para alertas e para os e-mails de login (SMTP configurado no Supabase, porque o envio padrão do Supabase tem limite muito baixo)<div style="color: #48484a; font-size: 14px;">E-mail é o plano B de quem não instalou o PWA no iPhone.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">13</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Cobrança do Premium</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <p style="font-size: 15.5px; color: #48484a; margin: 0 0 10px; text-wrap: pretty;"><strong style="font-weight: 600; color: #1c1c1e;">Asaas</strong>: assinatura recorrente com cartão, Pix e boleto, webhooks e sandbox. Sem mensalidade, só taxa por cobrança. Mercado Pago como alternativa.</p>
+      <p style="font-size: 15.5px; color: #48484a; margin: 0; text-wrap: pretty;">Sem loja, não há comissão de Apple ou Google e o checkout pode ficar dentro do app. O status do plano é atualizado só por webhook. O app lê o plano no <span style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px;">/v1/sync</span> e nunca decide sozinho se a pessoa é Premium.</p>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">14</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">CI/CD</h2>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); display: flex; gap: 14px; align-items: flex-start;">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(120, 120, 128, .14); color: #48484a; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px;">Pull request</span>
+        <div style="flex: 1; min-width: 0; font-size: 14.5px; color: #48484a;">Lint, typecheck, testes do que mudou (Turborepo), testes da API na JVM com Postgres real (Testcontainers), checagem do cliente gerado contra o OpenAPI. Preview da web na Cloudflare.</div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); display: flex; gap: 14px; align-items: flex-start;">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(10, 132, 255, .12); color: #0060df; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px;">Merge na main</span>
+        <div style="flex: 1; min-width: 0; font-size: 14.5px; color: #48484a;">Build da imagem nativa, migração Flyway no banco de dev, deploy no "api-dev" e na web de dev.</div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); display: flex; gap: 14px; align-items: flex-start;">
+        <span style="padding: 3px 10px; border-radius: 20px; background: rgba(52, 199, 89, .14); color: #248a3d; font-size: 12px; font-weight: 600; white-space: nowrap; margin-top: 2px;">Tag de versão</span>
+        <div style="flex: 1; min-width: 0; font-size: 14.5px; color: #48484a;">Aprovação manual, migração em prod, deploy da mesma imagem já testada em dev. O Cloud Run troca as instâncias sem queda e permite voltar para a versão anterior em um clique.</div>
+      </div>
+    </div>
+    <p style="font-size: 14px; color: #8e8e93; margin: 10px 0 0;">O build nativo leva vários minutos. Ele roda só no merge e na tag, não em todo PR, para caber nos minutos grátis do GitHub Actions.</p>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">15</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Observabilidade, analytics e flags</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Erros</span>
+        <div><strong style="font-weight: 600;">Sentry</strong> na web e na API, com release e source maps</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Logs e métricas</span>
+        <div>Logs em JSON com ID de requisição no Cloud Logging, que já vem com o Cloud Run. Uptime check grátis</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Alertas para você</span>
+        <div>API fora do ar, taxa de erro acima de 1%, job diário que não rodou, webhook falhando, <strong style="font-weight: 600;">alerta de orçamento no Google Cloud</strong> a partir de US$ 1</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span style="color: #8e8e93;">Analytics e flags</span>
+        <div><strong style="font-weight: 600;">PostHog</strong> para os dois<div style="color: #48484a; font-size: 14px;">Funil (cadastrou veículo, registrou troca, instalou o PWA, ativou push, assinou) e flags para liberar recursos aos poucos.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">16</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Segurança e LGPD</h2>
+    </div>
+    <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Segurança</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div>JWT validado pela chave pública do Supabase</div>
+          <div>Toda consulta filtrada pelo dono. Teste automático tenta ler dado de outro usuário</div>
+          <div>CORS só para os domínios do app, CSP e headers de segurança na Cloudflare</div>
+          <div>Rotas de job aceitam só chamadas do Cloud Scheduler</div>
+          <div>Segredos no Secret Manager, Dependabot ligado</div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+        <div style="font-size: 16.5px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">LGPD</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: #48484a;">
+          <div>Coletar o mínimo. Placa e e-mail são dados pessoais</div>
+          <div>Política de privacidade e termos antes do lançamento</div>
+          <div>Exportar e excluir a conta pelo próprio app</div>
+          <div>Consentimento para analytics, sem dado pessoal nos eventos</div>
+          <div>Logs sem e-mail ou placa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">17</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Testes</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Unitário</span>
+        <div>Vitest no TS, JUnit 5 + Kotest no Kotlin. Prioridade para a regra de vencimento e km estimada</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Integração</span>
+        <div>API contra Postgres real com Testcontainers. Webhook do Asaas com payloads gravados</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span style="color: #8e8e93;">Ponta a ponta</span>
+        <div>Playwright, incluindo um teste offline, nos fluxos críticos: primeiro veículo, registrar troca, assinar</div>
+      </div>
+    </div>
+    <p style="font-size: 14px; color: #8e8e93; margin: 10px 0 0;">Sozinho, a meta não é cobertura alta. É não quebrar o que dá dinheiro ou confiança.</p>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">18</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Backup e recuperação</h2>
+    </div>
+    <p style="font-size: 15.5px; color: #48484a; margin: 0 0 12px; max-width: 64ch; text-wrap: pretty;">O Supabase free não tem backup. Por isso o backup próprio é obrigatório desde o primeiro usuário.</p>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Diário</span>
+        <div><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">pg_dump</span> toda noite via GitHub Actions, criptografado, no Cloudflare R2. Guarda 30 dias</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px;">
+        <span style="color: #8e8e93;">Teste</span>
+        <div>Uma vez por mês, restaurar num banco vazio e rodar a suíte. Backup que nunca foi restaurado não conta</div>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 12px 0; font-size: 14.5px;">
+        <span style="color: #8e8e93;">Meta</span>
+        <div>Perder no máximo 24h de dados no servidor e voltar em até 4h. O aparelho ainda guarda a cópia local</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">19</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Limites grátis e quando pagar</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); overflow-x: auto;">
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #8e8e93;">
+        <span>Serviço</span><span>Grátis</span><span>Sinal para pagar</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <strong style="font-weight: 600;">Supabase</strong><span style="color: #48484a;">500 MB de banco, 50 mil usuários ativos/mês, 5 GB de tráfego, pausa após 7 dias parado, sem backup</span><span>Primeiro pagante → Pro, US$ 25/mês. Backup diário e sem pausa</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <strong style="font-weight: 600;">Cloud Run</strong><span style="color: #48484a;">2 milhões de requisições/mês + cota de CPU e memória. São Paulo tem cota um pouco menor que as regiões dos EUA</span><span>Partida a frio incomodando → 1 instância mínima ligada</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <strong style="font-weight: 600;">Cloudflare</strong><span style="color: #48484a;">Pages, CDN e DNS grátis com uso comercial. R2 com 10 GB grátis</span><span>Dificilmente no horizonte</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <strong style="font-weight: 600;">Resend</strong><span style="color: #48484a;">3 mil e-mails/mês, 100 por dia</span><span>Alertas por e-mail passando de 100/dia</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <strong style="font-weight: 600;">PostHog</strong><span style="color: #48484a;">1 milhão de eventos/mês</span><span>Muito depois</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14px;">
+        <strong style="font-weight: 600;">Sentry</strong><span style="color: #48484a;">Cota mensal de erros no plano Developer</span><span>Cota estourando todo mês</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(110px, .8fr) minmax(170px, 1.3fr) minmax(170px, 1.3fr); gap: 14px; padding: 12px 0; font-size: 14px;">
+        <strong style="font-weight: 600;">GitHub Actions</strong><span style="color: #48484a;">Minutos grátis por mês em repositório privado</span><span>Builds nativos frequentes demais</span>
+      </div>
+    </div>
+    <div style="background: #1c1c1e; color: #fff; border-radius: 18px; padding: 16px; margin-top: 12px;">
+      <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: rgba(255, 255, 255, .55); margin-bottom: 8px;">Ordem dos upgrades quando entrar receita</div>
+      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14.5px;">
+        <div>1 · Supabase Pro: backup e fim da pausa</div>
+        <div>2 · Instância mínima no Cloud Run: fim da partida a frio</div>
+        <div>3 · Resend pago: alertas por e-mail sem teto</div>
+        <div>4 · Apple Developer: login com Apple e, se fizer sentido, loja via Capacitor</div>
+        <div>5 · SMS no login</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">20</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Ordem de construção</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="font-size: 14px; font-weight: 600; color: #8e8e93; width: 22px; flex: none;">1</span>
+        <div style="font-size: 14.5px; color: #48484a;"><strong style="font-weight: 600; color: #1c1c1e;">Fundação.</strong> Monorepo, CI, dev e prod, API nativa subindo no Cloud Run, login anônimo ponta a ponta, backup noturno, alerta de orçamento.</div>
+      </div>
+      <div style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="font-size: 14px; font-weight: 600; color: #8e8e93; width: 22px; flex: none;">2</span>
+        <div style="font-size: 14.5px; color: #48484a;"><strong style="font-weight: 600; color: #1c1c1e;">Núcleo.</strong> Catálogo na CDN, regra de vencimento com fixtures, veículo, registro de troca, painel.</div>
+      </div>
+      <div style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="font-size: 14px; font-weight: 600; color: #8e8e93; width: 22px; flex: none;">3</span>
+        <div style="font-size: 14.5px; color: #48484a;"><strong style="font-weight: 600; color: #1c1c1e;">PWA e offline.</strong> Service worker, instalação guiada no iOS, fila de saída, /v1/sync.</div>
+      </div>
+      <div style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="font-size: 14px; font-weight: 600; color: #8e8e93; width: 22px; flex: none;">4</span>
+        <div style="font-size: 14.5px; color: #48484a;"><strong style="font-weight: 600; color: #1c1c1e;">Alertas.</strong> Cloud Scheduler, Web Push, e-mail. Aqui o produto cumpre a promessa.</div>
+      </div>
+      <div style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(60, 60, 67, .08);">
+        <span style="font-size: 14px; font-weight: 600; color: #8e8e93; width: 22px; flex: none;">5</span>
+        <div style="font-size: 14.5px; color: #48484a;"><strong style="font-weight: 600; color: #1c1c1e;">Contas e lançamento.</strong> Vincular login, exportar e excluir conta, LGPD, Sentry, PostHog, landing no ar.</div>
+      </div>
+      <div style="display: flex; gap: 14px; padding: 14px 0;">
+        <span style="font-size: 14px; font-weight: 600; color: #8e8e93; width: 22px; flex: none;">6</span>
+        <div style="font-size: 14.5px; color: #48484a;"><strong style="font-weight: 600; color: #1c1c1e;">Premium.</strong> Asaas, webhooks, flags para liberar aos poucos.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-bottom: 30px;">
+    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+      <span style="width: 27px; height: 27px; flex: none; border-radius: 50%; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">21</span>
+      <h2 style="font-size: 25px; font-weight: 700; letter-spacing: -0.035em; margin: 0;">Em aberto</h2>
+    </div>
+    <div style="background: #fff; border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05);">
+      <div style="padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px; color: #48484a;">Plano B do backend: Oracle Cloud Always Free (máquina grátis em São Paulo, mais trabalho de administração) se o Cloud Run sair da cota</div>
+      <div style="padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px; color: #48484a;">Landing em Astro ou pré-renderizada no próprio Vite, conforme o peso do SEO</div>
+      <div style="padding: 12px 0; border-bottom: 1px solid rgba(60, 60, 67, .08); font-size: 14.5px; color: #48484a;">Fonte da consulta por placa (Premium) e custo por consulta</div>
+      <div style="padding: 12px 0; font-size: 14.5px; color: #48484a;">Domínio final e conta PJ para o Asaas</div>
+    </div>
+  </section>
+
+  <div style="background: #1c1c1e; color: #fff; border-radius: 20px; padding: 22px;">
+    <div style="font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgba(255, 255, 255, .55); margin-bottom: 6px;">Em uma frase</div>
+    <p style="font-size: 20px; line-height: 1.42; margin: 0 0 14px; letter-spacing: -0.02em;">Um web app instalável, uma API que só existe quando é chamada e cache em todas as camadas: custo zero no começo e um caminho claro de upgrade quando o produto pagar.</p>
+    <div style="font-size: 14px; color: rgba(255, 255, 255, .65);">Revisar ao fim de cada fase da Estratégia v2.</div>
+  </div>
+
+</div>
+</div>
+</x-dc>
+</body>
+</html>

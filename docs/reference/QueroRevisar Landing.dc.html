@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#0e5a66;text-decoration:none}
+a:hover{color:#0a434c}
+input[type=range]{accent-color:#0e5a66}
+*:focus-visible{outline:2px solid #0e5a66;outline-offset:2px}
+</style>
+</helmet>
+
+<div style="font-family: Figtree, -apple-system, sans-serif; color: #222; font-size: 16px; line-height: 1.5; font-weight: 500;">
+
+  <header style="position: {{ navPos }}; top: 0; z-index: 20; background: rgba(255,255,255,.92); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid #ebebeb;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; row-gap: 10px;">
+      <a href="#topo" style="display: flex;"><img src="brand/logo-horizontal.png" alt="QueroRevisar" style="height: 28px; width: auto; display: block;"></a>
+      <nav style="display: flex; gap: 24px; flex: 1; flex-wrap: wrap; font-size: 15px; font-weight: 500;">
+        <a href="#como-funciona" style="color: #484848;" style-hover="color: #0e5a66;">Como funciona</a>
+        <a href="#alertas" style="color: #484848;" style-hover="color: #0e5a66;">Alertas</a>
+        <a href="#historico" style="color: #484848;" style-hover="color: #0e5a66;">Histórico</a>
+        <a href="#planos" style="color: #484848;" style-hover="color: #0e5a66;">Planos</a>
+        <a href="#faq" style="color: #484848;" style-hover="color: #0e5a66;">Dúvidas</a>
+      </nav>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <a href="QueroRevisar v4.dc.html" style="padding: 10px 14px; border-radius: 10px; color: #222; font-size: 15px; font-weight: 600;" style-hover="background: #f4f4f4; color: #222;">Entrar</a>
+        <a href="#criar-conta" style="padding: 10px 16px; border-radius: 10px; background: #0e5a66; color: #fff; font-size: 15px; font-weight: 600;" style-hover="background: #0a434c; color: #fff;">Criar conta grátis</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="topo" data-screen-label="01 Hero" style="max-width: 1200px; margin: 0 auto; padding: 72px 24px 88px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 64px; align-items: center;">
+    <div id="criar-conta" style="display: flex; flex-direction: column; gap: 24px; max-width: 560px;">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 6px; border-radius: 20px; background: #e7f0f1; color: #0a434c; font-size: 13.5px; font-weight: 600;"><img src="brand/icone-carro.png" alt="" style="width: 26px; height: 26px; object-fit: contain; border-radius: 50%; background: #fff;"><img src="brand/icone-moto.png" alt="" style="width: 26px; height: 26px; object-fit: contain; border-radius: 50%; background: #fff; margin-left: -8px; box-shadow: 0 0 0 2px #e7f0f1;">Para carro e moto</span>
+      </div>
+      <h1 style="margin: 0; font-size: clamp(40px, 5.6vw, 68px); line-height: 1.02; letter-spacing: -0.04em; font-weight: 800; text-wrap: balance;">Cada troca lembrada no km certo.</h1>
+      <p style="margin: 0; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; color: #555; max-width: 48ch; text-wrap: pretty;">Registre o que foi trocado e com quantos km. O QueroRevisar acompanha a quilometragem e avisa quando cada item pede atenção, vence ou passa do prazo.</p>
+
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ submit }}" style="display: flex; flex-direction: column; gap: 12px; max-width: 460px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="email" value="{{ email }}" onChange="{{ onEmail }}" placeholder="seu@email.com" aria-label="Seu e-mail" style="flex: 1 1 220px; min-width: 0; height: 54px; padding: 0 16px; border-radius: 12px; border: 1px solid {{ emailBorder }}; font: inherit; font-size: 16px; color: #222; outline: none; background: #fff;" style-focus="border-color: #0e5a66; box-shadow: 0 0 0 1px #0e5a66;">
+            <button type="submit" style="flex: 0 0 auto; height: 54px; padding: 0 22px; border-radius: 12px; border: 0; background: #0e5a66; color: #fff; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: rgba(14,90,102,.28) 0 6px 14px;" style-hover="background: #0a434c;" style-active="transform: scale(0.97);">Criar conta grátis</button>
+          </div>
+          <sc-if value="{{ emailError }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size: 14px; color: #c13515;">Digite um e-mail válido, ex.: nome@gmail.com</div>
+          </sc-if>
+          <div style="display: flex; align-items: center; gap: 12px; color: #929292; font-size: 13px;"><span style="flex: 1; height: 1px; background: #ebebeb;"></span>ou continue com<span style="flex: 1; height: 1px; background: #ebebeb;"></span></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <a href="QueroRevisar v4.dc.html" style="height: 50px; border-radius: 12px; border: 1px solid #dddddd; display: flex; align-items: center; justify-content: center; gap: 10px; color: #222; font-size: 15px; font-weight: 600;" style-hover="border-color: #222; color: #222;"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"></path><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"></path><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"></path></svg>Google</a>
+            <a href="QueroRevisar v4.dc.html" style="height: 50px; border-radius: 12px; border: 1px solid #dddddd; display: flex; align-items: center; justify-content: center; gap: 10px; color: #222; font-size: 15px; font-weight: 600;" style-hover="border-color: #222; color: #222;"><svg width="17" height="17" viewBox="0 0 24 24" fill="#111"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.1 1.1.1 2.3-.6 3-1.5z"></path></svg>Apple</a>
+          </div>
+          <div style="font-size: 13.5px; color: #6a6a6a;">Sem senha. Enviamos um código de 6 dígitos para o seu e-mail.</div>
+        </form>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width: 460px; border: 1px solid #dddddd; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-shadow: rgba(0,0,0,.04) 0 2px 6px, rgba(0,0,0,.08) 0 8px 24px;">
+          <div>
+            <div style="font-size: 19px; font-weight: 700; letter-spacing: -0.02em;">Confira seu e-mail</div>
+            <div style="font-size: 15px; color: #6a6a6a; margin-top: 2px;">Enviamos um código para <span style="color: #222; font-weight: 600;">{{ email }}</span></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
+            <sc-for list="{{ codeBoxes }}" as="c" hint-placeholder-count="6">
+              <div style="height: 54px; border-radius: 10px; border: 1px solid {{ c.border }}; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700;">{{ c.v }}</div>
+            </sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <button onClick="{{ resetSent }}" style="border: 0; background: none; padding: 0; font: inherit; font-size: 14.5px; color: #222; text-decoration: underline; cursor: pointer;">Trocar e-mail</button>
+            <a href="QueroRevisar v4.dc.html" style="padding: 12px 18px; border-radius: 12px; background: #0e5a66; color: #fff; font-size: 15px; font-weight: 600;" style-hover="background: #0a434c; color: #fff;">Abrir o protótipo</a>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="position: relative; display: flex; justify-content: center; padding: 24px 0;">
+      <div style="position: absolute; inset: 0 4% 0 10%; border-radius: 40px; background: #eef4f5;"></div>
+      <div style="position: absolute; right: 6%; bottom: 8%; width: 46%; aspect-ratio: 1; border-radius: 50%; border: 1px solid #d3e3e5;"></div>
+
+      <div style="position: relative; width: 312px; max-width: 100%; border-radius: 48px; background: #16191a; padding: 11px; box-shadow: rgba(14,40,46,.18) 0 30px 60px -10px, rgba(0,0,0,.12) 0 12px 24px -8px;">
+        <div style="border-radius: 38px; background: #fff; overflow: hidden; height: 640px; display: flex; flex-direction: column; position: relative;">
+          <div style="height: 44px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 26px; font-size: 13px; font-weight: 700;">
+            <span>9:41</span>
+            <span style="width: 90px; height: 24px; border-radius: 14px; background: #16191a;"></span>
+            <span style="display: flex; gap: 4px; align-items: center;"><svg width="16" height="11" viewBox="0 0 16 11" fill="#222"><rect x="0" y="7" width="3" height="4" rx="1"></rect><rect x="4.3" y="5" width="3" height="6" rx="1"></rect><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"></rect><rect x="13" y="0" width="3" height="11" rx="1"></rect></svg><svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="3" stroke="#222" opacity=".5"></rect><rect x="2" y="2" width="14" height="7" rx="1.6" fill="#222"></rect></svg></span>
+          </div>
+          <div style="flex: 1; padding: 8px 16px 0; display: flex; flex-direction: column; gap: 12px; overflow: hidden;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <img src="brand/logo-horizontal.png" alt="" style="height: 20px; width: auto;">
+              <span style="width: 28px; height: 28px; border-radius: 50%; background: #e7f0f1; color: #0e5a66; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">R</span>
+            </div>
+            <div style="border-radius: 16px; padding: 13px; border: 1px solid #dddddd; box-shadow: rgba(0,0,0,.04) 0 2px 6px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <div style="font-size: 17px; font-weight: 700; letter-spacing: -0.02em;">Corolla XEi</div>
+                  <div style="font-size: 11.5px; color: #6a6a6a;">Toyota · 2019</div>
+                </div>
+                <img src="brand/icone-carro.png" alt="" style="width: 64px; height: 64px; object-fit: contain; margin: -12px -6px -16px 0;">
+              </div>
+              <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-top: 12px;">
+                <div>
+                  <div style="font-size: 10.5px; color: #6a6a6a;">Km estimada hoje</div>
+                  <div style="font-size: 23px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">48.320</div>
+                </div>
+                <span style="padding: 7px 11px; border-radius: 9px; border: 1px solid #0e5a66; color: #0e5a66; font-size: 11.5px; font-weight: 600;">Atualizar km</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <div style="flex: 1; border-radius: 11px; background: #fdf1f0; padding: 9px;"><div style="font-size: 19px; font-weight: 700; color: #c13515;">1</div><div style="font-size: 11px; color: #8a1c16;">vencido</div></div>
+              <div style="flex: 1; border-radius: 11px; background: #fdf5e7; padding: 9px;"><div style="font-size: 19px; font-weight: 700; color: #9a5b00;">2</div><div style="font-size: 11px; color: #7a4800;">em atenção</div></div>
+              <div style="flex: 1; border-radius: 11px; background: #f4f4f4; padding: 9px;"><div style="font-size: 19px; font-weight: 700;">14</div><div style="font-size: 11px; color: #555;">em dia</div></div>
+            </div>
+            <div style="font-size: 16px; font-weight: 600; letter-spacing: -0.02em; margin-top: 2px;">Precisa de atenção</div>
+            <div style="display: flex; flex-direction: column; margin-top: -6px;">
+              <sc-for list="{{ phoneItems }}" as="p" hint-placeholder-count="3">
+                <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-bottom: 1px solid #ebebeb;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="font-size: 13px; font-weight: 600;">{{ p.name }}</div>
+                      <div style="font-size: 11px; color: #6a6a6a;">{{ p.line }}</div>
+                    </div>
+                    <span style="font-size: 10.5px; font-weight: 600; color: {{ p.fg }}; background: {{ p.bg }}; padding: 3px 8px; border-radius: 20px; white-space: nowrap;">{{ p.badge }}</span>
+                  </div>
+                  <div style="height: 3px; border-radius: 3px; background: #f0f0f0;"><div style="width: {{ p.w }}; height: 100%; border-radius: 3px; background: {{ p.bar }};"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex: none; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #ebebeb; padding: 8px 6px 18px; background: #fff;">
+            <sc-for list="{{ phoneTabs }}" as="t" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; color: {{ t.color }}; font-size: 10px; font-weight: 600;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg>{{ t.label }}
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="position: absolute; left: 0; top: 18%; width: 250px; background: #fff; border-radius: 18px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; box-shadow: rgba(0,0,0,.04) 0 0 0 1px, rgba(14,40,46,.16) 0 14px 32px -6px;">
+        <span style="width: 38px; height: 38px; flex: none; border-radius: 10px; background: #fdf5e7; color: #9a5b00; display: flex; align-items: center; justify-content: center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
+        <div style="min-width: 0;">
+          <div style="font-size: 13.5px; font-weight: 700;">Óleo do motor</div>
+          <div style="font-size: 12.5px; color: #6a6a6a; line-height: 1.35;">Faltam 1.680 km para a troca</div>
+        </div>
+      </div>
+      <div style="position: absolute; right: 0; bottom: 14%; background: #fff; border-radius: 16px; padding: 10px 14px 10px 10px; display: flex; gap: 10px; align-items: center; box-shadow: rgba(0,0,0,.04) 0 0 0 1px, rgba(14,40,46,.16) 0 14px 32px -6px;">
+        <span style="width: 30px; height: 30px; border-radius: 50%; background: #0e5a66; color: #fff; display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div style="font-size: 13px; line-height: 1.3;"><div style="font-weight: 700;">Troca registrada</div><div style="color: #6a6a6a;">Pastilhas · 45.200 km</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top: 1px solid #ebebeb; border-bottom: 1px solid #ebebeb;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
+      <div style="display: flex; gap: 14px; align-items: baseline;"><span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: #0e5a66; font-variant-numeric: tabular-nums;">175</span><span style="font-size: 15px; color: #484848;">itens no catálogo, do óleo ao kit relação</span></div>
+      <div style="display: flex; gap: 14px; align-items: baseline;"><span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: #0e5a66;">2</span><span style="font-size: 15px; color: #484848;">campos obrigatórios por troca: item e km</span></div>
+      <div style="display: flex; gap: 14px; align-items: baseline;"><span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: #0e5a66;">0</span><span style="font-size: 15px; color: #484848;">alertas escondidos no plano grátis</span></div>
+    </div>
+  </section>
+
+  <section id="como-funciona" data-screen-label="02 Como funciona" style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 40px;">
+    <div style="max-width: 640px; margin-bottom: 48px;">
+      <div style="font-size: 14px; font-weight: 700; color: #0e5a66; letter-spacing: .02em; margin-bottom: 10px;">Como funciona</div>
+      <h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance;">Três passos e o app passa a lembrar por você.</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px;">
+      <div style="border-radius: 24px; border: 1px solid #dddddd; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="height: 168px; border-radius: 16px; background: #f7f7f7; display: flex; align-items: center; justify-content: center; padding: 20px;">
+          <div style="width: 100%; max-width: 260px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 6px;">
+              <span style="flex: 1; height: 56px; border-radius: 12px; background: #fff; border: 1.5px solid #0e5a66; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 600;"><img src="brand/icone-carro.png" alt="" style="width: 34px; height: 34px; object-fit: contain;">Carro</span>
+              <span style="flex: 1; height: 56px; border-radius: 12px; background: #fff; border: 1px solid #dddddd; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 600; color: #6a6a6a;"><img src="brand/icone-moto.png" alt="" style="width: 34px; height: 34px; object-fit: contain;">Moto</span>
+            </div>
+            <div style="height: 40px; border-radius: 10px; background: #fff; border: 1px solid #dddddd; display: flex; align-items: center; padding: 0 12px; font-size: 13px; justify-content: space-between;">Toyota · Corolla XEi<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="width: 32px; height: 32px; flex: none; border-radius: 50%; background: #0e5a66; color: #fff; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center;">1</span>
+          <div><div style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Cadastre o veículo</div><p style="margin: 4px 0 0; color: #6a6a6a; font-size: 15.5px; text-wrap: pretty;">Tipo, marca, modelo, ano e a km que aparece no painel hoje.</p></div>
+        </div>
+      </div>
+      <div style="border-radius: 24px; border: 1px solid #dddddd; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="height: 168px; border-radius: 16px; background: #f7f7f7; display: flex; align-items: center; justify-content: center; padding: 20px;">
+          <div style="width: 100%; max-width: 260px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="height: 44px; border-radius: 10px; background: #fff; border: 1px solid #dddddd; display: flex; align-items: center; padding: 0 12px; font-size: 13.5px; font-weight: 600;">Óleo do motor</div>
+            <div style="height: 50px; border-radius: 10px; background: #fff; border: 1px solid #0e5a66; box-shadow: 0 0 0 1px #0e5a66; display: flex; align-items: center; justify-content: space-between; padding: 0 12px;"><span style="font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums;">40.000</span><span style="font-size: 12px; color: #6a6a6a;">km no painel</span></div>
+            <div style="display: flex; gap: 6px;"><span style="flex: 1; text-align: center; padding: 6px; border-radius: 8px; border: 1px solid #0e5a66; background: #fff; font-size: 12px; font-weight: 600;">Em casa</span><span style="flex: 1; text-align: center; padding: 6px; border-radius: 8px; border: 1px solid #dddddd; background: #fff; font-size: 12px; color: #6a6a6a;">Oficina</span></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="width: 32px; height: 32px; flex: none; border-radius: 50%; background: #0e5a66; color: #fff; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center;">2</span>
+          <div><div style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Registre as trocas</div><p style="margin: 4px 0 0; color: #6a6a6a; font-size: 15.5px; text-wrap: pretty;">Escolha o item e informe o km da troca. Data, local e valor são opcionais.</p></div>
+        </div>
+      </div>
+      <div style="border-radius: 24px; border: 1px solid #dddddd; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="height: 168px; border-radius: 16px; background: #f7f7f7; display: flex; align-items: center; justify-content: center; padding: 20px;">
+          <div style="width: 100%; max-width: 260px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="background: #fff; border-radius: 12px; border: 1px solid #dddddd; padding: 10px 12px; display: flex; align-items: center; gap: 10px;"><div style="flex: 1;"><div style="font-size: 13px; font-weight: 600;">Correia dentada</div><div style="font-size: 11.5px; color: #6a6a6a;">passou 1.200 km</div></div><span style="font-size: 11px; font-weight: 600; color: #c13515; background: #fdf1f0; padding: 3px 9px; border-radius: 20px;">Vencido</span></div>
+            <div style="background: #fff; border-radius: 12px; border: 1px solid #dddddd; padding: 10px 12px; display: flex; align-items: center; gap: 10px;"><div style="flex: 1;"><div style="font-size: 13px; font-weight: 600;">Velas de ignição</div><div style="font-size: 11.5px; color: #6a6a6a;">faltam 2.900 km</div></div><span style="font-size: 11px; font-weight: 600; color: #9a5b00; background: #fdf5e7; padding: 3px 9px; border-radius: 20px;">Atenção</span></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="width: 32px; height: 32px; flex: none; border-radius: 50%; background: #0e5a66; color: #fff; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center;">3</span>
+          <div><div style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Receba os alertas</div><p style="margin: 4px 0 0; color: #6a6a6a; font-size: 15.5px; text-wrap: pretty;">O app estima a km do dia a dia e mostra o que está perto de vencer.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="alertas" data-screen-label="03 Alertas" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 64px; align-items: center;">
+    <div style="display: flex; flex-direction: column; gap: 28px; max-width: 520px;">
+      <div>
+        <div style="font-size: 14px; font-weight: 700; color: #0e5a66; letter-spacing: .02em; margin-bottom: 10px;">Alertas por km e por tempo</div>
+        <h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance;">Aviso antes de vencer, não depois.</h2>
+        <p style="margin: 16px 0 0; font-size: 18px; color: #555; text-wrap: pretty;">Cada item tem uma vida útil em km e em meses. O que chegar primeiro decide o alerta.</p>
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <div style="display: flex; gap: 16px; padding: 16px 0; border-top: 1px solid #ebebeb;">
+          <span style="flex: none; width: 64px; font-size: 13px; font-weight: 700; color: #9a5b00; background: #fdf5e7; padding: 4px 0; border-radius: 20px; text-align: center; height: fit-content;">80%</span>
+          <div><div style="font-weight: 700;">Atenção</div><div style="color: #6a6a6a; font-size: 15px;">O item entrou na reta final. Hora de comprar a peça ou marcar a oficina.</div></div>
+        </div>
+        <div style="display: flex; gap: 16px; padding: 16px 0; border-top: 1px solid #ebebeb;">
+          <span style="flex: none; width: 64px; font-size: 13px; font-weight: 700; color: #c13515; background: #fdf1f0; padding: 4px 0; border-radius: 20px; text-align: center; height: fit-content;">100%</span>
+          <div><div style="font-weight: 700;">Vencido</div><div style="color: #6a6a6a; font-size: 15px;">Passou da vida útil. O app mostra quantos km ou meses já se foram.</div></div>
+        </div>
+        <div style="display: flex; gap: 16px; padding: 16px 0; border-top: 1px solid #ebebeb; border-bottom: 1px solid #ebebeb;">
+          <span style="flex: none; width: 64px; font-size: 13px; font-weight: 700; color: #0a434c; background: #e7f0f1; padding: 4px 0; border-radius: 20px; text-align: center; height: fit-content;">Tempo</span>
+          <div><div style="font-weight: 700;">Vencido pelo prazo</div><div style="color: #6a6a6a; font-size: 15px;">Rodou pouco? Óleo e fluido envelhecem parados. O prazo em meses também conta.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-radius: 28px; background: #f7f7f7; padding: clamp(20px, 4vw, 40px);">
+      <div style="background: #fff; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 22px; box-shadow: rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 6px, rgba(0,0,0,.08) 0 10px 24px -6px;">
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Óleo do motor</div>
+            <div style="font-size: 14px; color: #6a6a6a;">Motor · a cada 10.000 km ou 12 meses</div>
+          </div>
+          <span style="font-size: 13px; font-weight: 700; color: {{ alert.fg }}; background: {{ alert.bg }}; padding: 5px 12px; border-radius: 20px; white-space: nowrap; transition: all .2s;">{{ alert.badge }}</span>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; gap: 12px;">
+            <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">{{ alert.pctLabel }}</span>
+            <span style="font-size: 14.5px; color: #484848; text-align: right;">{{ alert.line }}</span>
+          </div>
+          <div style="position: relative; height: 10px; border-radius: 10px; background: #f0f0f0;">
+            <div style="width: {{ alert.w }}; height: 100%; border-radius: 10px; background: {{ alert.bar }}; transition: width .15s, background .2s;"></div>
+            <span style="position: absolute; left: 66.67%; top: -5px; bottom: -5px; width: 2px; background: #9a5b00; border-radius: 2px;"></span>
+            <span style="position: absolute; left: 83.33%; top: -5px; bottom: -5px; width: 2px; background: #c13515; border-radius: 2px;"></span>
+          </div>
+          <div style="position: relative; height: 18px; margin-top: 6px; font-size: 11.5px; font-weight: 600; color: #929292;">
+            <span style="position: absolute; left: 0;">0%</span>
+            <span style="position: absolute; left: 66.67%; transform: translateX(-50%); color: #9a5b00;">80%</span>
+            <span style="position: absolute; left: 83.33%; transform: translateX(-50%); color: #c13515;">100%</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 18px; padding-top: 18px; border-top: 1px solid #ebebeb;">
+          <label style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="display: flex; justify-content: space-between; font-size: 14.5px;"><span style="color: #6a6a6a;">Rodados desde a troca</span><span style="font-weight: 700; font-variant-numeric: tabular-nums;">{{ kmFmt }} km</span></span>
+            <input type="range" min="0" max="12000" step="100" value="{{ km }}" onChange="{{ onKm }}" style="width: 100%; margin: 0;">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="display: flex; justify-content: space-between; font-size: 14.5px;"><span style="color: #6a6a6a;">Tempo desde a troca</span><span style="font-weight: 700; font-variant-numeric: tabular-nums;">{{ monthsLabel }}</span></span>
+            <input type="range" min="0" max="15" step="1" value="{{ months }}" onChange="{{ onMonths }}" style="width: 100%; margin: 0;">
+          </label>
+        </div>
+        <div style="font-size: 13.5px; color: #6a6a6a; display: flex; gap: 8px; align-items: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4M12 16h.01"></path></svg>{{ alert.why }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="04 Carro e moto" style="background: #f7f7f7;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 56px; align-items: center;">
+      <div style="display: flex; flex-direction: column; gap: 24px; max-width: 520px;">
+        <div>
+          <div style="font-size: 14px; font-weight: 700; color: #0e5a66; letter-spacing: .02em; margin-bottom: 10px;">Carro e moto</div>
+          <h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance;">A garagem inteira no mesmo app.</h2>
+          <p style="margin: 16px 0 0; font-size: 18px; color: #555; text-wrap: pretty;">O catálogo muda conforme o veículo. Moto tem kit relação e lubrificação da corrente; carro tem correia dentada e rodízio de pneus. Quando existe plano do fabricante, ele vale por cima da média.</p>
+        </div>
+        <div role="tablist" style="display: inline-flex; padding: 4px; border-radius: 14px; background: #fff; border: 1px solid #dddddd; width: fit-content; gap: 4px;">
+          <button role="tab" onClick="{{ pickCar }}" style="display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px 0 8px; border-radius: 10px; border: 0; background: {{ carBg }}; color: {{ carFg }}; box-shadow: {{ carRing }}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s;"><img src="brand/icone-carro.png" alt="" style="width: 34px; height: 34px; object-fit: contain;">Carro</button>
+          <button role="tab" onClick="{{ pickMoto }}" style="display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px 0 8px; border-radius: 10px; border: 0; background: {{ motoBg }}; color: {{ motoFg }}; box-shadow: {{ motoRing }}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s;"><img src="brand/icone-moto.png" alt="" style="width: 34px; height: 34px; object-fit: contain;">Moto</button>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 28px; padding: 28px; border: 1px solid #ebebeb; display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; align-items: center; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid #ebebeb;">
+          <img src="{{ vehImg }}" alt="" style="width: 96px; height: 96px; object-fit: contain; margin: -16px -4px -16px -10px;">
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">{{ vehName }}</div>
+            <div style="font-size: 14px; color: #6a6a6a;">{{ vehSub }}</div>
+          </div>
+        </div>
+        <sc-for list="{{ vehItems }}" as="v" hint-placeholder-count="5">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+            <div style="flex: 1; min-width: 0;"><div style="font-size: 15.5px; font-weight: 600;">{{ v.name }}</div><div style="font-size: 13px; color: #6a6a6a;">{{ v.cat }}</div></div>
+            <span style="font-size: 13.5px; color: #484848; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ v.every }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="historico" data-screen-label="05 Histórico" style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 96px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 64px; align-items: center;">
+    <div style="order: 2; display: flex; flex-direction: column; gap: 20px; max-width: 520px;">
+      <div style="font-size: 14px; font-weight: 700; color: #0e5a66; letter-spacing: .02em;">Histórico e gastos</div>
+      <h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance;">Tudo que já foi feito, em casa ou na oficina.</h2>
+      <p style="margin: 0; font-size: 18px; color: #555; text-wrap: pretty;">Busque por item, filtre por local e veja quanto cada veículo custou. Na hora de vender, o histórico mostra o cuidado que o carro recebeu.</p>
+    </div>
+    <div style="order: 1; border-radius: 28px; background: #eef4f5; padding: clamp(20px, 4vw, 40px);">
+      <div style="background: #fff; border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 6px, rgba(0,0,0,.08) 0 10px 24px -6px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Histórico</div>
+          <div style="font-size: 13px; color: #6a6a6a;">Corolla XEi</div>
+        </div>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ placeChips }}" as="c" hint-placeholder-count="3">
+            <button onClick="{{ c.pick }}" style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid {{ c.border }}; background: {{ c.bg }}; color: {{ c.fg }}; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all .15s;">{{ c.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <sc-for list="{{ historyRows }}" as="h" hint-placeholder-count="5">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+              <span style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: {{ h.iconBg }}; color: {{ h.iconFg }}; display: flex; align-items: center; justify-content: center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="{{ h.icon }}"></path></svg></span>
+              <div style="flex: 1; min-width: 0;"><div style="font-size: 14.5px; font-weight: 600;">{{ h.name }}</div><div style="font-size: 12.5px; color: #6a6a6a;">{{ h.sub }}</div></div>
+              <span style="font-size: 14.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ h.cost }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px;">
+          <span style="font-size: 14px; color: #6a6a6a;">{{ totalLabel }}</span>
+          <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{ total }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="planos" data-screen-label="06 Planos" style="background: #f7f7f7;">
+    <div style="max-width: 1000px; margin: 0 auto; padding: 104px 24px;">
+      <div style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 44px;">
+        <div style="font-size: 14px; font-weight: 700; color: #0e5a66; letter-spacing: .02em;">Planos</div>
+        <h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance;">Comece grátis. Os alertas são sempre completos.</h2>
+        <div style="display: inline-flex; padding: 4px; border-radius: 12px; background: #fff; border: 1px solid #dddddd; gap: 4px; margin-top: 10px;">
+          <button onClick="{{ pickMensal }}" style="height: 40px; padding: 0 18px; border-radius: 9px; border: 0; background: {{ mensalBg }}; color: {{ mensalFg }}; font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;">Mensal</button>
+          <button onClick="{{ pickAnual }}" style="height: 40px; padding: 0 14px 0 18px; border-radius: 9px; border: 0; background: {{ anualBg }}; color: {{ anualFg }}; font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">Anual<span style="font-size: 11.5px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: #e7f0f1; color: #0a434c;">−17%</span></button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; align-items: stretch;">
+        <div style="background: #fff; border-radius: 24px; padding: 32px; border: 1px solid #dddddd; display: flex; flex-direction: column; gap: 22px;">
+          <div>
+            <div style="font-size: 20px; font-weight: 700;">Grátis</div>
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 8px;"><span style="font-size: 44px; font-weight: 800; letter-spacing: -0.04em;">R$ 0</span><span style="color: #6a6a6a;">para sempre</span></div>
+            <div style="font-size: 14px; color: #6a6a6a; height: 21px;">Com anúncios</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+            <sc-for list="{{ freeFeats }}" as="f" hint-placeholder-count="5">
+              <div style="display: flex; gap: 10px; font-size: 15.5px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0e5a66" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 1px;"><path d="M20 6 9 17l-5-5"></path></svg>{{ f }}</div>
+            </sc-for>
+          </div>
+          <a href="#criar-conta" style="height: 52px; border-radius: 12px; border: 1px solid #222; color: #222; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600;" style-hover="background: #f4f4f4; color: #222;">Criar conta grátis</a>
+        </div>
+        <div style="background: #fff; border-radius: 24px; padding: 32px; border: 2px solid #0e5a66; display: flex; flex-direction: column; gap: 22px; position: relative; box-shadow: rgba(14,90,102,.14) 0 20px 40px -12px;">
+          <span style="position: absolute; top: -13px; left: 30px; font-size: 12.5px; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: #0e5a66; color: #fff;">Para mais de um veículo</span>
+          <div>
+            <div style="font-size: 20px; font-weight: 700;">Premium</div>
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 8px;"><span style="font-size: 44px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;">{{ price }}</span><span style="color: #6a6a6a;">{{ per }}</span></div>
+            <div style="font-size: 14px; color: #6a6a6a; height: 21px;">{{ priceNote }}</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+            <sc-for list="{{ premFeats }}" as="f" hint-placeholder-count="5">
+              <div style="display: flex; gap: 10px; font-size: 15.5px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0e5a66" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 1px;"><path d="M20 6 9 17l-5-5"></path></svg>{{ f }}</div>
+            </sc-for>
+          </div>
+          <a href="#criar-conta" style="height: 52px; border-radius: 12px; background: #0e5a66; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; box-shadow: rgba(14,90,102,.28) 0 6px 14px;" style-hover="background: #0a434c; color: #fff;">Começar com Premium</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" data-screen-label="07 FAQ" style="max-width: 1200px; margin: 0 auto; padding: 104px 24px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start;">
+    <div style="flex: 1 1 280px; max-width: 380px;">
+      <div style="font-size: 14px; font-weight: 700; color: #0e5a66; letter-spacing: .02em; margin-bottom: 10px;">Dúvidas</div>
+      <h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 800;">Perguntas frequentes</h2>
+    </div>
+    <div style="flex: 2 1 480px; min-width: 0; display: flex; flex-direction: column; border-top: 1px solid #dddddd;">
+      <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="6">
+        <div style="border-bottom: 1px solid #dddddd;">
+          <button onClick="{{ q.toggle }}" aria-expanded="{{ q.open }}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 0; border: 0; background: none; font: inherit; font-size: 18px; font-weight: 600; color: #222; text-align: left; cursor: pointer;">{{ q.q }}<span style="flex: none; width: 32px; height: 32px; border-radius: 50%; background: {{ q.iconBg }}; color: {{ q.iconFg }}; display: flex; align-items: center; justify-content: center; transform: rotate({{ q.rot }}); transition: transform .2s, background .2s;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+          <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+            <p style="margin: -6px 0 22px; padding-right: 48px; font-size: 16px; color: #555; max-width: 64ch; text-wrap: pretty;">{{ q.a }}</p>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="08 CTA final" style="padding: 0 24px 96px;">
+    <div style="max-width: 1152px; margin: 0 auto; border-radius: 32px; background: #0e5a66; color: #fff; padding: clamp(40px, 7vw, 88px) clamp(24px, 6vw, 72px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 40px; align-items: center; position: relative; overflow: hidden;">
+      <div style="position: absolute; right: -80px; top: -80px; width: 340px; height: 340px; border-radius: 50%; border: 1px solid rgba(255,255,255,.12);"></div>
+      <div style="position: absolute; right: 20px; top: 20px; width: 140px; height: 140px; border-radius: 50%; border: 1px solid rgba(255,255,255,.12);"></div>
+      <div style="position: relative; display: flex; flex-direction: column; gap: 16px;">
+        <h2 style="margin: 0; font-size: clamp(32px, 4vw, 52px); line-height: 1.04; letter-spacing: -0.04em; font-weight: 800; text-wrap: balance;">Registre a última troca hoje.</h2>
+        <p style="margin: 0; font-size: 18px; color: #fff; text-wrap: pretty; max-width: 44ch;">Dois minutos para cadastrar o veículo. Depois o app acompanha a km por você.</p>
+      </div>
+      <form onSubmit="{{ submitBottom }}" style="position: relative; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; background: #fff; padding: 6px; border-radius: 16px;">
+          <input type="email" value="{{ email }}" onChange="{{ onEmail }}" placeholder="seu@email.com" aria-label="Seu e-mail" style="flex: 1 1 200px; min-width: 0; height: 52px; padding: 0 14px; border: 0; border-radius: 10px; font: inherit; font-size: 16px; color: #222; outline: none;">
+          <button type="submit" style="flex: 0 0 auto; height: 52px; padding: 0 22px; border-radius: 11px; border: 0; background: #16191a; color: #fff; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;" style-hover="background: #000;" style-active="transform: scale(0.97);">Criar conta grátis</button>
+        </div>
+        <div style="font-size: 14px; color: #fff;">Sem senha e sem cartão de crédito.</div>
+      </form>
+    </div>
+  </section>
+
+  <footer style="border-top: 1px solid #ebebeb;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 36px 24px 48px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between;">
+      <img src="brand/logo-horizontal.png" alt="QueroRevisar" style="height: 24px; width: auto;">
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px;">
+        <a href="#planos" style="color: #6a6a6a;" style-hover="color: #222;">Planos</a>
+        <a href="#faq" style="color: #6a6a6a;" style-hover="color: #222;">Dúvidas</a>
+        <a href="#topo" style="color: #6a6a6a;" style-hover="color: #222;">Termos de uso</a>
+        <a href="#topo" style="color: #6a6a6a;" style-hover="color: #222;">Privacidade</a>
+      </div>
+      <div style="font-size: 13.5px; color: #929292;">© 2026 QueroRevisar</div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;billingDefault&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;mensal&quot;, &quot;anual&quot;], &quot;default&quot;: &quot;mensal&quot;, &quot;tsType&quot;: &quot;'mensal' | 'anual'&quot;}, &quot;stickyNav&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}}">
+const fmt = n => Math.round(n).toLocaleString('pt-BR');
+const brl = n => 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 0 });
+const ICON = {
+  drop: 'M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z',
+  disc: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+  zap: 'M13 2 3 14h9l-1 8 10-12h-9l1-8z',
+  belt: 'M6 12a4 4 0 1 0 0 .01M18 12a4 4 0 1 0 0 .01M6 8h12M6 16h12'
+};
+const HIST = [
+  { name: 'Óleo do motor + filtro', km: 48000, place: 'mec', cost: 389, icon: 'drop', date: 'ago 2026' },
+  { name: 'Pastilhas de freio dianteiras', km: 45200, place: 'casa', cost: 162, icon: 'disc', date: 'mai 2026' },
+  { name: 'Velas de ignição', km: 40000, place: 'casa', cost: 96, icon: 'zap', date: 'jan 2026' },
+  { name: 'Correia dentada', km: 38500, place: 'mec', cost: 820, icon: 'belt', date: 'nov 2025' },
+  { name: 'Fluido de freio', km: 30100, place: 'mec', cost: 140, icon: 'drop', date: 'mar 2025' }
+];
+const VEH = {
+  car: { name: 'Corolla XEi', sub: 'Toyota · 2019 · 48.320 km', img: 'brand/icone-carro.png', items: [
+    ['Óleo do motor', 'Motor', '10.000 km · 12 meses'], ['Correia dentada', 'Motor', '60.000 km · 48 meses'],
+    ['Velas de ignição', 'Ignição', '20.000 km · 24 meses'], ['Rodízio de pneus', 'Pneus', '10.000 km · 12 meses'],
+    ['Fluido de freio', 'Freios', '20.000 km · 24 meses']] },
+  moto: { name: 'CB 500F', sub: 'Honda · 2021 · 21.480 km', img: 'brand/icone-moto.png', items: [
+    ['Óleo do motor', 'Motor', '10.000 km · 12 meses'], ['Kit relação', 'Transmissão', '25.000 km · 36 meses'],
+    ['Lubrificação da corrente', 'Transmissão', '500 km · 1 mês'], ['Corrente: limpeza e ajuste', 'Transmissão', '5.000 km · 6 meses'],
+    ['Fluido de freio', 'Freios', '20.000 km · 24 meses']] }
+};
+const FAQ = [
+  ['Preciso saber a data de cada troca?', 'Não. Para registrar basta o item e o km do painel no dia da troca. Data, local e valor são opcionais.'],
+  ['De onde vêm os intervalos de cada item?', 'De médias pesquisadas por item e por tipo de veículo. Quando o plano de manutenção do fabricante está cadastrado para o seu modelo, ele tem prioridade.'],
+  ['Como o app sabe a km do meu veículo?', 'Você atualiza a km do painel quando quiser. Entre uma atualização e outra, o app estima a km pela média que você roda por mês.'],
+  ['Serve para quem leva na oficina?', 'Sim. Marque se a troca foi em casa ou na oficina e, se quiser, informe o valor. O histórico separa os dois.'],
+  ['O plano grátis limita os alertas?', 'Não. Todos os alertas por km e por tempo aparecem no plano grátis. O Premium libera mais de um veículo, remove anúncios e adiciona o cadastro por placa.'],
+  ['Funciona para moto?', 'Sim. O catálogo se ajusta ao tipo de veículo, com itens próprios de moto como kit relação e lubrificação da corrente.']
+];
+const TABS = [['Painel', 'M3.05 13a9 9 0 1 1 17.9 0M12 14 18 8'], ['Itens', 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'], ['Histórico', 'M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2'], ['Conta', 'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z']];
+
+class Component extends DCLogic {
+  state = { email: '', sent: false, emailErr: false, km: 8600, months: 7, vtype: 'car', place: 'todos', billing: null, faq: 0 };
+
+  submitWith(e) {
+    e.preventDefault();
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(this.state.email.trim());
+    if (!ok) return this.setState({ emailErr: true });
+    this.setState({ sent: true, emailErr: false });
+    if (e.currentTarget && e.currentTarget.getAttribute('data-bottom') !== null) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  renderVals() {
+    const st = this.state;
+    const billing = st.billing || this.props.billingDefault || 'mensal';
+    const kmPct = st.km / 10000, tPct = st.months / 12, pct = Math.max(kmPct, tPct);
+    const byTime = tPct > kmPct;
+    const over = pct >= 1, warn = pct >= 0.8;
+    const alert = {
+      badge: over ? 'Vencido' : warn ? 'Atenção' : 'Em dia',
+      fg: over ? '#c13515' : warn ? '#9a5b00' : '#0a434c',
+      bg: over ? '#fdf1f0' : warn ? '#fdf5e7' : '#e7f0f1',
+      bar: over ? '#c13515' : warn ? '#d98a0b' : '#0e5a66',
+      w: (Math.min(pct, 1.2) / 1.2 * 100).toFixed(2) + '%',
+      pctLabel: Math.round(pct * 100) + '%',
+      line: byTime
+        ? (over ? 'passou ' + (st.months - 12) + (st.months - 12 === 1 ? ' mês' : ' meses') + ' do prazo' : 'faltam ' + (12 - st.months) + (12 - st.months === 1 ? ' mês' : ' meses'))
+        : (over ? 'passou ' + fmt(st.km - 10000) + ' km' : 'faltam ' + fmt(10000 - st.km) + ' km'),
+      why: byTime ? 'Neste caso o prazo de 12 meses chegou antes da km.' : 'Neste caso a km chegou antes do prazo de 12 meses.'
+    };
+    const V = VEH[st.vtype];
+    const rows = HIST.filter(h => st.place === 'todos' || h.place === st.place);
+    const total = rows.reduce((a, h) => a + h.cost, 0);
+    const chip = (key, label) => ({ label, border: st.place === key ? '#222' : '#dddddd', bg: st.place === key ? '#222' : '#fff', fg: st.place === key ? '#fff' : '#222', pick: () => this.setState({ place: key }) });
+    const seg = on => on ? ['#0e5a66', '#fff'] : ['transparent', '#484848'];
+    const vseg = on => on ? ['#fff', '#0e5a66', '0 0 0 1.5px #0e5a66'] : ['#fff', '#6a6a6a', 'none'];
+    const [carBg, carFg, carRing] = vseg(st.vtype === 'car'), [motoBg, motoFg, motoRing] = vseg(st.vtype === 'moto');
+    const [mensalBg, mensalFg] = seg(billing === 'mensal'), [anualBg, anualFg] = seg(billing === 'anual');
+    const onEmail = e => this.setState({ email: e.target.value, emailErr: false });
+
+    return {
+      navPos: (this.props.stickyNav ?? true) ? 'sticky' : 'relative',
+      email: st.email, onEmail, notSent: !st.sent, sent: st.sent, emailError: st.emailErr,
+      emailBorder: st.emailErr ? '#c13515' : '#dddddd',
+      submit: e => this.submitWith(e),
+      submitBottom: e => { e.preventDefault(); const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(st.email.trim()); this.setState(ok ? { sent: true, emailErr: false } : { emailErr: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      resetSent: () => this.setState({ sent: false }),
+      codeBoxes: ['4', '8', '1', '', '', ''].map((v, i) => ({ v, border: i === 3 ? '#0e5a66' : '#dddddd' })),
+      phoneItems: [
+        { name: 'Correia dentada', line: 'passou 1.200 km', badge: 'Vencido', fg: '#c13515', bg: '#fdf1f0', bar: '#c13515', w: '100%' },
+        { name: 'Óleo do motor', line: 'faltam 1.680 km', badge: 'Atenção', fg: '#9a5b00', bg: '#fdf5e7', bar: '#d98a0b', w: '83%' },
+        { name: 'Velas de ignição', line: 'faltam 2.900 km', badge: 'Atenção', fg: '#9a5b00', bg: '#fdf5e7', bar: '#d98a0b', w: '86%' }
+      ],
+      phoneTabs: TABS.map((t, i) => ({ label: t[0], d: t[1], color: i === 0 ? '#0e5a66' : '#929292' })),
+      alert, km: st.km, months: st.months, kmFmt: fmt(st.km),
+      monthsLabel: st.months + (st.months === 1 ? ' mês' : ' meses'),
+      onKm: e => this.setState({ km: +e.target.value }), onMonths: e => this.setState({ months: +e.target.value }),
+      carBg, carFg, motoBg, motoFg, carRing, motoRing, pickCar: () => this.setState({ vtype: 'car' }), pickMoto: () => this.setState({ vtype: 'moto' }),
+      vehImg: V.img, vehName: V.name, vehSub: V.sub, vehItems: V.items.map(i => ({ name: i[0], cat: i[1], every: i[2] })),
+      placeChips: [chip('todos', 'Todos'), chip('casa', 'Em casa'), chip('mec', 'Oficina')],
+      historyRows: rows.map(h => ({ name: h.name, sub: fmt(h.km) + ' km · ' + (h.place === 'casa' ? 'Em casa' : 'Oficina') + ' · ' + h.date, cost: brl(h.cost), icon: ICON[h.icon],
+        iconBg: h.place === 'casa' ? '#e7f0f1' : '#f4f4f4', iconFg: h.place === 'casa' ? '#0e5a66' : '#484848' })),
+      total: brl(total), totalLabel: rows.length + (rows.length === 1 ? ' troca' : ' trocas') + (st.place === 'casa' ? ' em casa' : st.place === 'mec' ? ' na oficina' : ''),
+      mensalBg, mensalFg, anualBg, anualFg, pickMensal: () => this.setState({ billing: 'mensal' }), pickAnual: () => this.setState({ billing: 'anual' }),
+      price: billing === 'anual' ? 'R$ 149' : 'R$ 14,90', per: billing === 'anual' ? '/ano' : '/mês',
+      priceNote: billing === 'anual' ? 'Equivale a R$ 12,42 por mês' : 'Cancele quando quiser',
+      freeFeats: ['1 veículo', 'Todos os alertas por km e por tempo', 'Catálogo completo de 175 itens', 'Histórico com busca e filtros', 'Registro em casa ou na oficina'],
+      premFeats: ['Tudo do plano grátis', 'Vários veículos, carro e moto', 'Sem anúncios', 'Cadastro do veículo pela placa', 'Histórico completo e gastos por veículo'],
+      faqs: FAQ.map((f, i) => { const open = st.faq === i; return { q: f[0], a: f[1], open, rot: open ? '45deg' : '0deg', iconBg: open ? '#0e5a66' : '#f4f4f4', iconFg: open ? '#fff' : '#222', toggle: () => this.setState({ faq: open ? -1 : i }) }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

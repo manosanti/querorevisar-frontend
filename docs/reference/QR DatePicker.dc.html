@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+</helmet>
+<div ref="{{ rootRef }}" style="display: flex; flex-direction: column; gap: 6px; font-family: Figtree, -apple-system, sans-serif; color: #222; font-weight: 500; min-width: 0;">
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}">
+    <span style="font-size: 13.5px; font-weight: 600;">{{ label }}</span>
+  </sc-if>
+  <div style="position: relative;">
+    <button type="button" onClick="{{ toggle }}" aria-haspopup="dialog" aria-expanded="{{ open }}" style="height: 52px; width: 100%; display: flex; align-items: center; gap: 10px; padding: 0 14px 0 16px; border-radius: 8px; border: {{ triggerBorder }}; box-shadow: {{ triggerShadow }}; background: #fff; text-align: left; cursor: pointer; font: inherit; color: inherit; transition: border-color .15s, box-shadow .15s;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><rect x="3" y="4.5" width="18" height="16.5" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+      <span style="flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; color: {{ valueColor }};">{{ display }}</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; transition: transform .2s; transform: {{ chev }};"><path d="m6 9 6 6 6-6"></path></svg>
+    </button>
+
+    <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+      <div role="dialog" aria-label="Escolher data" style="position: absolute; left: 0; top: calc(100% + 6px); z-index: 50; width: 320px; max-width: calc(100vw - 32px); background: #fff; border-radius: 16px; border: 1px solid #dddddd; box-shadow: rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 6px 0, rgba(0,0,0,.12) 0 8px 24px 0; padding: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px;">
+          <button type="button" onClick="{{ prev }}" aria-label="Anterior" style="width: 36px; height: 36px; border-radius: 50%; border: 0; background: #f2f2f2; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <button type="button" onClick="{{ toggleYears }}" style="border: 0; background: none; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 8px; color: #222;">{{ title }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{ yearChev }};"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <button type="button" onClick="{{ next }}" disabled="{{ nextDisabled }}" aria-label="Próximo" style="width: 36px; height: 36px; border-radius: 50%; border: 0; background: #f2f2f2; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: {{ nextOpacity }};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+        </div>
+
+        <sc-if value="{{ showDays }}" hint-placeholder-val="{{ true }}">
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center;">
+            <sc-for list="{{ weekdays }}" as="w" hint-placeholder-count="7">
+              <div style="font-size: 12px; font-weight: 600; color: #929292; height: 28px; display: flex; align-items: center; justify-content: center;">{{ w }}</div>
+            </sc-for>
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="35">
+              <button type="button" onClick="{{ d.pick }}" disabled="{{ d.disabled }}" aria-label="{{ d.aria }}" style="height: 40px; border-radius: 50%; border: {{ d.border }}; background: {{ d.bg }}; color: {{ d.color }}; font: inherit; font-size: 14.5px; font-weight: {{ d.weight }}; cursor: {{ d.cursor }}; font-variant-numeric: tabular-nums; visibility: {{ d.vis }};">{{ d.n }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showYears }}" hint-placeholder-val="{{ false }}">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-height: 268px; overflow-y: auto;">
+            <sc-for list="{{ years }}" as="y" hint-placeholder-count="12">
+              <button type="button" onClick="{{ y.pick }}" style="height: 44px; border-radius: 22px; border: {{ y.border }}; background: {{ y.bg }}; color: {{ y.color }}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums;">{{ y.n }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #dddddd;">
+          <button type="button" onClick="{{ clear }}" style="border: 0; background: none; font: inherit; font-size: 14.5px; font-weight: 600; text-decoration: underline; cursor: pointer; color: #222; padding: 8px 4px;">{{ clearLabel }}</button>
+          <button type="button" onClick="{{ pickToday }}" style="height: 38px; padding: 0 16px; border-radius: 19px; border: 1px solid #0e5a66; background: #fff; color: #0e5a66; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">Hoje</button>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+  <sc-if value="{{ hasHelper }}" hint-placeholder-val="{{ false }}">
+    <span style="font-size: 13px; color: {{ helperColor }};">{{ helper }}</span>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360,&quot;height&quot;:500},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Data&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;placeholder&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Selecione a data&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;value&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;max&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;today&quot;,&quot;tsType&quot;:&quot;'today' | string&quot;},&quot;minYear&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:2006,&quot;tsType&quot;:&quot;number&quot;},&quot;clearLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Limpar&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;helper&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;error&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onChange&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(iso: string) =&gt; void&quot;}}">
+const MONTHS = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+const pad = n => String(n).padStart(2, '0');
+const isoOf = (y, m, d) => y + '-' + pad(m + 1) + '-' + pad(d);
+const todayIso = () => { const t = new Date(); return isoOf(t.getFullYear(), t.getMonth(), t.getDate()); };
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  state = (() => { const v = this.props.value; const d = v ? new Date(v + 'T12:00') : new Date(); return { open: false, mode: 'days', y: d.getFullYear(), m: d.getMonth() }; })();
+  componentDidMount() {
+    this.onDoc = e => { if (this.state.open && this.rootRef.current && !this.rootRef.current.contains(e.target)) this.setState({ open: false }); };
+    this.onKey = e => { if (e.key === 'Escape' && this.state.open) this.setState({ open: false }); };
+    document.addEventListener('mousedown', this.onDoc); document.addEventListener('touchstart', this.onDoc); document.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { document.removeEventListener('mousedown', this.onDoc); document.removeEventListener('touchstart', this.onDoc); document.removeEventListener('keydown', this.onKey); }
+  set(v) { this.setState({ open: false }); if (this.props.onChange) this.props.onChange(v); }
+  renderVals() {
+    const p = this.props, st = this.state;
+    const max = p.max === 'today' ? todayIso() : p.max || null;
+    const tIso = todayIso();
+    const first = new Date(st.y, st.m, 1).getDay();
+    const dim = new Date(st.y, st.m + 1, 0).getDate();
+    const days = [];
+    for (let i = 0; i < first; i++) days.push({ n: '', vis: 'hidden', disabled: true, bg: 'none', border: '0', color: '#222', weight: 500, cursor: 'default', aria: '', pick: null });
+    for (let d = 1; d <= dim; d++) {
+      const iso = isoOf(st.y, st.m, d); const sel = iso === p.value; const dis = max && iso > max; const today = iso === tIso;
+      days.push({ n: d, vis: 'visible', disabled: !!dis, aria: d + ' de ' + MONTHS[st.m],
+        bg: sel ? '#0e5a66' : 'transparent', color: sel ? '#fff' : dis ? '#c1c1c1' : '#222',
+        border: today && !sel ? '1px solid #0e5a66' : '1px solid transparent', weight: sel || today ? 700 : 500,
+        cursor: dis ? 'not-allowed' : 'pointer', pick: () => this.set(iso) });
+    }
+    const maxY = max ? +max.slice(0, 4) : new Date().getFullYear() + 5;
+    const minY = p.minYear || maxY - 20;
+    const years = []; for (let y = maxY; y >= minY; y--) years.push({ n: y, bg: y === st.y ? '#0e5a66' : '#fff', color: y === st.y ? '#fff' : '#222', border: y === st.y ? '1px solid #0e5a66' : '1px solid #dddddd', pick: () => this.setState({ y, mode: 'days' }) });
+    const nextBlocked = max && isoOf(st.y, st.m, 1) >= max.slice(0, 8) + '01';
+    const err = !!p.error;
+    const val = p.value ? new Date(p.value + 'T12:00') : null;
+    return {
+      rootRef: this.rootRef, label: p.label, hasLabel: !!p.label,
+      helper: p.error || p.helper, hasHelper: !!(p.error || p.helper), helperColor: err ? '#c13515' : '#6a6a6a',
+      open: st.open, chev: st.open ? 'rotate(180deg)' : 'none',
+      triggerBorder: err ? '1px solid #c13515' : st.open ? '1px solid #0e5a66' : '1px solid #dddddd',
+      triggerShadow: err ? '0 0 0 1px #c13515' : st.open ? '0 0 0 1px #0e5a66' : 'none',
+      display: val ? val.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) : (p.placeholder || 'Selecione a data'),
+      valueColor: val ? '#222' : '#929292',
+      toggle: () => { const d = p.value ? new Date(p.value + 'T12:00') : new Date(); this.setState({ open: !st.open, mode: 'days', y: d.getFullYear(), m: d.getMonth() }); },
+      title: st.mode === 'years' ? 'Escolha o ano' : MONTHS[st.m] + ' ' + st.y, yearChev: st.mode === 'years' ? 'rotate(180deg)' : 'none',
+      toggleYears: () => this.setState({ mode: st.mode === 'years' ? 'days' : 'years' }),
+      prev: () => st.mode === 'years' ? null : this.setState(st.m === 0 ? { m: 11, y: st.y - 1 } : { m: st.m - 1 }),
+      next: () => st.mode === 'years' || nextBlocked ? null : this.setState(st.m === 11 ? { m: 0, y: st.y + 1 } : { m: st.m + 1 }),
+      nextDisabled: !!nextBlocked, nextOpacity: nextBlocked ? 0.35 : 1,
+      showDays: st.mode === 'days', showYears: st.mode === 'years',
+      weekdays: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'], days, years,
+      clearLabel: p.clearLabel || 'Limpar', clear: () => this.set(''),
+      pickToday: () => this.set(tIso)
+    };
+  }
+}
+</script>
+</body>
+</html>
