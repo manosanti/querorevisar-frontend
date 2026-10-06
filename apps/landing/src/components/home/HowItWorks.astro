@@ -1,0 +1,118 @@
+---
+import { Image } from 'astro:assets';
+import carIcon from '../../assets/brand/icone-carro.png';
+import motoIcon from '../../assets/brand/icone-moto.png';
+import { ICONS } from '../../lib/icons';
+import { eyebrowClass, h2Class } from '../../lib/ui';
+import Icon from '../Icon.astro';
+import StatusBadge from './StatusBadge.astro';
+
+const steps = [
+  ['Cadastre o veículo', 'Tipo, marca, modelo, ano e a km que aparece no painel hoje.'],
+  ['Registre as trocas', 'Escolha o item e informe o km da troca. Data, local e valor são opcionais.'],
+  ['Receba os alertas', 'O app estima a km do dia a dia e mostra o que está perto de vencer.'],
+] as const;
+const card = 'flex flex-col gap-5 rounded-24 border border-border p-7';
+const art = 'box-content flex h-[168px] items-center justify-center rounded-16 bg-surface-1 p-5';
+const artInner = 'flex w-full max-w-[260px] flex-col gap-2';
+---
+
+<section id="como-funciona" class="mx-auto box-content max-w-[1200px] px-6 pt-28 pb-10">
+  <div class="mb-12 max-w-[640px]">
+    <div class:list={[eyebrowClass, 'mb-2.5']}>Como funciona</div>
+    <h2 class={h2Class}>Três passos e o app passa a lembrar por você.</h2>
+  </div>
+  <ol class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-5 p-0">
+    {steps.map(([title, text], i) => (
+      <li class={card}>
+        <div class={art} aria-hidden="true">
+          {i === 0 && (
+            <div class={artInner}>
+              <div class="flex gap-1.5">
+                <span class="box-content flex h-14 flex-1 items-center justify-center gap-1.5 rounded-12 border-[1.5px] border-primary bg-white text-[13px] font-semibold">
+                  <Image
+                    src={carIcon}
+                    alt=""
+                    width={34}
+                    height={34}
+                    densities={[1, 2]}
+                    class="size-[34px] object-contain"
+                  />
+                  Carro
+                </span>
+                <span class="box-content flex h-14 flex-1 items-center justify-center gap-1.5 rounded-12 border border-border bg-white text-[13px] font-semibold text-muted">
+                  <Image
+                    src={motoIcon}
+                    alt=""
+                    width={34}
+                    height={34}
+                    densities={[1, 2]}
+                    class="size-[34px] object-contain"
+                  />
+                  Moto
+                </span>
+              </div>
+              <div class="box-content flex h-10 items-center justify-between rounded-10 border border-border bg-white px-3 text-[13px]">
+                Toyota · Corolla XEi
+                <Icon d={ICONS.chevronDown} size={14} weight={2.4} class="text-muted" />
+              </div>
+            </div>
+          )}
+          {i === 1 && (
+            <div class={artInner}>
+              <div class="box-content flex h-11 items-center rounded-10 border border-border bg-white px-3 text-[13.5px] font-semibold">
+                Óleo do motor
+              </div>
+              <div class="box-content flex h-[50px] items-center justify-between rounded-10 border border-primary bg-white px-3 shadow-[0_0_0_1px_var(--primary)]">
+                <span class="text-xl font-bold tabular-nums">40.000</span>
+                <span class="text-xs text-muted">km no painel</span>
+              </div>
+              <div class="flex gap-1.5">
+                <span class="flex-1 rounded-8 border border-primary bg-white p-1.5 text-center text-xs font-semibold">
+                  Em casa
+                </span>
+                <span class="flex-1 rounded-8 border border-border bg-white p-1.5 text-center text-xs text-muted">
+                  Oficina
+                </span>
+              </div>
+            </div>
+          )}
+          {i === 2 && (
+            <div class={artInner}>
+              <div class="flex items-center gap-2.5 rounded-12 border border-border bg-white px-3 py-2.5">
+                <div class="flex-1">
+                  <div class="text-[13px] font-semibold">Correia dentada</div>
+                  <div class="text-[11.5px] text-muted">passou 1.200 km</div>
+                </div>
+                <StatusBadge tone="over" class="px-[9px] py-[3px] text-[11px] font-semibold">
+                  Vencido
+                </StatusBadge>
+              </div>
+              <div class="flex items-center gap-2.5 rounded-12 border border-border bg-white px-3 py-2.5">
+                <div class="flex-1">
+                  <div class="text-[13px] font-semibold">Velas de ignição</div>
+                  <div class="text-[11.5px] text-muted">faltam 2.900 km</div>
+                </div>
+                <StatusBadge tone="warn" class="px-[9px] py-[3px] text-[11px] font-semibold">
+                  Atenção
+                </StatusBadge>
+              </div>
+            </div>
+          )}
+        </div>
+        <div class="flex items-start gap-3.5">
+          <span
+            class="flex size-8 flex-none items-center justify-center rounded-full bg-primary text-[15px] font-bold text-white"
+            aria-hidden="true"
+          >
+            {i + 1}
+          </span>
+          <div>
+            <h3 class="m-0 text-xl font-bold tracking-[-0.02em]">{title}</h3>
+            <p class="mt-1 mb-0 text-[15.5px] text-pretty text-muted">{text}</p>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>

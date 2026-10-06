@@ -1,0 +1,106 @@
+---
+import {
+  HISTORY,
+  ICON_PATHS,
+  PLACE_CHIPS,
+  type PlaceFilter,
+  historyCost,
+  historySub,
+  historyTotals,
+} from '../../lib/content';
+import { eyebrowClass, h2Class, leadClass } from '../../lib/ui';
+import Icon from '../Icon.astro';
+
+const totals = Object.fromEntries(PLACE_CHIPS.map(c => [c.key, historyTotals(c.key)])) as Record<
+  PlaceFilter,
+  ReturnType<typeof historyTotals>
+>;
+const initial = totals.todos;
+---
+
+<section
+  id="historico"
+  class="mx-auto box-content grid max-w-[1200px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-16 px-6 pt-28 pb-24"
+>
+  <div class="order-2 flex max-w-[520px] flex-col gap-5">
+    <div class={eyebrowClass}>Histórico e gastos</div>
+    <h2 class={h2Class}>Tudo que já foi feito, em casa ou na oficina.</h2>
+    <p class:list={[leadClass, 'm-0']}>
+      Busque por item, filtre por local e veja quanto cada veículo custou. Na hora de vender, o histórico mostra o
+      cuidado que o carro recebeu.
+    </p>
+  </div>
+
+  <div class="order-1 rounded-[28px] bg-primary-tint p-[clamp(20px,4vw,40px)]">
+    <div
+      class="history flex flex-col gap-3.5 rounded-[22px] bg-white p-[22px] shadow-panel"
+      data-totals={JSON.stringify(totals)}
+    >
+      <div class="flex items-center justify-between gap-3">
+        <h3 class="m-0 text-xl font-bold tracking-[-0.02em]">Histórico</h3>
+        <div class="text-[13px] text-muted">Corolla XEi</div>
+      </div>
+      <div class="flex flex-wrap gap-1.5" role="group" aria-label="Filtrar por local">
+        {PLACE_CHIPS.map(c => (
+          <button
+            type="button"
+            data-place={c.key}
+            aria-pressed={c.key === 'todos' ? 'true' : 'false'}
+            class="hit-44 box-content h-9 rounded-[18px] border border-border bg-white px-3.5 text-[13.5px] font-semibold text-ink transition-all duration-150 aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+      <ul class="m-0 flex list-none flex-col p-0">
+        {HISTORY.map(h => (
+          <li class="flex items-center gap-3 border-b border-track py-3" data-row-place={h.place}>
+            <span
+              class:list={[
+                'flex size-9 flex-none items-center justify-center rounded-10',
+                h.place === 'casa' ? 'bg-primary-tint text-primary' : 'bg-surface-2 text-ink-2',
+              ]}
+            >
+              <Icon d={ICON_PATHS[h.icon]} size={17} weight={2.1} />
+            </span>
+            <div class="min-w-0 flex-1">
+              <div class="text-[14.5px] font-semibold">{h.name}</div>
+              <div class="text-[12.5px] text-muted">{historySub(h)}</div>
+            </div>
+            <span class="text-[14.5px] font-semibold whitespace-nowrap tabular-nums">{historyCost(h)}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="flex items-baseline justify-between pt-1" aria-live="polite">
+        <span class="text-sm text-muted" data-history="label">
+          {initial.label}
+        </span>
+        <span class="text-[22px] font-extrabold tracking-[-0.02em] tabular-nums" data-history="total">
+          {initial.total}
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.history');
+  const totals = JSON.parse(root?.dataset.totals ?? '{}') as Record<string, { label: string; total: string }>;
+  const chips = [...(root?.querySelectorAll<HTMLButtonElement>('[data-place]') ?? [])];
+  const rows = [...(root?.querySelectorAll<HTMLElement>('[data-row-place]') ?? [])];
+
+  for (const chip of chips) {
+    chip.addEventListener('click', () => {
+      const place = chip.dataset.place ?? 'todos';
+      for (const c of chips) c.setAttribute('aria-pressed', String(c === chip));
+      for (const row of rows) row.hidden = place !== 'todos' && row.dataset.rowPlace !== place;
+      const t = totals[place];
+      const label = root?.querySelector('[data-history="label"]');
+      const total = root?.querySelector('[data-history="total"]');
+      if (t && label && total) {
+        label.textContent = t.label;
+        total.textContent = t.total;
+      }
+    });
+  }
+</script>

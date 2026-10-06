@@ -1,0 +1,137 @@
+---
+// Grátis and Premium cards with the Mensal/Anual toggle (home #planos and /precos).
+import { moneyShort } from '@qr/core';
+import { FEATURES } from '../config';
+import { FREE_FEATURES, PREMIUM_FEATURES } from '../lib/content';
+import { ICONS } from '../lib/icons';
+import { annualDiscountLabel, premiumPrice } from '../lib/pricing';
+import Icon from './Icon.astro';
+
+interface Props {
+  freeHref: string;
+  premiumHref: string;
+  /** Heading level of the plan names. */
+  titleTag?: 'h2' | 'h3';
+  /** Rendered above the cards, centered (eyebrow and title of the section). */
+  class?: string;
+}
+
+const { freeHref, premiumHref, titleTag: Title = 'h3', class: className } = Astro.props;
+const prices = { mensal: premiumPrice('mensal'), anual: premiumPrice('anual') };
+const initial = prices.mensal;
+---
+
+<div class:list={['plans', className]} data-prices={JSON.stringify(prices)}>
+  <div class="mb-11 flex flex-col items-center gap-3.5 text-center">
+    <slot />
+    {FEATURES.annualBilling && (
+      <div
+        role="group"
+        aria-label="Cobrança do Premium"
+        class="mt-2.5 inline-flex gap-1 rounded-12 border border-border bg-white p-1"
+      >
+        <button
+          type="button"
+          data-billing="mensal"
+          aria-pressed="true"
+          class="hit-44 h-10 rounded-9 px-[18px] text-[14.5px] font-semibold text-ink-2 aria-pressed:bg-primary aria-pressed:text-white"
+        >
+          Mensal
+        </button>
+        <button
+          type="button"
+          data-billing="anual"
+          aria-pressed="false"
+          class="hit-44 flex h-10 items-center gap-2 rounded-9 pr-3.5 pl-[18px] text-[14.5px] font-semibold text-ink-2 aria-pressed:bg-primary aria-pressed:text-white"
+        >
+          Anual
+          <span class="rounded-10 bg-primary-tint px-[7px] py-0.5 text-[11.5px] font-bold text-primary-strong">
+            {annualDiscountLabel}
+          </span>
+        </button>
+      </div>
+    )}
+  </div>
+
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] items-stretch gap-5">
+    <div class="flex flex-col gap-[22px] rounded-24 border border-border bg-white p-8">
+      <div>
+        <Title class="m-0 text-xl font-bold">Grátis</Title>
+        <div class="mt-2 flex items-baseline gap-1.5">
+          <span class="text-[44px] font-extrabold tracking-[-0.04em]">{moneyShort(0)}</span>
+          <span class="text-muted">para sempre</span>
+        </div>
+        <div class="h-[21px] text-sm text-muted">Com anúncios</div>
+      </div>
+      <ul class="m-0 flex flex-1 list-none flex-col gap-3 p-0">
+        {FREE_FEATURES.map(f => (
+          <li class="flex gap-2.5 text-[15.5px]">
+            <Icon d={ICONS.check} size={20} weight={2.4} class="mt-px flex-none text-primary" />
+            {f}
+          </li>
+        ))}
+      </ul>
+      <a
+        href={freeHref}
+        class="box-content flex h-[52px] items-center justify-center rounded-12 border border-ink text-base font-semibold text-ink hover:bg-surface-2 hover:text-ink"
+      >
+        Criar conta grátis
+      </a>
+    </div>
+
+    <div class="relative flex flex-col gap-[22px] rounded-24 border-2 border-primary bg-white p-8 shadow-premium">
+      <span class="absolute -top-[13px] left-[30px] rounded-20 bg-primary px-3 py-1 text-[12.5px] font-bold text-white">
+        Para mais de um veículo
+      </span>
+      <div>
+        <Title class="m-0 text-xl font-bold">Premium</Title>
+        <div class="mt-2 flex items-baseline gap-1.5" aria-live="polite">
+          <span class="text-[44px] font-extrabold tracking-[-0.04em] tabular-nums" data-plan="price">
+            {initial.price}
+          </span>
+          <span class="text-muted" data-plan="per">
+            {initial.per}
+          </span>
+        </div>
+        <div class="h-[21px] text-sm text-muted" data-plan="note">
+          {initial.note}
+        </div>
+      </div>
+      <ul class="m-0 flex flex-1 list-none flex-col gap-3 p-0">
+        {PREMIUM_FEATURES.map(f => (
+          <li class="flex gap-2.5 text-[15.5px]">
+            <Icon d={ICONS.check} size={20} weight={2.4} class="mt-px flex-none text-primary" />
+            {f}
+          </li>
+        ))}
+      </ul>
+      <a
+        href={premiumHref}
+        class="flex h-[52px] items-center justify-center rounded-12 bg-primary text-base font-semibold text-white shadow-cta hover:bg-primary-strong hover:text-white"
+      >
+        Começar com Premium
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('.plans')) {
+    const prices = JSON.parse(root.dataset.prices ?? '{}') as Record<
+      string,
+      { price: string; per: string; note: string }
+    >;
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-billing]')];
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        const p = prices[button.dataset.billing ?? ''];
+        if (!p) return;
+        for (const b of buttons) b.setAttribute('aria-pressed', String(b === button));
+        for (const key of ['price', 'per', 'note'] as const) {
+          const el = root.querySelector(`[data-plan="${key}"]`);
+          if (el) el.textContent = p[key];
+        }
+      });
+    }
+  }
+</script>

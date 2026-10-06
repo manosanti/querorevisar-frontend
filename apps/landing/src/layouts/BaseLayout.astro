@@ -1,0 +1,79 @@
+---
+import { colors } from '@qr/tokens';
+import '../styles/global.css';
+import ConsentBanner from '../components/ConsentBanner.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { POSTHOG_KEY } from '../config';
+import { isAnalyticsConfigured } from '../lib/consent';
+import { SITE_NAME, isNoindex, normalizePath } from '../lib/seo';
+
+interface Props {
+  /** Full document title. */
+  title: string;
+  description: string;
+  /** Home page: header and footer links become in-page anchors. */
+  home?: boolean;
+}
+
+const { title, description, home = false } = Astro.props;
+const path = normalizePath(Astro.url.pathname);
+const canonical = new URL(path, Astro.site).href;
+const ogImage = new URL('/og.png', Astro.site).href;
+const noindex = isNoindex(path);
+const analytics = isAnalyticsConfigured(POSTHOG_KEY);
+// Figtree from Google Fonts. 800 is included because the landing prototype sets its headings at 800.
+const fontHref = 'https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content={colors.band} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={SITE_NAME} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fontHref} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a
+      href="#conteudo"
+      class="sr-only z-50 rounded-12 bg-primary px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3 hover:text-white"
+    >
+      Pular para o conteúdo
+    </a>
+    <SiteHeader home={home} />
+    <main id="conteudo" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <SiteFooter />
+    {analytics && <ConsentBanner />}
+  </body>
+</html>

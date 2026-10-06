@@ -1,0 +1,11 @@
+{
+  "extends": ["astro/tsconfigs/strict", "@qr/config/tsconfig.base.json"],
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "jsx": "preserve",
+    "allowJs": true
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules", "eslint.config.js", "prettier.config.mjs"]
+}

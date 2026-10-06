@@ -1,0 +1,142 @@
+---
+// Decorative phone mockup of the app's dashboard (hero illustration). Hidden from assistive technology:
+// the hero text already says what it shows.
+import { Image } from 'astro:assets';
+import carIcon from '../../assets/brand/icone-carro.png';
+import logo from '../../assets/brand/logo-horizontal.png';
+import { PHONE_ITEMS, PHONE_TABS } from '../../lib/content';
+import { ICONS } from '../../lib/icons';
+import Icon from '../Icon.astro';
+import StatusBadge from './StatusBadge.astro';
+
+const barTone = { ok: 'bg-primary', warn: 'bg-warn-bar', over: 'bg-over-fg' } as const;
+---
+
+<div class="relative flex justify-center py-6" aria-hidden="true">
+  <div class="absolute inset-y-0 right-[4%] left-[10%] rounded-[40px] bg-primary-tint"></div>
+  <div class="absolute right-[6%] bottom-[8%] aspect-square w-[46%] rounded-full border border-primary/15"></div>
+
+  <div class="relative box-content w-[312px] max-w-[calc(100%-22px)] rounded-[48px] bg-ink p-[11px] shadow-phone">
+    <div class="relative flex h-[640px] flex-col overflow-hidden rounded-[38px] bg-white">
+      <div class="flex h-11 flex-none items-center justify-between px-[26px] text-[13px] font-bold">
+        <span>9:41</span>
+        <span class="h-6 w-[90px] rounded-14 bg-ink"></span>
+        <span class="flex items-center gap-1 text-ink">
+          <svg width="16" height="11" viewBox="0 0 16 11" class="fill-current">
+            <rect x="0" y="7" width="3" height="4" rx="1"></rect>
+            <rect x="4.3" y="5" width="3" height="6" rx="1"></rect>
+            <rect x="8.6" y="2.5" width="3" height="8.5" rx="1"></rect>
+            <rect x="13" y="0" width="3" height="11" rx="1"></rect>
+          </svg>
+          <svg width="22" height="11" viewBox="0 0 22 11" fill="none">
+            <rect x=".5" y=".5" width="18" height="10" rx="3" stroke="currentColor" opacity=".5"></rect>
+            <rect x="2" y="2" width="14" height="7" rx="1.6" class="fill-current"></rect>
+          </svg>
+        </span>
+      </div>
+
+      <div class="flex flex-1 flex-col gap-3 overflow-hidden px-4 pt-2">
+        <div class="flex items-center justify-between">
+          <Image src={logo} alt="" height={20} densities={[1, 2]} class="h-5 w-auto" />
+          <span class="flex size-7 items-center justify-center rounded-full bg-primary-tint text-xs font-bold text-primary">
+            R
+          </span>
+        </div>
+
+        <div class="rounded-16 border border-border p-[13px] shadow-soft">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-[17px] font-bold tracking-[-0.02em]">Corolla XEi</div>
+              <div class="text-[11.5px] text-muted">Toyota · 2019</div>
+            </div>
+            <Image
+              src={carIcon}
+              alt=""
+              width={64}
+              height={64}
+              densities={[1, 2]}
+              class="-mt-3 -mr-1.5 -mb-4 size-16 object-contain"
+            />
+          </div>
+          <div class="mt-3 flex items-end justify-between">
+            <div>
+              <div class="text-[10.5px] text-muted">Km estimada hoje</div>
+              <div class="text-[23px] font-bold tracking-[-0.03em] tabular-nums">48.320</div>
+            </div>
+            <span class="rounded-9 border border-primary px-[11px] py-[7px] text-[11.5px] font-semibold text-primary">
+              Atualizar km
+            </span>
+          </div>
+        </div>
+
+        <div class="flex gap-1.5">
+          <div class="flex-1 rounded-[11px] bg-over-bg p-[9px]">
+            <div class="text-[19px] font-bold text-over-fg">1</div>
+            <div class="text-[11px] text-over-label">vencido</div>
+          </div>
+          <div class="flex-1 rounded-[11px] bg-warn-bg p-[9px]">
+            <div class="text-[19px] font-bold text-warn-fg">2</div>
+            <div class="text-[11px] text-warn-label">em atenção</div>
+          </div>
+          <div class="flex-1 rounded-[11px] bg-surface-2 p-[9px]">
+            <div class="text-[19px] font-bold">14</div>
+            <div class="text-[11px] text-ink-2">em dia</div>
+          </div>
+        </div>
+
+        <div class="mt-0.5 text-base font-semibold tracking-[-0.02em]">Precisa de atenção</div>
+        <div class="-mt-1.5 flex flex-col">
+          {PHONE_ITEMS.map(p => (
+            <div class="flex flex-col gap-1.5 border-b border-divider py-2.5">
+              <div class="flex items-center gap-2">
+                <div class="min-w-0 flex-1">
+                  <div class="text-[13px] font-semibold">{p.name}</div>
+                  <div class="text-[11px] text-muted">{p.line}</div>
+                </div>
+                <StatusBadge tone={p.tone} class="px-2 py-[3px] text-[10.5px] font-semibold">
+                  {p.badge}
+                </StatusBadge>
+              </div>
+              <div class="h-[3px] rounded-[3px] bg-track">
+                <div class:list={['h-full rounded-[3px]', barTone[p.tone]]} style={`width: ${p.w}`} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="grid flex-none grid-cols-4 border-t border-divider bg-white px-1.5 pt-2 pb-[18px]">
+        {PHONE_TABS.map((t, i) => (
+          <div
+            class:list={[
+              'flex flex-col items-center gap-[3px] text-[10px] font-semibold',
+              i === 0 ? 'text-primary' : 'text-subtle',
+            ]}
+          >
+            <Icon d={t.d} size={20} weight={2} />
+            {t.label}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute top-[18%] left-0 box-content flex w-[250px] items-center gap-3 rounded-18 bg-white px-3.5 py-3 shadow-float">
+    <span class="flex size-[38px] flex-none items-center justify-center rounded-10 bg-warn-bg text-warn-fg">
+      <Icon d={ICONS.bell} size={19} weight={2.2} />
+    </span>
+    <div class="min-w-0">
+      <div class="text-[13.5px] font-bold">Óleo do motor</div>
+      <div class="text-[12.5px] leading-[1.35] text-muted">Faltam 1.680 km para a troca</div>
+    </div>
+  </div>
+  <div class="absolute right-0 bottom-[14%] flex items-center gap-2.5 rounded-16 bg-white py-2.5 pr-3.5 pl-2.5 shadow-float">
+    <span class="flex size-[30px] items-center justify-center rounded-full bg-primary text-white">
+      <Icon d={ICONS.check} size={15} weight={3} />
+    </span>
+    <div class="text-[13px] leading-[1.3]">
+      <div class="font-bold">Troca registrada</div>
+      <div class="text-muted">Pastilhas · 45.200 km</div>
+    </div>
+  </div>
+</div>

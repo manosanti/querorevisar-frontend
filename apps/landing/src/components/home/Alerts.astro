@@ -1,0 +1,216 @@
+---
+import { ICONS } from '../../lib/icons';
+import {
+  SIM_DEFAULT,
+  SIM_KM_MAX,
+  SIM_KM_STEP,
+  SIM_MONTHS_MAX,
+  kmLabel,
+  monthsLabel,
+  simulateAlert,
+} from '../../lib/simulator';
+import { eyebrowClass, h2Class, leadClass } from '../../lib/ui';
+import Icon from '../Icon.astro';
+
+const rules = [
+  {
+    tag: '80%',
+    tone: 'bg-warn-bg text-warn-fg',
+    title: 'Atenção',
+    text: 'O item entrou na reta final. Hora de comprar a peça ou marcar a oficina.',
+  },
+  {
+    tag: '100%',
+    tone: 'bg-over-bg text-over-fg',
+    title: 'Vencido',
+    text: 'Passou da vida útil. O app mostra quantos km ou meses já se foram.',
+  },
+  {
+    tag: 'Tempo',
+    tone: 'bg-primary-tint text-primary-strong',
+    title: 'Vencido pelo prazo',
+    text: 'Rodou pouco? Óleo e fluido envelhecem parados. O prazo em meses também conta.',
+  },
+] as const;
+
+const { km, months } = SIM_DEFAULT;
+const alert = simulateAlert(km, months);
+---
+
+<section
+  id="alertas"
+  class="mx-auto box-content grid max-w-[1200px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-16 px-6 py-24"
+>
+  <div class="flex max-w-[520px] flex-col gap-7">
+    <div>
+      <div class:list={[eyebrowClass, 'mb-2.5']}>Alertas por km e por tempo</div>
+      <h2 class={h2Class}>Aviso antes de vencer, não depois.</h2>
+      <p class:list={[leadClass, 'mt-4 mb-0']}>
+        Cada item tem uma vida útil em km e em meses. O que chegar primeiro decide o alerta.
+      </p>
+    </div>
+    <ul class="m-0 flex list-none flex-col p-0">
+      {rules.map(r => (
+        <li class="flex gap-4 border-t border-divider py-4 last:border-b">
+          <span class:list={['h-fit w-16 flex-none rounded-20 py-1 text-center text-[13px] font-bold', r.tone]}>
+            {r.tag}
+          </span>
+          <div>
+            <div class="font-bold">{r.title}</div>
+            <div class="text-[15px] text-muted">{r.text}</div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="rounded-[28px] bg-surface-1 p-[clamp(20px,4vw,40px)]">
+    <div class="sim flex flex-col gap-[22px] rounded-[22px] bg-white p-6 shadow-panel" data-tone={alert.tone}>
+      <div class="flex items-start gap-3.5">
+        <div class="min-w-0 flex-1">
+          <h3 class="m-0 text-xl font-bold tracking-[-0.02em]">Óleo do motor</h3>
+          <div class="text-sm text-muted">Motor · a cada 10.000 km ou 12 meses</div>
+        </div>
+        <span
+          class="sim-badge rounded-20 px-3 py-[5px] text-[13px] font-bold whitespace-nowrap transition-all duration-200"
+          data-sim="badge"
+          aria-live="polite"
+        >
+          {alert.badge}
+        </span>
+      </div>
+      <div>
+        <div class="mb-2.5 flex items-baseline justify-between gap-3">
+          <span class="text-[30px] font-extrabold tracking-[-0.03em] tabular-nums" data-sim="pct">
+            {alert.pctLabel}
+          </span>
+          <span class="text-right text-[14.5px] text-ink-2" data-sim="line">
+            {alert.line}
+          </span>
+        </div>
+        <div class="relative h-2.5 rounded-10 bg-track">
+          <div
+            class="sim-bar h-full rounded-10 transition-[width,background-color] duration-150"
+            data-sim="bar"
+            style={`width: ${alert.width}`}
+          ></div>
+          <span class="absolute -top-[5px] -bottom-[5px] left-[66.67%] w-0.5 rounded-[2px] bg-warn-fg"></span>
+          <span class="absolute -top-[5px] -bottom-[5px] left-[83.33%] w-0.5 rounded-[2px] bg-over-fg"></span>
+        </div>
+        <div class="relative mt-1.5 h-[18px] text-[11.5px] font-semibold text-subtle" aria-hidden="true">
+          <span class="absolute left-0">0%</span>
+          <span class="absolute left-[66.67%] -translate-x-1/2 text-warn-fg">80%</span>
+          <span class="absolute left-[83.33%] -translate-x-1/2 text-over-fg">100%</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-[18px] border-t border-divider pt-[18px]">
+        <label class="flex flex-col gap-2">
+          <span class="flex justify-between text-[14.5px]">
+            <span class="text-muted" id="sim-km-label">
+              Rodados desde a troca
+            </span>
+            <span class="font-bold tabular-nums" data-sim="km">
+              {kmLabel(km)}
+            </span>
+          </span>
+          <input
+            type="range"
+            min="0"
+            max={SIM_KM_MAX}
+            step={SIM_KM_STEP}
+            value={km}
+            aria-labelledby="sim-km-label"
+            aria-valuetext={kmLabel(km)}
+            data-sim="km-input"
+            class="m-0 w-full"
+          />
+        </label>
+        <label class="flex flex-col gap-2">
+          <span class="flex justify-between text-[14.5px]">
+            <span class="text-muted" id="sim-months-label">
+              Tempo desde a troca
+            </span>
+            <span class="font-bold tabular-nums" data-sim="months">
+              {monthsLabel(months)}
+            </span>
+          </span>
+          <input
+            type="range"
+            min="0"
+            max={SIM_MONTHS_MAX}
+            step="1"
+            value={months}
+            aria-labelledby="sim-months-label"
+            aria-valuetext={monthsLabel(months)}
+            data-sim="months-input"
+            class="m-0 w-full"
+          />
+        </label>
+      </div>
+      <div class="flex items-center gap-2 text-[13.5px] text-muted">
+        <Icon d={ICONS.info} size={15} weight={2.2} class="flex-none" />
+        <span data-sim="why">{alert.why}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sim[data-tone='ok'] .sim-badge {
+    color: var(--primary-strong);
+    background: var(--primary-tint);
+  }
+  .sim[data-tone='warn'] .sim-badge {
+    color: var(--warn-fg);
+    background: var(--warn-bg);
+  }
+  .sim[data-tone='over'] .sim-badge {
+    color: var(--over-fg);
+    background: var(--over-bg);
+  }
+  .sim[data-tone='ok'] .sim-bar {
+    background: var(--primary);
+  }
+  .sim[data-tone='warn'] .sim-bar {
+    background: var(--warn-bar);
+  }
+  .sim[data-tone='over'] .sim-bar {
+    background: var(--over-fg);
+  }
+</style>
+
+<script>
+  import { kmLabel, monthsLabel, simulateAlert } from '../../lib/simulator';
+
+  const root = document.querySelector<HTMLElement>('.sim');
+  const get = (key: string) => root?.querySelector<HTMLElement>(`[data-sim="${key}"]`) ?? null;
+  const kmInput = get('km-input') as HTMLInputElement | null;
+  const monthsInput = get('months-input') as HTMLInputElement | null;
+
+  function render(): void {
+    if (!root || !kmInput || !monthsInput) return;
+    const km = Number(kmInput.value);
+    const months = Number(monthsInput.value);
+    const alert = simulateAlert(km, months);
+    root.dataset.tone = alert.tone;
+    const set = (key: string, text: string) => {
+      const el = get(key);
+      if (el && el.textContent !== text) el.textContent = text;
+    };
+    set('badge', alert.badge);
+    set('pct', alert.pctLabel);
+    set('line', alert.line);
+    set('why', alert.why);
+    set('km', kmLabel(km));
+    set('months', monthsLabel(months));
+    kmInput.setAttribute('aria-valuetext', kmLabel(km));
+    monthsInput.setAttribute('aria-valuetext', monthsLabel(months));
+    const bar = get('bar');
+    if (bar) bar.style.width = alert.width;
+  }
+
+  kmInput?.addEventListener('input', render);
+  monthsInput?.addEventListener('input', render);
+  // Browsers may restore slider positions on back/forward navigation.
+  render();
+</script>

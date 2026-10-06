@@ -1,0 +1,18 @@
+---
+const stats = [
+  ['175', 'itens no catálogo, do óleo ao kit relação'],
+  ['2', 'campos obrigatórios por troca: item e km'],
+  ['0', 'alertas escondidos no plano grátis'],
+] as const;
+---
+
+<section class="border-y border-divider" aria-label="QueroRevisar em números">
+  <div class="mx-auto box-content grid max-w-[1200px] grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6 px-6 py-7">
+    {stats.map(([n, label]) => (
+      <div class="flex items-baseline gap-3.5">
+        <span class="text-[30px] font-extrabold tracking-[-0.03em] text-primary tabular-nums">{n}</span>
+        <span class="text-[15px] text-ink-2">{label}</span>
+      </div>
+    ))}
+  </div>
+</section>
