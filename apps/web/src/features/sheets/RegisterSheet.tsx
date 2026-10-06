@@ -89,7 +89,7 @@ export function RegisterSheet({ itemId: initialItem }: { itemId?: string | null 
         ) : (
           <div className="flex flex-col gap-1.5">
             <Input
-              className="h-12"
+              className="h-12!"
               aria-label="Buscar item"
               placeholder="Buscar: óleo, pastilha, filtro…"
               value={q}

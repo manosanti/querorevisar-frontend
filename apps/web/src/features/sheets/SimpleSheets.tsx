@@ -161,7 +161,7 @@ export function SoldSheet() {
         <Button
           block
           variant="outline-neutral"
-          className="text-[15px]"
+          className="text-[15px]!"
           onClick={async () => {
             await archiveVehicle(v.id);
             useUi.getState().setActiveVehicle(others[0]!.id);
@@ -202,7 +202,7 @@ export function DeleteSheet() {
       >
         Excluir
       </Button>
-      <Button block variant="outline-neutral" className="text-[15px]" onClick={() => openSheet({ type: 'sold' })}>
+      <Button block variant="outline-neutral" className="text-[15px]!" onClick={() => openSheet({ type: 'sold' })}>
         Vendi, quero guardar o histórico
       </Button>
       <Cancel />

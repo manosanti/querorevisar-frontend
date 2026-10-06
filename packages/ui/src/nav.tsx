@@ -145,7 +145,7 @@ export function Avatar({
   onClick?: () => void;
   label?: string;
 }) {
-  const cls = 'flex shrink-0 items-center justify-center rounded-full border-0 bg-primary-tint font-bold text-primary';
+  const cls = 'flex shrink-0 items-center justify-center rounded-full border-0 bg-primary-tint text-primary';
   const style = { width: size, height: size, fontSize: size >= 52 ? 20 : 14 };
   if (onClick) {
     return (
@@ -161,7 +161,7 @@ export function Avatar({
     );
   }
   return (
-    <span aria-hidden="true" className={cls} style={style}>
+    <span aria-hidden="true" className={cn(cls, 'font-bold')} style={style}>
       {letter}
     </span>
   );

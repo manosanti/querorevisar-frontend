@@ -166,7 +166,7 @@ export function Conta() {
           </div>
           <Button
             variant="danger-text"
-            className="ml-auto h-auto px-0 py-2 text-[14px]"
+            className="ml-auto h-auto! px-0! py-2 text-[14px]"
             onClick={() => openSheet({ type: 'logout' })}
           >
             Sair
@@ -320,7 +320,7 @@ export function Conta() {
               <Button
                 variant="outline-neutral"
                 size="md"
-                className="font-medium"
+                className="font-medium! text-[14px]!"
                 onClick={async () => {
                   try {
                     const res = await api.cancelPremium();

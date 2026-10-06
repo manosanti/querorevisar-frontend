@@ -153,7 +153,7 @@ export function Login({ initialMode, initialEmail }: { initialMode: 'signin' | '
                 placeholder="Senha"
                 aria-label="Senha"
                 autoComplete={signin ? 'current-password' : 'new-password'}
-                className="pr-[84px]"
+                className="pr-[84px]!"
                 value={pw}
                 onChange={e => setPw(e.target.value)}
               />
@@ -189,7 +189,7 @@ export function Login({ initialMode, initialEmail }: { initialMode: 'signin' | '
             <Button
               variant="outline-neutral"
               block
-              className="text-[15px]"
+              className="text-[15px]!"
               icon={<GoogleIcon />}
               onClick={() => void social('google')}
             >
@@ -199,7 +199,7 @@ export function Login({ initialMode, initialEmail }: { initialMode: 'signin' | '
               <Button
                 variant="dark"
                 block
-                className="text-[15px]"
+                className="text-[15px]!"
                 icon={<AppleIcon />}
                 onClick={() => void social('apple')}
               >

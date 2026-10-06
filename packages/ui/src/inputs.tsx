@@ -41,8 +41,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     <input
       ref={ref}
       className={cn(
-        'w-full min-w-0 rounded-8 border border-border px-4',
-        inputSize === 'lg' ? 'h-[52px]' : 'h-[50px] px-[14px]',
+        'w-full min-w-0 rounded-8 border border-border',
+        inputSize === 'lg' ? 'h-[52px] px-4' : 'h-[50px] px-[14px]',
         variant === 'filled' ? 'bg-surface-1 text-[16px]' : 'bg-white',
         className,
       )}
