@@ -20,7 +20,8 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "check:colors": "node scripts/check-colors.ts",
-    "fixtures:gen": "node scripts/gen-fixtures.ts"
+    "fixtures:gen": "node scripts/gen-fixtures.ts",
+    "brand:gen": "node scripts/gen-brand-assets.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs}": [
@@ -41,6 +42,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.9",
+    "sharp": "^0.35.5",
     "turbo": "^2.11.7",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.71.1",

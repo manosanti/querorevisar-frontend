@@ -1,0 +1,185 @@
+/* Global styles of the design system (docs/design-system.md#interações).
+   Import after `@import "tailwindcss"` and `@qr/tokens/theme.css`. Colors only through token variables. */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    font-family: var(--font-family);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.43;
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--primary-strong);
+    text-decoration: underline;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  [role='button']:focus-visible,
+  [role='option']:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 0;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+
+  input[data-bare]:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  label:has(> input[data-bare]:focus),
+  div:has(> input[data-bare]:focus),
+  label:has(> div > input[data-bare]:focus) {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 1px var(--primary) !important;
+  }
+
+  input::placeholder {
+    color: var(--subtle);
+  }
+}
+
+@keyframes qrbar {
+  0% {
+    transform: translateX(-100%);
+  }
+  60% {
+    transform: translateX(60%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes qrspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes qrsk {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Hover "água": a primary circle rises from below and the text turns white (light variant rises white). */
+[data-water] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    color 0.4s ease,
+    border-color 0.4s ease,
+    transform 0.15s ease;
+}
+
+[data-water]::before {
+  content: '';
+  position: absolute;
+  left: -50%;
+  width: 200%;
+  aspect-ratio: 1;
+  top: 115%;
+  border-radius: 41%;
+  background: var(--primary);
+  z-index: -1;
+  pointer-events: none;
+  transition: top 0.7s cubic-bezier(0.3, 0.7, 0.25, 1);
+}
+
+[data-water='light']::before {
+  background: var(--white);
+}
+
+@media (hover: hover) {
+  [data-water]:hover {
+    color: var(--white) !important;
+    border-color: var(--primary) !important;
+  }
+
+  [data-water]:hover * {
+    color: inherit !important;
+    transition: color 0.4s ease;
+  }
+
+  [data-water]:hover::before {
+    top: -70%;
+  }
+
+  [data-water='light']:hover {
+    color: var(--band) !important;
+    border-color: var(--white) !important;
+  }
+}
+
+.qr-skeleton {
+  background: var(--divider);
+  animation: qrsk 1.3s ease-in-out infinite;
+}
+
+.qr-spin {
+  animation: qrspin 0.8s linear infinite;
+}
+
+.qr-routebar {
+  animation: qrbar 1.1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qr-skeleton,
+  .qr-spin,
+  .qr-routebar {
+    animation-duration: 2.4s;
+  }
+
+  [data-water],
+  [data-water]::before {
+    transition: none;
+  }
+}
+
+@media print {
+  .qr-no-print {
+    display: none !important;
+  }
+}

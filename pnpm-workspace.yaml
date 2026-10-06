@@ -3,3 +3,5 @@ packages:
   - packages/*
 allowBuilds:
   esbuild: true
+  '@sentry/cli': true
+  core-js: false
