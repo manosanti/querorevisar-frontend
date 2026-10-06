@@ -1,0 +1,2785 @@
+{
+  "version": 1,
+  "total": 196,
+  "categories": [
+    {
+      "id": "c0",
+      "group": "Motor",
+      "name": "Óleo",
+      "icon": [
+        "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m1",
+          "name": "Óleo do motor",
+          "km": 10000,
+          "months": 12,
+          "desc": "Lubrificante principal do motor",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m2",
+          "name": "Filtro de óleo",
+          "km": 10000,
+          "months": 12,
+          "desc": "Trocado junto com o óleo",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m3",
+          "name": "Bujão do cárter e arruela",
+          "km": 10000,
+          "months": 12,
+          "desc": "Vedação do dreno de óleo",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m4",
+          "name": "Nível de óleo",
+          "km": 1000,
+          "months": 1,
+          "desc": "Conferência na vareta",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m5",
+          "name": "Vazamentos no cárter",
+          "km": 20000,
+          "months": 12,
+          "desc": "Inspeção de manchas sob o motor",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m6",
+          "name": "Retentor de válvulas",
+          "km": 100000,
+          "months": 96,
+          "desc": "Consumo anormal de óleo",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c1",
+      "group": "Motor",
+      "name": "Arrefecimento",
+      "icon": [
+        "M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m7",
+          "name": "Fluido de arrefecimento",
+          "km": 40000,
+          "months": 24,
+          "desc": "Aditivo do radiador",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m8",
+          "name": "Radiador — limpeza",
+          "km": 30000,
+          "months": 24,
+          "desc": "Remoção de sujeira das colmeias",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m9",
+          "name": "Mangueiras do radiador",
+          "km": 60000,
+          "months": 48,
+          "desc": "Ressecamento e trincas",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m10",
+          "name": "Válvula termostática",
+          "km": 80000,
+          "months": 60,
+          "desc": "Controle da temperatura do motor",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m11",
+          "name": "Bomba d'água",
+          "km": 80000,
+          "months": 60,
+          "desc": "Circulação do líquido",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m12",
+          "name": "Tampa do reservatório",
+          "km": 60000,
+          "months": 48,
+          "desc": "Pressurização do sistema",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m13",
+          "name": "Eletroventilador",
+          "km": 60000,
+          "months": 48,
+          "desc": "Ventoinha de resfriamento",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "group": "Motor",
+      "name": "Combustível",
+      "icon": [
+        "M3 22h12M4 9h10M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18",
+        "M14 8h2a2 2 0 0 1 2 2v6a2 2 0 0 0 4 0V9.8a2 2 0 0 0-.6-1.4L18 5"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m14",
+          "name": "Filtro de combustível",
+          "km": 20000,
+          "months": 24,
+          "desc": "Retém impurezas da linha",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m15",
+          "name": "Bomba de combustível",
+          "km": 100000,
+          "months": 84,
+          "desc": "Pressão de alimentação",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m16",
+          "name": "Bicos injetores — limpeza",
+          "km": 40000,
+          "months": 36,
+          "desc": "Pulverização e consumo",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m17",
+          "name": "Linha e mangueiras de combustível",
+          "km": 60000,
+          "months": 48,
+          "desc": "Trincas e vazamentos",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m18",
+          "name": "Tampa do tanque",
+          "km": 80000,
+          "months": 60,
+          "desc": "Vedação e respiro",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m19",
+          "name": "Regulador de pressão",
+          "km": 100000,
+          "months": 84,
+          "desc": "Estabiliza a pressão da linha",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m20",
+          "name": "Canister",
+          "km": 100000,
+          "months": 84,
+          "desc": "Recuperação de vapores",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "group": "Motor",
+      "name": "Correias",
+      "icon": [
+        "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
+        "M12 2v3M12 19v3M4.2 4.2l2.2 2.2M17.6 17.6l2.2 2.2M2 12h3M19 12h3M4.2 19.8l2.2-2.2M17.6 6.4l2.2-2.2"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m21",
+          "name": "Correia dentada",
+          "km": 60000,
+          "months": 48,
+          "desc": "Sincronismo do motor",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m22",
+          "name": "Tensor da correia dentada",
+          "km": 60000,
+          "months": 48,
+          "desc": "Trocado com a correia",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m23",
+          "name": "Correia do alternador",
+          "km": 40000,
+          "months": 36,
+          "desc": "Acessórios do motor",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m24",
+          "name": "Rolamentos tensores",
+          "km": 60000,
+          "months": 48,
+          "desc": "Ruído e folga",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m25",
+          "name": "Corrente de comando",
+          "km": 120000,
+          "months": 96,
+          "desc": "Alongamento e ruído",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m26",
+          "name": "Polia do virabrequim",
+          "km": 100000,
+          "months": 84,
+          "desc": "Amortecedor harmônico",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "group": "Motor",
+      "name": "Admissão",
+      "icon": [
+        "M22 3H2l8 9.5V19l4 2v-8.5L22 3z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m27",
+          "name": "Filtro de ar",
+          "km": 15000,
+          "months": 12,
+          "desc": "Ar limpo para a combustão",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m28",
+          "name": "Corpo de borboleta — limpeza",
+          "km": 40000,
+          "months": 36,
+          "desc": "Marcha lenta instável",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m29",
+          "name": "Coletor de admissão",
+          "km": 100000,
+          "months": 84,
+          "desc": "Vedação e carbonização",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m30",
+          "name": "Mangueira de ar",
+          "km": 60000,
+          "months": 48,
+          "desc": "Trincas e entradas falsas",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m31",
+          "name": "Válvula PCV",
+          "km": 60000,
+          "months": 48,
+          "desc": "Ventilação do cárter",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "group": "Motor",
+      "name": "Ignição",
+      "icon": [
+        "M13 2 3 14h9l-1 8 10-12h-9l1-8z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m32",
+          "name": "Velas de ignição",
+          "km": 20000,
+          "months": 24,
+          "desc": "Faísca da combustão",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m33",
+          "name": "Cabos de vela",
+          "km": 40000,
+          "months": 36,
+          "desc": "Condução da alta tensão",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m34",
+          "name": "Bobina de ignição",
+          "km": 80000,
+          "months": 60,
+          "desc": "Geração da alta tensão",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m35",
+          "name": "Módulo de ignição",
+          "km": 100000,
+          "months": 84,
+          "desc": "Comando da centelha",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m36",
+          "name": "Sensor de rotação",
+          "km": 100000,
+          "months": 84,
+          "desc": "Referência do virabrequim",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m37",
+          "name": "Ponto de ignição",
+          "km": 40000,
+          "months": 36,
+          "desc": "Ajuste de avanço",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "group": "Motor",
+      "name": "Geral",
+      "icon": [
+        "M14.7 6.3a4 4 0 0 1 5.3 5.3l-8.4 8.4a2 2 0 0 1-2.8 0l-2.8-2.8a2 2 0 0 1 0-2.8l8.7-8.1z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m38",
+          "name": "Revisão geral do motor",
+          "km": 30000,
+          "months": 24,
+          "desc": "Checagem completa",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m39",
+          "name": "Junta do cabeçote",
+          "km": 120000,
+          "months": 96,
+          "desc": "Vedação entre bloco e cabeçote",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m40",
+          "name": "Coxins do motor",
+          "km": 80000,
+          "months": 60,
+          "desc": "Vibração excessiva",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m41",
+          "name": "Folga de válvulas",
+          "km": 40000,
+          "months": 36,
+          "desc": "Regulagem mecânica",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m42",
+          "name": "Teste de compressão",
+          "km": 60000,
+          "months": 48,
+          "desc": "Saúde interna dos cilindros",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m43",
+          "name": "Carter e proteção inferior",
+          "km": 40000,
+          "months": 36,
+          "desc": "Fixação e amassados",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m44",
+          "name": "Descarbonização",
+          "km": 60000,
+          "months": 48,
+          "desc": "Limpeza de câmara",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "group": "Freios",
+      "name": "Componentes",
+      "icon": [
+        "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+        "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m45",
+          "name": "Pastilhas de freio dianteiras",
+          "km": 10000,
+          "months": 12,
+          "desc": "Atrito do freio a disco",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m46",
+          "name": "Pastilhas de freio traseiras",
+          "km": 20000,
+          "months": 24,
+          "desc": "Atrito do eixo traseiro",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m47",
+          "name": "Discos de freio dianteiros",
+          "km": 40000,
+          "months": 36,
+          "desc": "Superfície de frenagem",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m48",
+          "name": "Discos de freio traseiros",
+          "km": 60000,
+          "months": 48,
+          "desc": "Superfície de frenagem",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m49",
+          "name": "Lonas / sapatas de freio",
+          "km": 40000,
+          "months": 36,
+          "desc": "Freio a tambor",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m50",
+          "name": "Pinças de freio",
+          "km": 60000,
+          "months": 48,
+          "desc": "Pistões e guias",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m51",
+          "name": "Freio de estacionamento",
+          "km": 20000,
+          "months": 24,
+          "desc": "Curso e regulagem",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "group": "Freios",
+      "name": "Fluidos",
+      "icon": [
+        "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m52",
+          "name": "Fluido de freio",
+          "km": 20000,
+          "months": 24,
+          "desc": "Higroscópico, perde ponto de ebulição",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m53",
+          "name": "Sangria do sistema",
+          "km": 20000,
+          "months": 24,
+          "desc": "Remoção de ar das linhas",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m54",
+          "name": "Mangueiras e tubulações",
+          "km": 60000,
+          "months": 48,
+          "desc": "Trincas e vazamentos",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "group": "Freios",
+      "name": "ABS",
+      "icon": [
+        "M22 12h-4l-3 9L9 3l-3 9H2"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m55",
+          "name": "Sensores ABS",
+          "km": 60000,
+          "months": 48,
+          "desc": "Leitura de rotação das rodas",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m56",
+          "name": "Módulo ABS",
+          "km": 100000,
+          "months": 84,
+          "desc": "Diagnóstico eletrônico",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m57",
+          "name": "Anéis fônicos",
+          "km": 80000,
+          "months": 60,
+          "desc": "Sujeira e dentes quebrados",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m58",
+          "name": "Teste de funcionamento ABS",
+          "km": 20000,
+          "months": 24,
+          "desc": "Scanner e pista",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "group": "Suspensão",
+      "name": "Suspensão",
+      "icon": [
+        "M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3",
+        "M1 14h6M9 8h6M17 16h6"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m59",
+          "name": "Amortecedores dianteiros",
+          "km": 60000,
+          "months": 48,
+          "desc": "Controle de oscilação",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m60",
+          "name": "Amortecedores traseiros",
+          "km": 60000,
+          "months": 48,
+          "desc": "Controle de oscilação",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m61",
+          "name": "Molas",
+          "km": 100000,
+          "months": 84,
+          "desc": "Altura e conforto",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m62",
+          "name": "Batentes e coifas",
+          "km": 40000,
+          "months": 36,
+          "desc": "Proteção da haste",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m63",
+          "name": "Bandejas e pivôs",
+          "km": 60000,
+          "months": 48,
+          "desc": "Folgas na geometria",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m64",
+          "name": "Buchas da suspensão",
+          "km": 60000,
+          "months": 48,
+          "desc": "Ruídos e trepidação",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m65",
+          "name": "Bieletas e barra estabilizadora",
+          "km": 40000,
+          "months": 36,
+          "desc": "Estabilidade em curva",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m66",
+          "name": "Rolamentos de roda",
+          "km": 80000,
+          "months": 60,
+          "desc": "Zumbido em velocidade",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "group": "Direção",
+      "name": "Direção",
+      "icon": [
+        "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+        "M12 12v9M12 12 4.6 8.2M12 12l7.4-3.8"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m67",
+          "name": "Alinhamento e cambagem",
+          "km": 10000,
+          "months": 12,
+          "desc": "Desgaste irregular dos pneus",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m68",
+          "name": "Balanceamento",
+          "km": 10000,
+          "months": 12,
+          "desc": "Vibração no volante",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m69",
+          "name": "Fluido da direção hidráulica",
+          "km": 40000,
+          "months": 36,
+          "desc": "Nível e estado",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m70",
+          "name": "Caixa de direção",
+          "km": 100000,
+          "months": 84,
+          "desc": "Folga e vazamento",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m71",
+          "name": "Terminais de direção",
+          "km": 60000,
+          "months": 48,
+          "desc": "Folga no esterçamento",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m72",
+          "name": "Coifas da caixa",
+          "km": 60000,
+          "months": 48,
+          "desc": "Proteção contra sujeira",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m73",
+          "name": "Coluna de direção",
+          "km": 120000,
+          "months": 96,
+          "desc": "Ruído e travas",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "group": "Transmissão",
+      "name": "Manual",
+      "icon": [
+        "M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2",
+        "M8 12h8"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m74",
+          "name": "Óleo do câmbio manual",
+          "km": 60000,
+          "months": 48,
+          "desc": "Lubrificação das engrenagens",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m75",
+          "name": "Retentores do câmbio",
+          "km": 100000,
+          "months": 84,
+          "desc": "Vazamentos",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m76",
+          "name": "Cabo / trambulador",
+          "km": 60000,
+          "months": 48,
+          "desc": "Precisão das marchas",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m77",
+          "name": "Rolamentos do câmbio",
+          "km": 120000,
+          "months": 96,
+          "desc": "Ruído em neutro",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m78",
+          "name": "Coxim do câmbio",
+          "km": 80000,
+          "months": 60,
+          "desc": "Vibração na alavanca",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c13",
+      "group": "Transmissão",
+      "name": "Automático",
+      "icon": [
+        "M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2",
+        "M8 12h8"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m79",
+          "name": "Óleo do câmbio automático",
+          "km": 60000,
+          "months": 48,
+          "desc": "Fluido ATF",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m80",
+          "name": "Filtro do câmbio automático",
+          "km": 60000,
+          "months": 48,
+          "desc": "Trocado com o fluido",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m81",
+          "name": "Corpo de válvulas",
+          "km": 120000,
+          "months": 96,
+          "desc": "Trancos nas trocas",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m82",
+          "name": "Conversor de torque",
+          "km": 150000,
+          "months": 120,
+          "desc": "Patinação e ruído",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m83",
+          "name": "Atualização de software TCU",
+          "km": 60000,
+          "months": 48,
+          "desc": "Estratégia de troca",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c14",
+      "group": "Transmissão",
+      "name": "Embreagem",
+      "icon": [
+        "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+        "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m84",
+          "name": "Kit de embreagem",
+          "km": 80000,
+          "months": 60,
+          "desc": "Disco, platô e rolamento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m85",
+          "name": "Fluido de embreagem",
+          "km": 40000,
+          "months": 36,
+          "desc": "Acionamento hidráulico",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m86",
+          "name": "Cabo de embreagem",
+          "km": 40000,
+          "months": 36,
+          "desc": "Curso do pedal",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m87",
+          "name": "Atuador / cilindro auxiliar",
+          "km": 80000,
+          "months": 60,
+          "desc": "Vazamento e curso",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m88",
+          "name": "Volante do motor",
+          "km": 120000,
+          "months": 96,
+          "desc": "Bimassa e trepidação",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c15",
+      "group": "Transmissão",
+      "name": "Geral",
+      "icon": [
+        "M14.7 6.3a4 4 0 0 1 5.3 5.3l-8.4 8.4a2 2 0 0 1-2.8 0l-2.8-2.8a2 2 0 0 1 0-2.8l8.7-8.1z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m89",
+          "name": "Homocinéticas e juntas",
+          "km": 80000,
+          "months": 60,
+          "desc": "Estalos em curva",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m90",
+          "name": "Coifas das homocinéticas",
+          "km": 40000,
+          "months": 36,
+          "desc": "Perda de graxa",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m91",
+          "name": "Semi-eixos",
+          "km": 120000,
+          "months": 96,
+          "desc": "Vibração em aceleração",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m92",
+          "name": "Diferencial — óleo",
+          "km": 80000,
+          "months": 60,
+          "desc": "Lubrificação do diferencial",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c16",
+      "group": "Pneus",
+      "name": "Pneus",
+      "icon": [
+        "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+        "M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m93",
+          "name": "Pneus dianteiros",
+          "km": 40000,
+          "months": 60,
+          "desc": "Sulco e envelhecimento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m94",
+          "name": "Pneus traseiros",
+          "km": 50000,
+          "months": 60,
+          "desc": "Sulco e envelhecimento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m95",
+          "name": "Rodízio de pneus",
+          "km": 10000,
+          "months": 12,
+          "desc": "Desgaste uniforme",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m96",
+          "name": "Calibragem",
+          "km": 1000,
+          "months": 1,
+          "desc": "Pressão recomendada",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m97",
+          "name": "Estepe",
+          "km": 20000,
+          "months": 12,
+          "desc": "Pressão e estado",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m98",
+          "name": "Válvulas e bicos",
+          "km": 40000,
+          "months": 36,
+          "desc": "Vazamento lento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m99",
+          "name": "Sensores TPMS",
+          "km": 80000,
+          "months": 60,
+          "desc": "Bateria do sensor",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m100",
+          "name": "Geometria das rodas",
+          "km": 20000,
+          "months": 24,
+          "desc": "Empenos e trincas",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c17",
+      "group": "Elétrico",
+      "name": "Bateria",
+      "icon": [
+        "M3 7h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z",
+        "M22 11v2"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m101",
+          "name": "Bateria",
+          "km": 50000,
+          "months": 36,
+          "desc": "Partida e carga",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m102",
+          "name": "Terminais e cabos",
+          "km": 20000,
+          "months": 24,
+          "desc": "Oxidação",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m103",
+          "name": "Teste de carga",
+          "km": 20000,
+          "months": 12,
+          "desc": "Tensão em repouso e sob carga",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m104",
+          "name": "Alternador",
+          "km": 100000,
+          "months": 84,
+          "desc": "Recarga do sistema",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m105",
+          "name": "Correia do alternador — tensão",
+          "km": 40000,
+          "months": 36,
+          "desc": "Guinchos ao ligar",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c18",
+      "group": "Elétrico",
+      "name": "Iluminação",
+      "icon": [
+        "M9 18h6M10 22h4",
+        "M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m106",
+          "name": "Faróis",
+          "km": 40000,
+          "months": 36,
+          "desc": "Lâmpadas e alinhamento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m107",
+          "name": "Lanternas traseiras",
+          "km": 40000,
+          "months": 36,
+          "desc": "Posição e freio",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m108",
+          "name": "Luz de freio",
+          "km": 20000,
+          "months": 24,
+          "desc": "Todas as três luzes",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m109",
+          "name": "Setas e pisca-alerta",
+          "km": 20000,
+          "months": 24,
+          "desc": "Frequência e falhas",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m110",
+          "name": "Luz de ré",
+          "km": 20000,
+          "months": 24,
+          "desc": "Acionamento na marcha à ré",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m111",
+          "name": "Iluminação interna",
+          "km": 40000,
+          "months": 36,
+          "desc": "Teto e painel",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m112",
+          "name": "Polimento dos faróis",
+          "km": 40000,
+          "months": 36,
+          "desc": "Amarelamento da lente",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c19",
+      "group": "Elétrico",
+      "name": "Partida",
+      "icon": [
+        "M15 2a7 7 0 1 0-6.6 9.3L3 17v4h4l1-2h2v-2h2l1.3-1.3A7 7 0 0 0 15 2z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m113",
+          "name": "Motor de partida",
+          "km": 100000,
+          "months": 84,
+          "desc": "Acionamento do arranque",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m114",
+          "name": "Bendix e solenoide",
+          "km": 100000,
+          "months": 84,
+          "desc": "Engate na cremalheira",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m115",
+          "name": "Chave de ignição",
+          "km": 120000,
+          "months": 96,
+          "desc": "Contato elétrico",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m116",
+          "name": "Relés e fusíveis",
+          "km": 60000,
+          "months": 48,
+          "desc": "Oxidação e queima",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c20",
+      "group": "Elétrico",
+      "name": "Sensores",
+      "icon": [
+        "M8.5 8.5a5 5 0 0 0 0 7M15.5 15.5a5 5 0 0 0 0-7M5.5 5.5a9 9 0 0 0 0 13M18.5 18.5a9 9 0 0 0 0-13",
+        "M13 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m117",
+          "name": "Sonda lambda",
+          "km": 80000,
+          "months": 60,
+          "desc": "Mistura ar-combustível",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m118",
+          "name": "Sensor MAP / MAF",
+          "km": 80000,
+          "months": 60,
+          "desc": "Massa de ar admitida",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m119",
+          "name": "Sensor de temperatura",
+          "km": 80000,
+          "months": 60,
+          "desc": "Leitura do arrefecimento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m120",
+          "name": "Sensor de detonação",
+          "km": 100000,
+          "months": 84,
+          "desc": "Proteção contra pré-ignição",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m121",
+          "name": "Sensores de estacionamento",
+          "km": 60000,
+          "months": 48,
+          "desc": "Alcance e ruído",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m122",
+          "name": "Câmera de ré",
+          "km": 60000,
+          "months": 48,
+          "desc": "Imagem e lente",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c21",
+      "group": "Ar-Condicionado",
+      "name": "Ar-Condicionado",
+      "icon": [
+        "M12 2v20M4.2 7l15.6 10M19.8 7 4.2 17"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m123",
+          "name": "Filtro de cabine",
+          "km": 15000,
+          "months": 12,
+          "desc": "Ar filtrado no habitáculo",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m124",
+          "name": "Gás refrigerante",
+          "km": 40000,
+          "months": 24,
+          "desc": "Carga do sistema",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m125",
+          "name": "Higienização do sistema",
+          "km": 20000,
+          "months": 12,
+          "desc": "Odor e fungos",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m126",
+          "name": "Compressor",
+          "km": 100000,
+          "months": 84,
+          "desc": "Ruído e acionamento",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m127",
+          "name": "Condensador",
+          "km": 80000,
+          "months": 60,
+          "desc": "Sujeira e obstrução",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m128",
+          "name": "Válvula de expansão",
+          "km": 100000,
+          "months": 84,
+          "desc": "Baixo rendimento",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c22",
+      "group": "Escapamento",
+      "name": "Escapamento",
+      "icon": [
+        "M12 22c4 0 7-2.7 7-6.5 0-4-3-6-4.5-9.5C13 9 11 9.5 9 12c0-2-1-3.5-1-3.5C6 11 5 13 5 15.5 5 19.3 8 22 12 22z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m129",
+          "name": "Catalisador",
+          "km": 100000,
+          "months": 84,
+          "desc": "Emissões e entupimento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m130",
+          "name": "Silencioso",
+          "km": 80000,
+          "months": 60,
+          "desc": "Ruído e corrosão",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m131",
+          "name": "Coletor de escape",
+          "km": 120000,
+          "months": 96,
+          "desc": "Trincas e vazamentos",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m132",
+          "name": "Coxins e abraçadeiras",
+          "km": 40000,
+          "months": 36,
+          "desc": "Fixação da linha",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m133",
+          "name": "Sonda pós-catalisador",
+          "km": 100000,
+          "months": 84,
+          "desc": "Monitor de eficiência",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m134",
+          "name": "Teste de emissões",
+          "km": 30000,
+          "months": 24,
+          "desc": "Gases de escapamento",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c23",
+      "group": "Carroceria",
+      "name": "Exterior",
+      "icon": [
+        "M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m135",
+          "name": "Palhetas do limpador",
+          "km": 20000,
+          "months": 12,
+          "desc": "Visibilidade na chuva",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m136",
+          "name": "Polimento e cristalização",
+          "km": 40000,
+          "months": 24,
+          "desc": "Proteção da pintura",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m137",
+          "name": "Retoque anticorrosivo",
+          "km": 60000,
+          "months": 36,
+          "desc": "Pontos de ferrugem",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m138",
+          "name": "Borrachas de porta",
+          "km": 60000,
+          "months": 48,
+          "desc": "Vedação e ruído",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m139",
+          "name": "Parabrisa",
+          "km": 100000,
+          "months": 84,
+          "desc": "Trincas e riscos",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m140",
+          "name": "Retrovisores",
+          "km": 80000,
+          "months": 60,
+          "desc": "Regulagem e rebatimento",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m141",
+          "name": "Fechaduras e dobradiças",
+          "km": 40000,
+          "months": 36,
+          "desc": "Lubrificação",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c24",
+      "group": "Carroceria",
+      "name": "Interior",
+      "icon": [
+        "M3 7l9-4 9 4v10l-9 4-9-4V7z",
+        "M3 7l9 4 9-4M12 11v10"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m142",
+          "name": "Higienização interna",
+          "km": 20000,
+          "months": 12,
+          "desc": "Estofados e carpetes",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m143",
+          "name": "Cintos de segurança",
+          "km": 40000,
+          "months": 36,
+          "desc": "Retração e travamento",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m144",
+          "name": "Bancos e trilhos",
+          "km": 60000,
+          "months": 48,
+          "desc": "Regulagem e folga",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m145",
+          "name": "Painel e comandos",
+          "km": 60000,
+          "months": 48,
+          "desc": "Botões e luzes",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m146",
+          "name": "Vidros elétricos",
+          "km": 60000,
+          "months": 48,
+          "desc": "Motor e trilho",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m147",
+          "name": "Tapetes",
+          "km": 40000,
+          "months": 24,
+          "desc": "Desgaste e fixação",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c25",
+      "group": "Fluidos",
+      "name": "Fluidos",
+      "icon": [
+        "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m148",
+          "name": "Água do limpador",
+          "km": 5000,
+          "months": 3,
+          "desc": "Reservatório cheio",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m149",
+          "name": "Aditivo do radiador — nível",
+          "km": 10000,
+          "months": 6,
+          "desc": "Conferência no reservatório",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m150",
+          "name": "Fluido de freio — nível",
+          "km": 10000,
+          "months": 6,
+          "desc": "Conferência no reservatório",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m151",
+          "name": "Óleo da direção — nível",
+          "km": 10000,
+          "months": 6,
+          "desc": "Conferência no reservatório",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m152",
+          "name": "Graxa de chassi",
+          "km": 40000,
+          "months": 36,
+          "desc": "Pontos de articulação",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m153",
+          "name": "Fluido de transmissão — nível",
+          "km": 20000,
+          "months": 12,
+          "desc": "Vareta ou bujão",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c26",
+      "group": "Segurança",
+      "name": "Segurança",
+      "icon": [
+        "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m154",
+          "name": "Airbags — diagnóstico",
+          "km": 60000,
+          "months": 48,
+          "desc": "Luz de anomalia",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m155",
+          "name": "Extintor",
+          "km": null,
+          "months": 12,
+          "desc": "Validade e carga",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m156",
+          "name": "Triângulo e macaco",
+          "km": null,
+          "months": 12,
+          "desc": "Presença e estado",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m157",
+          "name": "Chave de roda",
+          "km": null,
+          "months": 12,
+          "desc": "Compatibilidade",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m158",
+          "name": "Kit de primeiros socorros",
+          "km": null,
+          "months": 12,
+          "desc": "Validade dos itens",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m159",
+          "name": "Vistoria veicular",
+          "km": null,
+          "months": 12,
+          "desc": "Inspeção obrigatória",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m160",
+          "name": "Documentação e licenciamento",
+          "km": null,
+          "months": 12,
+          "desc": "CRLV em dia",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c27",
+      "group": "Segurança",
+      "name": "Moto",
+      "icon": [
+        "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+      ],
+      "types": [
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m161",
+          "name": "Capacete — validade e viseira",
+          "km": null,
+          "months": 36,
+          "desc": "Troca a cada 3 anos ou após queda",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m162",
+          "name": "Antena corta-pipa",
+          "km": null,
+          "months": 12,
+          "desc": "Fixação no guidão",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c28",
+      "group": "Diagnósticos",
+      "name": "Diagnósticos",
+      "icon": [
+        "M3.05 13a9 9 0 1 1 17.9 0",
+        "M12 14 18 8"
+      ],
+      "types": [
+        "car",
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m163",
+          "name": "Scanner OBD2",
+          "km": 20000,
+          "months": 12,
+          "desc": "Leitura de códigos de falha",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m164",
+          "name": "Teste de bateria e alternador",
+          "km": 20000,
+          "months": 12,
+          "desc": "Bancada elétrica",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m165",
+          "name": "Teste de suspensão",
+          "km": 40000,
+          "months": 24,
+          "desc": "Banco de provas",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m166",
+          "name": "Teste de freios",
+          "km": 20000,
+          "months": 12,
+          "desc": "Eficiência e desbalanço",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m167",
+          "name": "Análise de óleo",
+          "km": 40000,
+          "months": 24,
+          "desc": "Contaminação e desgaste",
+          "insp": false,
+          "types": [
+            "car",
+            "moto"
+          ]
+        },
+        {
+          "id": "m168",
+          "name": "Revisão pré-viagem",
+          "km": 10000,
+          "months": 6,
+          "desc": "Checklist completo",
+          "insp": true,
+          "types": [
+            "car",
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c29",
+      "group": "Motor",
+      "name": "Turbo e Sobrealimentação",
+      "icon": [
+        "M12.8 19.6A2 2 0 1 0 14 16H2M17.5 8a2.5 2.5 0 1 1 2 4H2M9.8 4.4A2 2 0 1 1 11 8H2"
+      ],
+      "types": [
+        "car"
+      ],
+      "items": [
+        {
+          "id": "m169",
+          "name": "Turbina",
+          "km": 120000,
+          "months": 96,
+          "desc": "Folga do eixo e ruído",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m170",
+          "name": "Intercooler",
+          "km": 80000,
+          "months": 60,
+          "desc": "Obstrução e vazamento",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m171",
+          "name": "Mangueiras pressurizadas",
+          "km": 60000,
+          "months": 48,
+          "desc": "Estouros e trincas",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m172",
+          "name": "Válvula wastegate",
+          "km": 100000,
+          "months": 84,
+          "desc": "Controle de pressão",
+          "insp": false,
+          "types": [
+            "car"
+          ]
+        },
+        {
+          "id": "m173",
+          "name": "Dutos de ar",
+          "km": 60000,
+          "months": 48,
+          "desc": "Fixação e vedação",
+          "insp": true,
+          "types": [
+            "car"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c30",
+      "group": "Moto",
+      "name": "Transmissão final",
+      "icon": [
+        "M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2",
+        "M8 12h8"
+      ],
+      "types": [
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m174",
+          "name": "Lubrificação da corrente",
+          "km": 500,
+          "months": 1,
+          "desc": "Spray compatível com O-ring",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m175",
+          "name": "Corrente — limpeza e ajuste",
+          "km": 5000,
+          "months": 6,
+          "desc": "Folga e esticadores iguais nos dois lados",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m176",
+          "name": "Kit relação (corrente, coroa e pinhão)",
+          "km": 25000,
+          "months": 36,
+          "desc": "Troca por desgaste dos dentes",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m177",
+          "name": "Trava da emenda da corrente",
+          "km": 20000,
+          "months": 24,
+          "desc": "Elo de fechamento",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m178",
+          "name": "Fixadores da coroa",
+          "km": 10000,
+          "months": 12,
+          "desc": "Torque dos parafusos",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m179",
+          "name": "Coxins da roda traseira",
+          "km": 10000,
+          "months": 12,
+          "desc": "Folga e trepidação na aceleração",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c31",
+      "group": "Moto",
+      "name": "Suspensão e direção",
+      "icon": [
+        "M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3",
+        "M1 14h6M9 8h6M17 16h6"
+      ],
+      "types": [
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m180",
+          "name": "Óleo e retentores do garfo",
+          "km": 30000,
+          "months": 36,
+          "desc": "Vazamento nas bengalas",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m181",
+          "name": "Garfo — inspeção de vazamento",
+          "km": 5000,
+          "months": 6,
+          "desc": "Retentores e guarda-pó",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m182",
+          "name": "Amortecedor traseiro (monoshock)",
+          "km": 40000,
+          "months": 48,
+          "desc": "Retorno e vazamento",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m183",
+          "name": "Rolamentos da coluna de direção",
+          "km": 10000,
+          "months": 12,
+          "desc": "Folga e pontos duros",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m184",
+          "name": "Folga do guidão",
+          "km": 5000,
+          "months": 6,
+          "desc": "Jogo na direção",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m185",
+          "name": "Rolamento da balança",
+          "km": 40000,
+          "months": null,
+          "desc": "Lubrificação do pivô",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c32",
+      "group": "Moto",
+      "name": "Comandos e chassi",
+      "icon": [
+        "M14.7 6.3a4 4 0 0 1 5.3 5.3l-8.4 8.4a2 2 0 0 1-2.8 0l-2.8-2.8a2 2 0 0 1 0-2.8l8.7-8.1z"
+      ],
+      "types": [
+        "moto"
+      ],
+      "items": [
+        {
+          "id": "m186",
+          "name": "Cabos de acelerador e embreagem",
+          "km": 5000,
+          "months": 6,
+          "desc": "Folga de 2 a 3 mm",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m187",
+          "name": "Alavancas e pedal do freio",
+          "km": 5000,
+          "months": 6,
+          "desc": "Lubrificação dos pivôs",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m188",
+          "name": "Cavalete central e descanso lateral",
+          "km": 20000,
+          "months": 24,
+          "desc": "Pivô e mola de retorno",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m189",
+          "name": "Came do freio a tambor",
+          "km": 5000,
+          "months": 6,
+          "desc": "Limpeza e lubrificação",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m190",
+          "name": "Aperto geral dos fixadores",
+          "km": 5000,
+          "months": 6,
+          "desc": "Eixos, pedaleiras e suportes do motor",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m191",
+          "name": "Separador de óleo",
+          "km": 10000,
+          "months": 12,
+          "desc": "Limpeza junto da troca de óleo",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m192",
+          "name": "Tubo de respiro do motor",
+          "km": 5000,
+          "months": 6,
+          "desc": "Fissuras",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m193",
+          "name": "Dreno do silenciador",
+          "km": 5000,
+          "months": 6,
+          "desc": "Limpeza do orifício",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m194",
+          "name": "Dreno de água do tanque",
+          "km": 5000,
+          "months": 6,
+          "desc": "Água acumulada",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m195",
+          "name": "Porta USB",
+          "km": 5000,
+          "months": 6,
+          "desc": "Teste de carregamento",
+          "insp": true,
+          "types": [
+            "moto"
+          ]
+        },
+        {
+          "id": "m196",
+          "name": "Lavagem técnica",
+          "km": 5000,
+          "months": 6,
+          "desc": "Sem jato na parte elétrica",
+          "insp": false,
+          "types": [
+            "moto"
+          ]
+        }
+      ]
+    }
+  ],
+  "icons": {
+    "droplet": [
+      "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"
+    ],
+    "thermo": [
+      "M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"
+    ],
+    "fuel": [
+      "M3 22h12M4 9h10M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18",
+      "M14 8h2a2 2 0 0 1 2 2v6a2 2 0 0 0 4 0V9.8a2 2 0 0 0-.6-1.4L18 5"
+    ],
+    "belt": [
+      "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
+      "M12 2v3M12 19v3M4.2 4.2l2.2 2.2M17.6 17.6l2.2 2.2M2 12h3M19 12h3M4.2 19.8l2.2-2.2M17.6 6.4l2.2-2.2"
+    ],
+    "filter": [
+      "M22 3H2l8 9.5V19l4 2v-8.5L22 3z"
+    ],
+    "zap": [
+      "M13 2 3 14h9l-1 8 10-12h-9l1-8z"
+    ],
+    "wrench": [
+      "M14.7 6.3a4 4 0 0 1 5.3 5.3l-8.4 8.4a2 2 0 0 1-2.8 0l-2.8-2.8a2 2 0 0 1 0-2.8l8.7-8.1z"
+    ],
+    "disc": [
+      "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+      "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0"
+    ],
+    "activity": [
+      "M22 12h-4l-3 9L9 3l-3 9H2"
+    ],
+    "sliders": [
+      "M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3",
+      "M1 14h6M9 8h6M17 16h6"
+    ],
+    "steering": [
+      "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+      "M12 12v9M12 12 4.6 8.2M12 12l7.4-3.8"
+    ],
+    "chain": [
+      "M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2",
+      "M8 12h8"
+    ],
+    "circle": [
+      "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+      "M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"
+    ],
+    "battery": [
+      "M3 7h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z",
+      "M22 11v2"
+    ],
+    "bulb": [
+      "M9 18h6M10 22h4",
+      "M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2z"
+    ],
+    "key": [
+      "M15 2a7 7 0 1 0-6.6 9.3L3 17v4h4l1-2h2v-2h2l1.3-1.3A7 7 0 0 0 15 2z"
+    ],
+    "sensor": [
+      "M8.5 8.5a5 5 0 0 0 0 7M15.5 15.5a5 5 0 0 0 0-7M5.5 5.5a9 9 0 0 0 0 13M18.5 18.5a9 9 0 0 0 0-13",
+      "M13 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+    ],
+    "snow": [
+      "M12 2v20M4.2 7l15.6 10M19.8 7 4.2 17"
+    ],
+    "flame": [
+      "M12 22c4 0 7-2.7 7-6.5 0-4-3-6-4.5-9.5C13 9 11 9.5 9 12c0-2-1-3.5-1-3.5C6 11 5 13 5 15.5 5 19.3 8 22 12 22z"
+    ],
+    "sparkle": [
+      "M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"
+    ],
+    "box": [
+      "M3 7l9-4 9 4v10l-9 4-9-4V7z",
+      "M3 7l9 4 9-4M12 11v10"
+    ],
+    "shield": [
+      "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+    ],
+    "gauge": [
+      "M3.05 13a9 9 0 1 1 17.9 0",
+      "M12 14 18 8"
+    ],
+    "wind": [
+      "M12.8 19.6A2 2 0 1 0 14 16H2M17.5 8a2.5 2.5 0 1 1 2 4H2M9.8 4.4A2 2 0 1 1 11 8H2"
+    ]
+  }
+}
