@@ -1,0 +1,113 @@
+# F13.2 — every push to main: native API image → Artifact Registry → Flyway on the dev database →
+# Cloud Run qr-api-dev; web and landing to Cloudflare Pages (dev).
+name: deploy-dev
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # Workload Identity Federation (no JSON keys)
+
+env:
+  REGION: southamerica-east1
+  IMAGE: southamerica-east1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/querorevisar/api
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: dev
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+      - name: Build the native image (GraalVM via Paketo buildpacks)
+        run: ./gradlew :apps:api:bootBuildImage --console=plain --imageName=${{ env.IMAGE }}:${{ github.sha }}
+        env:
+          BP_NATIVE_IMAGE: 'true'
+      - name: Smoke test — the native image starts and reports healthy
+        run: |
+          docker run -d --name api-smoke --network host             -e SPRING_PROFILES_ACTIVE=dev -e DB_AUTH_STUB=true -e PAYMENTS_MODE=mock             -e DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres             -e SUPABASE_URL=http://localhost:54321 -e WEB_ORIGINS=http://localhost:5173             ${{ env.IMAGE }}:${{ github.sha }}
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/actuator/health >/dev/null; then echo "healthy after ${i}s"; docker rm -f api-smoke; exit 0; fi
+            sleep 1
+          done
+          docker logs api-smoke | tail -n 100
+          exit 1
+      - run: docker push ${{ env.IMAGE }}:${{ github.sha }}
+      - name: Flyway migrate (dev)
+        run: |
+          docker run --rm -v "$PWD/apps/api/src/main/resources/db/migration:/flyway/sql" flyway/flyway:latest \
+            -url="${{ secrets.DEV_DATABASE_JDBC_URL }}" -user="${{ secrets.DEV_DATABASE_USER }}" -password="${{ secrets.DEV_DATABASE_PASSWORD }}" \
+            -connectRetries=3 migrate
+      - name: Deploy qr-api-dev
+        run: |
+          gcloud run deploy qr-api-dev \
+            --image=${{ env.IMAGE }}:${{ github.sha }} \
+            --region=${{ env.REGION }} \
+            --min-instances=0 --max-instances=1 --cpu-boost \
+            --allow-unauthenticated \
+            --set-env-vars=SPRING_PROFILES_ACTIVE=dev,PAYMENTS_MODE=sandbox,TZ=America/Sao_Paulo,APP_URL=${{ vars.DEV_APP_URL }},API_URL=${{ vars.DEV_API_URL }},WEB_ORIGINS=${{ vars.DEV_APP_URL }},SUPABASE_URL=${{ vars.DEV_SUPABASE_URL }},INTERNAL_JOBS_AUDIENCE=${{ vars.DEV_API_URL }} \
+            --set-secrets=DATABASE_URL=qr-dev-database-url:latest,SUPABASE_SERVICE_ROLE_KEY=qr-dev-supabase-service-role:latest,MP_ACCESS_TOKEN=qr-dev-mp-access-token:latest,MP_WEBHOOK_SECRET=qr-dev-mp-webhook-secret:latest,VAPID_PRIVATE_KEY=qr-vapid-private:latest,RESEND_API_KEY=qr-resend:latest,SENTRY_DSN=qr-sentry-api:latest
+
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run build --filter=@qr/web --filter=@qr/landing
+        env:
+          VITE_RELEASE: ${{ github.sha }}
+          VITE_API_URL: ${{ vars.DEV_API_URL }}
+          VITE_SUPABASE_URL: ${{ vars.DEV_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.DEV_SUPABASE_ANON_KEY }}
+          VITE_VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.SENTRY_DSN_WEB }}
+          VITE_POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+          VITE_LANDING_URL: ${{ vars.DEV_LANDING_URL }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT_WEB: ${{ vars.SENTRY_PROJECT_WEB }}
+          PUBLIC_APP_URL: ${{ vars.DEV_APP_URL }}
+          PUBLIC_SITE_URL: ${{ vars.DEV_LANDING_URL }}
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/web/dist --project-name=querorevisar-app --branch=main
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/landing/dist --project-name=querorevisar-site --branch=main

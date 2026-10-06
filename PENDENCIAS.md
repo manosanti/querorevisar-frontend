@@ -70,3 +70,17 @@ Legenda: 🔒 segredo (nunca no repositório) · ✏️ decisão ou dado não si
 - [ ] ✏️ Custo em créditos de cada consulta (protótipo: laudo 6, leilão 3, restrições 2, débitos 2, dados da placa 1, FIPE grátis).
 - [ ] ✏️ Validade dos créditos (o protótipo não define; implementação padrão: não expiram).
 - [ ] ✏️ Login com Apple: exige Apple Developer (US$ 99/ano). Fica atrás da flag `apple_login`.
+
+## Configuração do GitHub Actions (F13)
+
+Os workflows em `.github/workflows/` leem **variables** (não sigilosas) e **secrets** do repositório e dos environments `dev`, `production` e `restore-drill`. Configure o environment `production` com aprovação manual (Required reviewers).
+
+- [ ] ✏️ Variables: `GCP_PROJECT_ID`, `GCP_DEPLOY_SERVICE_ACCOUNT`, `GCP_SCHEDULER_SERVICE_ACCOUNT`, `CLOUDFLARE_ACCOUNT_ID`, `DEV_API_URL`, `DEV_APP_URL`, `DEV_LANDING_URL`, `DEV_SUPABASE_URL`, `PROD_API_URL`, `PROD_APP_URL`, `PROD_LANDING_URL`, `PROD_SUPABASE_URL`, `VAPID_PUBLIC_KEY`, `SENTRY_ORG`, `SENTRY_PROJECT_WEB`, `ADS_MODE`, `ADSENSE_*`, `R2_ENDPOINT`, `R2_BUCKET`.
+- [ ] 🔒 Secrets: `GCP_WORKLOAD_IDENTITY_PROVIDER`, `CLOUDFLARE_API_TOKEN`, `DEV_SUPABASE_ANON_KEY`, `PROD_SUPABASE_ANON_KEY`, `DEV_DATABASE_JDBC_URL`/`_USER`/`_PASSWORD`, `PROD_DATABASE_JDBC_URL`/`_USER`/`_PASSWORD`, `PROD_DATABASE_DIRECT_URL`, `SENTRY_DSN_WEB`, `SENTRY_AUTH_TOKEN`, `POSTHOG_KEY`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `BACKUP_AGE_PUBLIC_KEY`.
+- [ ] 🔒 Secret Manager (Cloud Run, referenciados no `gcloud run deploy`): `qr-{dev,prod}-database-url`, `qr-{dev,prod}-supabase-service-role`, `qr-{dev,prod}-mp-access-token`, `qr-{dev,prod}-mp-webhook-secret`, `qr-vapid-private`, `qr-resend`, `qr-sentry-api`.
+- [ ] ✏️ Projetos da Cloudflare Pages: `querorevisar-app` (web) e `querorevisar-site` (landing). Repositório do Artifact Registry: `querorevisar` em `southamerica-east1`.
+- [ ] ✏️⛔ Teste mensal de restauração (`restore-test.yml`): precisa da chave **privada** do age no environment `restore-drill` (`BACKUP_AGE_PRIVATE_KEY`). Isso contraria "guardar a chave privada fora da nuvem". Alternativas: usar uma chave só para o teste, ou rodar `infra/backup/restore.sh` localmente uma vez por mês. Decida e, se for local, desative o agendamento do workflow.
+
+## Ambiente local desta máquina
+
+- [ ] ✏️ A virtualização está desligada na BIOS, então o Docker Desktop não sobe. Sem Docker, o `pnpm dev:all` usa Postgres embutido e o login local da API; os testes da API usam Postgres embutido em vez de Testcontainers. Para usar o Supabase local (login real, e-mail OTP, Google), habilite a virtualização (VT-x/AMD-V) no firmware e a "Plataforma da Máquina Virtual" do Windows.

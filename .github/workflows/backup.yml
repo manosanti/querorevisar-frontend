@@ -1,0 +1,43 @@
+# F13.4 — daily backup at 03:00 America/Sao_Paulo (06:00 UTC): pg_dump of prod (direct connection),
+# gzip + age encryption with a public key, upload to Cloudflare R2, keep 30 days.
+name: backup
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      R2_ENDPOINT: ${{ vars.R2_ENDPOINT }}
+      R2_BUCKET: ${{ vars.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client and age
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17 age
+      - name: Dump, compress and encrypt
+        env:
+          PGDATABASE_URL: ${{ secrets.PROD_DATABASE_DIRECT_URL }}
+          AGE_RECIPIENT: ${{ secrets.BACKUP_AGE_PUBLIC_KEY }}
+        run: bash infra/backup/backup.sh
+      - name: Upload to R2 and prune backups older than 30 days
+        run: bash infra/backup/upload.sh

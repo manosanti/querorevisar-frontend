@@ -1,0 +1,112 @@
+# F13.3 — tag v*: manual approval (environment "production"), promote the image already tested in dev by
+# digest, Flyway on prod, deploy qr-api (max 2 instances), create/update the Cloud Scheduler jobs (OIDC).
+name: deploy-prod
+
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  REGION: southamerica-east1
+  IMAGE: southamerica-east1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/querorevisar/api
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production # configure "Required reviewers" in the repository settings
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Resolve the digest of the image built for this commit in dev
+        id: image
+        run: |
+          DIGEST=$(gcloud artifacts docker images describe ${{ env.IMAGE }}:${{ github.sha }} --format='value(image_summary.digest)')
+          echo "ref=${{ env.IMAGE }}@${DIGEST}" >> "$GITHUB_OUTPUT"
+      - name: Flyway migrate (prod)
+        run: |
+          docker run --rm -v "$PWD/apps/api/src/main/resources/db/migration:/flyway/sql" flyway/flyway:latest \
+            -url="${{ secrets.PROD_DATABASE_JDBC_URL }}" -user="${{ secrets.PROD_DATABASE_USER }}" -password="${{ secrets.PROD_DATABASE_PASSWORD }}" \
+            -connectRetries=3 migrate
+      - name: Deploy qr-api
+        run: |
+          gcloud run deploy qr-api \
+            --image=${{ steps.image.outputs.ref }} \
+            --region=${{ env.REGION }} \
+            --min-instances=0 --max-instances=2 --cpu-boost \
+            --allow-unauthenticated \
+            --set-env-vars=SPRING_PROFILES_ACTIVE=prod,PAYMENTS_MODE=live,TZ=America/Sao_Paulo,APP_URL=${{ vars.PROD_APP_URL }},API_URL=${{ vars.PROD_API_URL }},WEB_ORIGINS=${{ vars.PROD_APP_URL }},SUPABASE_URL=${{ vars.PROD_SUPABASE_URL }},INTERNAL_JOBS_AUDIENCE=${{ vars.PROD_API_URL }} \
+            --set-secrets=DATABASE_URL=qr-prod-database-url:latest,SUPABASE_SERVICE_ROLE_KEY=qr-prod-supabase-service-role:latest,MP_ACCESS_TOKEN=qr-prod-mp-access-token:latest,MP_WEBHOOK_SECRET=qr-prod-mp-webhook-secret:latest,VAPID_PRIVATE_KEY=qr-vapid-private:latest,RESEND_API_KEY=qr-resend:latest,SENTRY_DSN=qr-sentry-api:latest
+      - name: Cloud Scheduler jobs (America/Sao_Paulo, OIDC with the service URL as audience)
+        run: |
+          upsert() {
+            local name=$1 schedule=$2 path=$3
+            if gcloud scheduler jobs describe "$name" --location=${{ env.REGION }} >/dev/null 2>&1; then op=update; else op=create; fi
+            gcloud scheduler jobs $op http "$name" --location=${{ env.REGION }} \
+              --schedule="$schedule" --time-zone="America/Sao_Paulo" \
+              --uri="${{ vars.PROD_API_URL }}$path" --http-method=POST \
+              --oidc-service-account-email=${{ vars.GCP_SCHEDULER_SERVICE_ACCOUNT }} \
+              --oidc-token-audience="${{ vars.PROD_API_URL }}"
+          }
+          upsert qr-daily "0 6 * * *" /internal/jobs/daily
+          upsert qr-send-alerts "0 9 * * *" /internal/jobs/send-alerts
+          upsert qr-premium-credits "30 6 * * *" /internal/jobs/premium-credits
+          upsert qr-fipe-refresh "0 4 * * 1" /internal/jobs/fipe-refresh
+          upsert qr-cleanup "0 5 * * *" /internal/jobs/cleanup
+
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    needs: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run build --filter=@qr/web --filter=@qr/landing
+        env:
+          VITE_RELEASE: ${{ github.ref_name }}
+          VITE_API_URL: ${{ vars.PROD_API_URL }}
+          VITE_SUPABASE_URL: ${{ vars.PROD_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.PROD_SUPABASE_ANON_KEY }}
+          VITE_VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.SENTRY_DSN_WEB }}
+          VITE_POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+          VITE_ADS_MODE: ${{ vars.ADS_MODE }}
+          VITE_ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+          VITE_ADSENSE_SLOT_ITENS: ${{ vars.ADSENSE_SLOT_ITENS }}
+          VITE_ADSENSE_SLOT_HISTORICO: ${{ vars.ADSENSE_SLOT_HISTORICO }}
+          VITE_ADSENSE_SLOT_CONTA: ${{ vars.ADSENSE_SLOT_CONTA }}
+          VITE_LANDING_URL: ${{ vars.PROD_LANDING_URL }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT_WEB: ${{ vars.SENTRY_PROJECT_WEB }}
+          PUBLIC_APP_URL: ${{ vars.PROD_APP_URL }}
+          PUBLIC_SITE_URL: ${{ vars.PROD_LANDING_URL }}
+          PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/web/dist --project-name=querorevisar-app --branch=production
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/landing/dist --project-name=querorevisar-site --branch=production
