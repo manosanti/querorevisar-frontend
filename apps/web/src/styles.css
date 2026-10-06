@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+@import '@qr/tokens/theme.css';
+@import '@qr/ui/styles.css';
+
+/* Scan the design-system package for class names as well. */
+@source '../../../packages/ui/src';

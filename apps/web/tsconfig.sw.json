@@ -1,0 +1,9 @@
+{
+  "extends": "@qr/config/tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "WebWorker"],
+    "types": [],
+    "exactOptionalPropertyTypes": false
+  },
+  "include": ["src/sw.ts"]
+}
