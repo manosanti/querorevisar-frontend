@@ -1,0 +1,1186 @@
+{
+  "now": "2026-10-06T15:00:00.000Z",
+  "monthDays": 30.44,
+  "cases": [
+    {
+      "name": "sem registro (km e meses)",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-08-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [],
+      "expected": {
+        "estimatedKm": 50204,
+        "status": "none",
+        "recordKm": null,
+        "pct": null,
+        "kmLeft": null,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": null,
+        "line": "A cada 10.000 km ou 12 meses",
+        "badge": "Sem registro",
+        "barPct": 0,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "sem registro (só meses)",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-08-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "fluid",
+        "name": "Fluido de freio",
+        "km": null,
+        "months": 24
+      },
+      "records": [],
+      "expected": {
+        "estimatedKm": 50204,
+        "status": "none",
+        "recordKm": null,
+        "pct": null,
+        "kmLeft": null,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": null,
+        "line": "A cada 24 meses",
+        "badge": "Sem registro",
+        "barPct": 0,
+        "intervalText": "24 meses"
+      }
+    },
+    {
+      "name": "sem registro (só km)",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-08-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "tires",
+        "name": "Pneus",
+        "km": 40000,
+        "months": null
+      },
+      "records": [],
+      "expected": {
+        "estimatedKm": 50204,
+        "status": "none",
+        "recordKm": null,
+        "pct": null,
+        "kmLeft": null,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": null,
+        "line": "A cada 40.000 km",
+        "badge": "Sem registro",
+        "barPct": 0,
+        "intervalText": "40.000 km"
+      }
+    },
+    {
+      "name": "em dia, troca recente",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 47000,
+          "date": "2026-09-06"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48000,
+        "status": "ok",
+        "recordKm": 47000,
+        "pct": 0.1,
+        "kmLeft": 9000,
+        "monthsLeft": 10.993922,
+        "byTime": false,
+        "dueKm": 57000,
+        "line": "Faltam ~9.000 km · cerca de 8 meses",
+        "badge": "Em dia",
+        "barPct": 10,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "em dia, sem data",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 45000,
+          "date": null
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48000,
+        "status": "ok",
+        "recordKm": 45000,
+        "pct": 0.3,
+        "kmLeft": 7000,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": 55000,
+        "line": "Faltam ~7.000 km · cerca de 6 meses",
+        "badge": "Em dia",
+        "barPct": 30,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "em dia, poucas semanas",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 2000
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40500,
+          "date": "2026-07-08"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48000,
+        "status": "ok",
+        "recordKm": 40500,
+        "pct": 0.75,
+        "kmLeft": 2500,
+        "monthsLeft": 9.022832,
+        "byTime": false,
+        "dueKm": 50500,
+        "line": "Faltam ~2.500 km · cerca de 5 semanas",
+        "badge": "Em dia",
+        "barPct": 75,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "atenção 80% por km",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2026-08-07"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48000,
+        "status": "warn",
+        "recordKm": 40000,
+        "pct": 0.8,
+        "kmLeft": 2000,
+        "monthsLeft": 10.008377,
+        "byTime": false,
+        "dueKm": 50000,
+        "line": "Faltam ~2.000 km · cerca de 8 semanas",
+        "badge": "80%",
+        "barPct": 80,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "atenção 85% por km",
+      "vehicle": {
+        "type": "car",
+        "km": 48500,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2026-08-07"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48500,
+        "status": "warn",
+        "recordKm": 40000,
+        "pct": 0.85,
+        "kmLeft": 1500,
+        "monthsLeft": 10.008377,
+        "byTime": false,
+        "dueKm": 50000,
+        "line": "Faltam ~1.500 km · cerca de 6 semanas",
+        "badge": "85%",
+        "barPct": 85,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "atenção esta semana",
+      "vehicle": {
+        "type": "car",
+        "km": 49700,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2026-08-07"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 49700,
+        "status": "warn",
+        "recordKm": 40000,
+        "pct": 0.97,
+        "kmLeft": 300,
+        "monthsLeft": 10.008377,
+        "byTime": false,
+        "dueKm": 50000,
+        "line": "Faltam ~300 km · esta semana",
+        "badge": "97%",
+        "barPct": 97,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "atenção por tempo",
+      "vehicle": {
+        "type": "car",
+        "km": 41000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2025-11-20"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 41000,
+        "status": "warn",
+        "recordKm": 40000,
+        "pct": 0.877751,
+        "kmLeft": 9000,
+        "monthsLeft": 1.466984,
+        "byTime": true,
+        "dueKm": 50000,
+        "line": "Vence em ~1 meses pelo tempo",
+        "badge": "88%",
+        "barPct": 88,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "vencido por km",
+      "vehicle": {
+        "type": "car",
+        "km": 52300,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2026-06-28"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 52300,
+        "status": "over",
+        "recordKm": 40000,
+        "pct": 1.23,
+        "kmLeft": -2300,
+        "monthsLeft": 8.694317,
+        "byTime": false,
+        "dueKm": 50000,
+        "line": "Passou 2.300 km do limite",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "vencido por tempo",
+      "vehicle": {
+        "type": "car",
+        "km": 43000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2025-09-01"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 43000,
+        "status": "over",
+        "recordKm": 40000,
+        "pct": 1.096761,
+        "kmLeft": 7000,
+        "monthsLeft": -1.161137,
+        "byTime": true,
+        "dueKm": 50000,
+        "line": "Trocado há 13 meses · limite 12",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "vencido por tempo, só meses",
+      "vehicle": {
+        "type": "car",
+        "km": 43000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "fluid",
+        "name": "Fluido de freio",
+        "km": null,
+        "months": 24
+      },
+      "records": [
+        {
+          "itemId": "fluid",
+          "km": 31000,
+          "date": "2024-08-07"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 43000,
+        "status": "over",
+        "recordKm": 31000,
+        "pct": 1.082218,
+        "kmLeft": null,
+        "monthsLeft": -1.973226,
+        "byTime": true,
+        "dueKm": null,
+        "line": "Trocado há 26 meses · limite 24",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "24 meses"
+      }
+    },
+    {
+      "name": "em dia, só meses",
+      "vehicle": {
+        "type": "car",
+        "km": 43000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "fluid",
+        "name": "Fluido de freio",
+        "km": null,
+        "months": 24
+      },
+      "records": [
+        {
+          "itemId": "fluid",
+          "km": 31000,
+          "date": "2026-03-20"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 43000,
+        "status": "ok",
+        "recordKm": 31000,
+        "pct": 0.274618,
+        "kmLeft": null,
+        "monthsLeft": 17.409166,
+        "byTime": true,
+        "dueKm": null,
+        "line": "Vence em ~17 meses pelo tempo",
+        "badge": "Em dia",
+        "barPct": 27,
+        "intervalText": "24 meses"
+      }
+    },
+    {
+      "name": "só meses sem data fica em dia",
+      "vehicle": {
+        "type": "car",
+        "km": 43000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "fluid",
+        "name": "Fluido de freio",
+        "km": null,
+        "months": 24
+      },
+      "records": [
+        {
+          "itemId": "fluid",
+          "km": 31000,
+          "date": null
+        }
+      ],
+      "expected": {
+        "estimatedKm": 43000,
+        "status": "ok",
+        "recordKm": 31000,
+        "pct": 0,
+        "kmLeft": null,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": null,
+        "line": "A cada 24 meses",
+        "badge": "Em dia",
+        "barPct": 0,
+        "intervalText": "24 meses"
+      }
+    },
+    {
+      "name": "só km, atenção",
+      "vehicle": {
+        "type": "car",
+        "km": 70000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "tires",
+        "name": "Pneus",
+        "km": 40000,
+        "months": null
+      },
+      "records": [
+        {
+          "itemId": "tires",
+          "km": 37000,
+          "date": "2024-04-19"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 70000,
+        "status": "warn",
+        "recordKm": 37000,
+        "pct": 0.825,
+        "kmLeft": 7000,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": 77000,
+        "line": "Faltam ~7.000 km · cerca de 6 meses",
+        "badge": "83%",
+        "barPct": 83,
+        "intervalText": "40.000 km"
+      }
+    },
+    {
+      "name": "km estimada empurra para vencido",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-06-08T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2026-05-09"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 52336,
+        "status": "over",
+        "recordKm": 40000,
+        "pct": 1.2336,
+        "kmLeft": -2336,
+        "monthsLeft": 7.051741,
+        "byTime": false,
+        "dueKm": 50000,
+        "line": "Passou 2.336 km do limite",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "km estimada sem tempo decorrido",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 41500,
+          "date": "2026-04-17"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48000,
+        "status": "ok",
+        "recordKm": 41500,
+        "pct": 0.65,
+        "kmLeft": 3500,
+        "monthsLeft": 6.329008,
+        "byTime": false,
+        "dueKm": 51500,
+        "line": "Faltam ~3.500 km · cerca de 3 meses",
+        "badge": "Em dia",
+        "barPct": 65,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "demo Onix: óleo",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-08-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 41500,
+          "date": "2026-04-17"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 50204,
+        "status": "warn",
+        "recordKm": 41500,
+        "pct": 0.8704,
+        "kmLeft": 1296,
+        "monthsLeft": 6.329008,
+        "byTime": false,
+        "dueKm": 51500,
+        "line": "Faltam ~1.296 km · cerca de 5 semanas",
+        "badge": "87%",
+        "barPct": 87,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "demo Onix: correia dentada",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-08-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "belt",
+        "name": "Correia dentada",
+        "km": 60000,
+        "months": 48
+      },
+      "records": [
+        {
+          "itemId": "belt",
+          "km": 10000,
+          "date": "2023-03-16"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 50204,
+        "status": "warn",
+        "recordKm": 10000,
+        "pct": 0.890156,
+        "kmLeft": 19796,
+        "monthsLeft": 5.272503,
+        "byTime": true,
+        "dueKm": 70000,
+        "line": "Vence em ~5 meses pelo tempo",
+        "badge": "89%",
+        "barPct": 89,
+        "intervalText": "60.000 km ou 48 meses"
+      }
+    },
+    {
+      "name": "vários registros: usa o de maior km",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 30000,
+          "date": "2026-09-06"
+        },
+        {
+          "itemId": "m1",
+          "km": 41000,
+          "date": "2025-09-01"
+        },
+        {
+          "itemId": "m1",
+          "km": 35000,
+          "date": "2026-09-26"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48000,
+        "status": "over",
+        "recordKm": 41000,
+        "pct": 1.096761,
+        "kmLeft": 3000,
+        "monthsLeft": -1.161137,
+        "byTime": true,
+        "dueKm": 51000,
+        "line": "Trocado há 13 meses · limite 12",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "registro de outro item é ignorado",
+      "vehicle": {
+        "type": "car",
+        "km": 48000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "other",
+          "km": 47900,
+          "date": "2026-10-04"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 48000,
+        "status": "none",
+        "recordKm": null,
+        "pct": null,
+        "kmLeft": null,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": null,
+        "line": "A cada 10.000 km ou 12 meses",
+        "badge": "Sem registro",
+        "barPct": 0,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "moto em dia",
+      "vehicle": {
+        "type": "moto",
+        "km": 23100,
+        "kmAt": "2026-09-16T15:00:00.000Z",
+        "kmPerMonth": 950
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 21000,
+          "date": "2026-07-28"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 23724,
+        "status": "ok",
+        "recordKm": 21000,
+        "pct": 0.2724,
+        "kmLeft": 7276,
+        "monthsLeft": 9.679862,
+        "byTime": false,
+        "dueKm": 31000,
+        "line": "Faltam ~7.276 km · cerca de 8 meses",
+        "badge": "Em dia",
+        "barPct": 27,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "moto kit relação vencido por tempo",
+      "vehicle": {
+        "type": "moto",
+        "km": 23100,
+        "kmAt": "2026-09-16T15:00:00.000Z",
+        "kmPerMonth": 950
+      },
+      "item": {
+        "id": "kit",
+        "name": "Kit relação",
+        "km": 20000,
+        "months": 24
+      },
+      "records": [
+        {
+          "itemId": "kit",
+          "km": 2500,
+          "date": "2024-04-19"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 23724,
+        "status": "over",
+        "recordKm": 2500,
+        "pct": 1.232787,
+        "kmLeft": -1224,
+        "monthsLeft": -5.586892,
+        "byTime": true,
+        "dueKm": 22500,
+        "line": "Trocado há 30 meses · limite 24",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "20.000 km ou 24 meses"
+      }
+    },
+    {
+      "name": "moto nível de óleo vencido",
+      "vehicle": {
+        "type": "moto",
+        "km": 23100,
+        "kmAt": "2026-09-16T15:00:00.000Z",
+        "kmPerMonth": 950
+      },
+      "item": {
+        "id": "level",
+        "name": "Nível de óleo",
+        "km": 1000,
+        "months": 1
+      },
+      "records": [
+        {
+          "itemId": "level",
+          "km": 21000,
+          "date": "2026-07-28"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 23724,
+        "status": "over",
+        "recordKm": 21000,
+        "pct": 2.724,
+        "kmLeft": -1724,
+        "monthsLeft": -1.320138,
+        "byTime": false,
+        "dueKm": 22000,
+        "line": "Passou 1.724 km do limite",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "1.000 km ou 1 meses"
+      }
+    },
+    {
+      "name": "moto atenção por km",
+      "vehicle": {
+        "type": "moto",
+        "km": 18300,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 900
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 10000,
+          "date": "2026-03-20"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 18300,
+        "status": "warn",
+        "recordKm": 10000,
+        "pct": 0.83,
+        "kmLeft": 1700,
+        "monthsLeft": 5.409166,
+        "byTime": false,
+        "dueKm": 20000,
+        "line": "Faltam ~1.700 km · cerca de 2 meses",
+        "badge": "83%",
+        "barPct": 83,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "plano do fabricante: óleo Pulsar",
+      "vehicle": {
+        "type": "moto",
+        "km": 15000,
+        "kmAt": "2026-10-01T15:00:00.000Z",
+        "kmPerMonth": 900
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor (plano Bajaj)",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 6000,
+          "date": "2026-01-29"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 15148,
+        "status": "warn",
+        "recordKm": 6000,
+        "pct": 0.9148,
+        "kmLeft": 852,
+        "monthsLeft": 3.76659,
+        "byTime": false,
+        "dueKm": 16000,
+        "line": "Faltam ~852 km · cerca de 4 semanas",
+        "badge": "91%",
+        "barPct": 91,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "plano do fabricante: vela Pulsar",
+      "vehicle": {
+        "type": "moto",
+        "km": 15000,
+        "kmAt": "2026-10-01T15:00:00.000Z",
+        "kmPerMonth": 900
+      },
+      "item": {
+        "id": "plug",
+        "name": "Velas de ignição (plano Bajaj)",
+        "km": 30000,
+        "months": 36
+      },
+      "records": [
+        {
+          "itemId": "plug",
+          "km": 1000,
+          "date": "2025-05-24"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 15148,
+        "status": "ok",
+        "recordKm": 1000,
+        "pct": 0.4716,
+        "kmLeft": 15852,
+        "monthsLeft": 19.553712,
+        "byTime": false,
+        "dueKm": 31000,
+        "line": "Faltam ~15.852 km · cerca de 18 meses",
+        "badge": "Em dia",
+        "barPct": 47,
+        "intervalText": "30.000 km ou 36 meses"
+      }
+    },
+    {
+      "name": "plano do fabricante: garfo Pulsar vencido",
+      "vehicle": {
+        "type": "moto",
+        "km": 32000,
+        "kmAt": "2026-10-01T15:00:00.000Z",
+        "kmPerMonth": 900
+      },
+      "item": {
+        "id": "fork",
+        "name": "Óleo do garfo (plano Bajaj)",
+        "km": 30000,
+        "months": 36
+      },
+      "records": [
+        {
+          "itemId": "fork",
+          "km": 1000,
+          "date": "2023-06-24"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 32148,
+        "status": "over",
+        "recordKm": 1000,
+        "pct": 1.095621,
+        "kmLeft": -1148,
+        "monthsLeft": -3.442346,
+        "byTime": true,
+        "dueKm": 31000,
+        "line": "Trocado há 39 meses · limite 36",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "30.000 km ou 36 meses"
+      }
+    },
+    {
+      "name": "limite exato 100% é vencido",
+      "vehicle": {
+        "type": "car",
+        "km": 50000,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "tires",
+        "name": "Pneus",
+        "km": 40000,
+        "months": null
+      },
+      "records": [
+        {
+          "itemId": "tires",
+          "km": 10000,
+          "date": null
+        }
+      ],
+      "expected": {
+        "estimatedKm": 50000,
+        "status": "over",
+        "recordKm": 10000,
+        "pct": 1,
+        "kmLeft": 0,
+        "monthsLeft": null,
+        "byTime": false,
+        "dueKm": 50000,
+        "line": "Passou 0 km do limite",
+        "badge": "Vencido",
+        "barPct": 100,
+        "intervalText": "40.000 km"
+      }
+    },
+    {
+      "name": "meses restantes arredondam para pelo menos 1",
+      "vehicle": {
+        "type": "car",
+        "km": 40100,
+        "kmAt": "2026-10-06T15:00:00.000Z",
+        "kmPerMonth": 1100
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 40000,
+          "date": "2025-10-11"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 40100,
+        "status": "warn",
+        "recordKm": 40000,
+        "pct": 0.987256,
+        "kmLeft": 9900,
+        "monthsLeft": 0.152924,
+        "byTime": true,
+        "dueKm": 50000,
+        "line": "Vence em ~1 meses pelo tempo",
+        "badge": "99%",
+        "barPct": 99,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    },
+    {
+      "name": "km parada por mais de 3 dias (estimada)",
+      "vehicle": {
+        "type": "car",
+        "km": 30000,
+        "kmAt": "2026-08-22T15:00:00.000Z",
+        "kmPerMonth": 1500
+      },
+      "item": {
+        "id": "belt",
+        "name": "Correia dentada",
+        "km": 60000,
+        "months": 48
+      },
+      "records": [
+        {
+          "itemId": "belt",
+          "km": 20000,
+          "date": "2025-10-06"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 32217,
+        "status": "ok",
+        "recordKm": 20000,
+        "pct": 0.250236,
+        "kmLeft": 47783,
+        "monthsLeft": 35.988666,
+        "byTime": true,
+        "dueKm": 80000,
+        "line": "Vence em ~36 meses pelo tempo",
+        "badge": "Em dia",
+        "barPct": 25,
+        "intervalText": "60.000 km ou 48 meses"
+      }
+    },
+    {
+      "name": "carro com média baixa",
+      "vehicle": {
+        "type": "car",
+        "km": 30000,
+        "kmAt": "2026-09-06T15:00:00.000Z",
+        "kmPerMonth": 300
+      },
+      "item": {
+        "id": "m1",
+        "name": "Óleo do motor",
+        "km": 10000,
+        "months": 12
+      },
+      "records": [
+        {
+          "itemId": "m1",
+          "km": 22500,
+          "date": "2025-12-10"
+        }
+      ],
+      "expected": {
+        "estimatedKm": 30296,
+        "status": "warn",
+        "recordKm": 22500,
+        "pct": 0.822999,
+        "kmLeft": 2204,
+        "monthsLeft": 2.124014,
+        "byTime": true,
+        "dueKm": 32500,
+        "line": "Vence em ~2 meses pelo tempo",
+        "badge": "82%",
+        "barPct": 82,
+        "intervalText": "10.000 km ou 12 meses"
+      }
+    }
+  ]
+}

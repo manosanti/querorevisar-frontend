@@ -1,0 +1,1033 @@
+{
+  "now": "2026-10-06T15:00:00.000Z",
+  "myVehicle": {
+    "model": "Chevrolet Onix",
+    "year": "2019",
+    "color": "Prata",
+    "fipeCents": 6240000
+  },
+  "cases": [
+    {
+      "input": {
+        "plate": "ABC1D23",
+        "product": "laudo",
+        "mine": false
+      },
+      "plateHash": 416,
+      "vehicle": {
+        "model": "Hyundai HB20",
+        "year": "2020",
+        "color": "Branco",
+        "fipeCents": 6423000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "basica",
+            "title": "Dados do veículo",
+            "rows": [
+              {
+                "label": "Marca e modelo",
+                "value": "Hyundai HB20",
+                "tone": null
+              },
+              {
+                "label": "Ano",
+                "value": "2020",
+                "tone": null
+              },
+              {
+                "label": "Cor",
+                "value": "Branco",
+                "tone": null
+              },
+              {
+                "label": "Combustível",
+                "value": "Flex",
+                "tone": null
+              },
+              {
+                "label": "Município",
+                "value": "São Paulo/SP",
+                "tone": null
+              }
+            ]
+          },
+          {
+            "key": "restricoes",
+            "title": "Restrições",
+            "rows": [
+              {
+                "label": "Roubo e furto",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Financiamento",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Bloqueio judicial",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "leilao",
+            "title": "Leilão e sinistro",
+            "rows": [
+              {
+                "label": "Leilão",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Sinistro indenizado",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Indício de perda total",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "fipe",
+            "title": "Preço de mercado",
+            "rows": [
+              {
+                "label": "Tabela FIPE",
+                "value": "R$ 64.230,00",
+                "tone": null
+              },
+              {
+                "label": "Referência",
+                "value": "outubro de 2026",
+                "tone": null
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "BRA2E19",
+        "product": "laudo",
+        "mine": false
+      },
+      "plateHash": 438,
+      "vehicle": {
+        "model": "Chevrolet Onix Plus",
+        "year": "2021",
+        "color": "Preto",
+        "fipeCents": 7634000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "basica",
+            "title": "Dados do veículo",
+            "rows": [
+              {
+                "label": "Marca e modelo",
+                "value": "Chevrolet Onix Plus",
+                "tone": null
+              },
+              {
+                "label": "Ano",
+                "value": "2021",
+                "tone": null
+              },
+              {
+                "label": "Cor",
+                "value": "Preto",
+                "tone": null
+              },
+              {
+                "label": "Combustível",
+                "value": "Flex",
+                "tone": null
+              },
+              {
+                "label": "Município",
+                "value": "São Paulo/SP",
+                "tone": null
+              }
+            ]
+          },
+          {
+            "key": "restricoes",
+            "title": "Restrições",
+            "rows": [
+              {
+                "label": "Roubo e furto",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Financiamento",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Bloqueio judicial",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "leilao",
+            "title": "Leilão e sinistro",
+            "rows": [
+              {
+                "label": "Leilão",
+                "value": "Consta em 2023",
+                "tone": "over"
+              },
+              {
+                "label": "Sinistro indenizado",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Indício de perda total",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "fipe",
+            "title": "Preço de mercado",
+            "rows": [
+              {
+                "label": "Tabela FIPE",
+                "value": "R$ 76.340,00",
+                "tone": null
+              },
+              {
+                "label": "Referência",
+                "value": "outubro de 2026",
+                "tone": null
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 1,
+          "text": "1 ponto de atenção: leilão",
+          "tone": "over"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "QRV2E19",
+        "product": "debitos",
+        "mine": true
+      },
+      "plateHash": 474,
+      "vehicle": {
+        "model": "Chevrolet Onix",
+        "year": "2019",
+        "color": "Prata",
+        "fipeCents": 6240000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "XYZ9A87",
+        "product": "leilao",
+        "mine": false
+      },
+      "plateHash": 500,
+      "vehicle": {
+        "model": "Volkswagen Polo",
+        "year": "2021",
+        "color": "Prata",
+        "fipeCents": 7851200
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "leilao",
+            "title": "Leilão e sinistro",
+            "rows": [
+              {
+                "label": "Leilão",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Sinistro indenizado",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Indício de perda total",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "MNO4P56",
+        "product": "debitos",
+        "mine": false
+      },
+      "plateHash": 473,
+      "vehicle": {
+        "model": "Chevrolet Onix Plus",
+        "year": "2021",
+        "color": "Preto",
+        "fipeCents": 7634000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "KLM3N45",
+        "product": "restricoes",
+        "mine": false
+      },
+      "plateHash": 462,
+      "vehicle": {
+        "model": "Fiat Argo",
+        "year": "2022",
+        "color": "Cinza",
+        "fipeCents": 7189000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "restricoes",
+            "title": "Restrições",
+            "rows": [
+              {
+                "label": "Roubo e furto",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Financiamento",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Bloqueio judicial",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "GHI7J89",
+        "product": "basica",
+        "mine": false
+      },
+      "plateHash": 458,
+      "vehicle": {
+        "model": "Chevrolet Onix Plus",
+        "year": "2021",
+        "color": "Preto",
+        "fipeCents": 7634000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "basica",
+            "title": "Dados do veículo",
+            "rows": [
+              {
+                "label": "Marca e modelo",
+                "value": "Chevrolet Onix Plus",
+                "tone": null
+              },
+              {
+                "label": "Ano",
+                "value": "2021",
+                "tone": null
+              },
+              {
+                "label": "Cor",
+                "value": "Preto",
+                "tone": null
+              },
+              {
+                "label": "Combustível",
+                "value": "Flex",
+                "tone": null
+              },
+              {
+                "label": "Município",
+                "value": "São Paulo/SP",
+                "tone": null
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "DEF5G67",
+        "product": "fipe",
+        "mine": false
+      },
+      "plateHash": 440,
+      "vehicle": {
+        "model": "Volkswagen Polo",
+        "year": "2021",
+        "color": "Prata",
+        "fipeCents": 7851200
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "fipe",
+            "title": "Preço de mercado",
+            "rows": [
+              {
+                "label": "Tabela FIPE",
+                "value": "R$ 78.512,00",
+                "tone": null
+              },
+              {
+                "label": "Referência",
+                "value": "outubro de 2026",
+                "tone": null
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "RST8U90",
+        "product": "laudo",
+        "mine": false
+      },
+      "plateHash": 495,
+      "vehicle": {
+        "model": "Volkswagen Polo",
+        "year": "2021",
+        "color": "Prata",
+        "fipeCents": 7851200
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "basica",
+            "title": "Dados do veículo",
+            "rows": [
+              {
+                "label": "Marca e modelo",
+                "value": "Volkswagen Polo",
+                "tone": null
+              },
+              {
+                "label": "Ano",
+                "value": "2021",
+                "tone": null
+              },
+              {
+                "label": "Cor",
+                "value": "Prata",
+                "tone": null
+              },
+              {
+                "label": "Combustível",
+                "value": "Flex",
+                "tone": null
+              },
+              {
+                "label": "Município",
+                "value": "São Paulo/SP",
+                "tone": null
+              }
+            ]
+          },
+          {
+            "key": "restricoes",
+            "title": "Restrições",
+            "rows": [
+              {
+                "label": "Roubo e furto",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Financiamento",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Bloqueio judicial",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "leilao",
+            "title": "Leilão e sinistro",
+            "rows": [
+              {
+                "label": "Leilão",
+                "value": "Consta em 2023",
+                "tone": "over"
+              },
+              {
+                "label": "Sinistro indenizado",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Indício de perda total",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "fipe",
+            "title": "Preço de mercado",
+            "rows": [
+              {
+                "label": "Tabela FIPE",
+                "value": "R$ 78.512,00",
+                "tone": null
+              },
+              {
+                "label": "Referência",
+                "value": "outubro de 2026",
+                "tone": null
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 1,
+          "text": "1 ponto de atenção: leilão",
+          "tone": "over"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "QRV2E19",
+        "product": "laudo",
+        "mine": true
+      },
+      "plateHash": 474,
+      "vehicle": {
+        "model": "Chevrolet Onix",
+        "year": "2019",
+        "color": "Prata",
+        "fipeCents": 6240000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "basica",
+            "title": "Dados do veículo",
+            "rows": [
+              {
+                "label": "Marca e modelo",
+                "value": "Chevrolet Onix",
+                "tone": null
+              },
+              {
+                "label": "Ano",
+                "value": "2019",
+                "tone": null
+              },
+              {
+                "label": "Cor",
+                "value": "Prata",
+                "tone": null
+              },
+              {
+                "label": "Combustível",
+                "value": "Flex",
+                "tone": null
+              },
+              {
+                "label": "Município",
+                "value": "São Paulo/SP",
+                "tone": null
+              }
+            ]
+          },
+          {
+            "key": "restricoes",
+            "title": "Restrições",
+            "rows": [
+              {
+                "label": "Roubo e furto",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Financiamento",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Bloqueio judicial",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "leilao",
+            "title": "Leilão e sinistro",
+            "rows": [
+              {
+                "label": "Leilão",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Sinistro indenizado",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Indício de perda total",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "fipe",
+            "title": "Preço de mercado",
+            "rows": [
+              {
+                "label": "Tabela FIPE",
+                "value": "R$ 62.400,00",
+                "tone": null
+              },
+              {
+                "label": "Referência",
+                "value": "outubro de 2026",
+                "tone": null
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 0,
+          "text": "Nada consta nas bases consultadas",
+          "tone": "ok"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "ABC1D25",
+        "product": "debitos",
+        "mine": false
+      },
+      "plateHash": 418,
+      "vehicle": {
+        "model": "Chevrolet Onix Plus",
+        "year": "2021",
+        "color": "Preto",
+        "fipeCents": 7634000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "2 em aberto · R$ 260,32",
+                "tone": "warn"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 1,
+          "text": "1 ponto de atenção: multas",
+          "tone": "warn"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "ABC1D25",
+        "product": "laudo",
+        "mine": false
+      },
+      "plateHash": 418,
+      "vehicle": {
+        "model": "Chevrolet Onix Plus",
+        "year": "2021",
+        "color": "Preto",
+        "fipeCents": 7634000
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "basica",
+            "title": "Dados do veículo",
+            "rows": [
+              {
+                "label": "Marca e modelo",
+                "value": "Chevrolet Onix Plus",
+                "tone": null
+              },
+              {
+                "label": "Ano",
+                "value": "2021",
+                "tone": null
+              },
+              {
+                "label": "Cor",
+                "value": "Preto",
+                "tone": null
+              },
+              {
+                "label": "Combustível",
+                "value": "Flex",
+                "tone": null
+              },
+              {
+                "label": "Município",
+                "value": "São Paulo/SP",
+                "tone": null
+              }
+            ]
+          },
+          {
+            "key": "restricoes",
+            "title": "Restrições",
+            "rows": [
+              {
+                "label": "Roubo e furto",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Financiamento",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Bloqueio judicial",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "leilao",
+            "title": "Leilão e sinistro",
+            "rows": [
+              {
+                "label": "Leilão",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Sinistro indenizado",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Indício de perda total",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          },
+          {
+            "key": "debitos",
+            "title": "Débitos",
+            "rows": [
+              {
+                "label": "IPVA 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Licenciamento 2026",
+                "value": "Pago",
+                "tone": "ok"
+              },
+              {
+                "label": "Multas",
+                "value": "2 em aberto · R$ 260,32",
+                "tone": "warn"
+              }
+            ]
+          },
+          {
+            "key": "fipe",
+            "title": "Preço de mercado",
+            "rows": [
+              {
+                "label": "Tabela FIPE",
+                "value": "R$ 76.340,00",
+                "tone": null
+              },
+              {
+                "label": "Referência",
+                "value": "outubro de 2026",
+                "tone": null
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 1,
+          "text": "1 ponto de atenção: multas",
+          "tone": "warn"
+        }
+      }
+    },
+    {
+      "input": {
+        "plate": "HJK2L34",
+        "product": "leilao",
+        "mine": false
+      },
+      "plateHash": 450,
+      "vehicle": {
+        "model": "Volkswagen Polo",
+        "year": "2021",
+        "color": "Prata",
+        "fipeCents": 7851200
+      },
+      "expected": {
+        "sections": [
+          {
+            "key": "leilao",
+            "title": "Leilão e sinistro",
+            "rows": [
+              {
+                "label": "Leilão",
+                "value": "Consta em 2023",
+                "tone": "over"
+              },
+              {
+                "label": "Sinistro indenizado",
+                "value": "Nada consta",
+                "tone": "ok"
+              },
+              {
+                "label": "Indício de perda total",
+                "value": "Nada consta",
+                "tone": "ok"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "flags": 1,
+          "text": "1 ponto de atenção: leilão",
+          "tone": "over"
+        }
+      }
+    }
+  ]
+}
