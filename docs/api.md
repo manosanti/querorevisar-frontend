@@ -99,3 +99,26 @@ Resultado: `{ id, plate, product, createdAt, vehicle: { model, year, color, fuel
 ## Problemas (type)
 
 `validation`, `not-found`, `vehicle-limit`, `history-locked`, `insufficient-credits`, `invalid-plate`, `provider-unavailable` (créditos estornados), `rate-limited`, `conflict`.
+
+## Contrato executável
+
+O contrato detalhado (nomes de schema, campos, obrigatoriedade, enums) está em `packages/api-client/openapi.yaml`. Os DTOs da API usam os mesmos nomes de schema e `pnpm api:gen` falha se o springdoc divergir dele (`packages/api-client/scripts/compare-contract.ts`). O cliente do front é gerado pelo orval a partir desse arquivo, e toda resposta consumida passa pelo schema Zod gerado (`api.*` em `packages/api-client/src/validated.ts`).
+
+### Mutações do `POST /v1/sync`
+
+| type                                                     | payload                                                                   |
+| -------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `vehicle.upsert`                                         | `VehicleCreate` (com `replacesVehicleId` para "Cadastrar o novo veículo") |
+| `vehicle.archive` / `vehicle.restore` / `vehicle.delete` | `{ id }`                                                                  |
+| `vehicle.km`                                             | `{ id, km }` ou `{ id, confirmEstimate: true }`                           |
+| `record.upsert`                                          | `RecordCreate`                                                            |
+| `record.delete`                                          | `{ id }`                                                                  |
+
+O `id` da mutação é a chave de idempotência. O front aplica a mutação na hora (reducer em `apps/web/src/lib/data/state.ts`), guarda na fila do IndexedDB e reaplica a fila sobre cada `GET /v1/sync` até o servidor confirmar. Uma mutação rejeitada mostra o `title` do problema e força um sync completo, o que desfaz a mudança local.
+
+### Somente em desenvolvimento e mock
+
+| Método | Rota                                                                                            | Quando                                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| POST   | /dev/auth/anonymous · /dev/auth/signup · /dev/auth/signin · /dev/auth/oauth · /dev/auth/recover | `AUTH_MODE=dev` (profile `local`, sem Supabase). Tokens HS256 emitidos pela própria API                        |
+| POST   | /v1/mock/payments/{id}/approve                                                                  | `PAYMENTS_MODE=mock`. A página `/mock/checkout` do web chama esta rota e a API roda o mesmo handler do webhook |
