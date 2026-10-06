@@ -1,6 +1,6 @@
 // "Comprar créditos": packs, Pix | Cartão, then the Pix QR with copy-and-paste, expiry countdown and
 // polling every 3 s (max 10 min) until approved (docs/mercadopago.md, PLAN F09.3).
-import { api, type CreditPack as ApiPack, type CreditPurchase } from '@qr/api-client';
+import { api, ApiError, type CreditPack as ApiPack, type CreditPurchase } from '@qr/api-client';
 import { CREDIT_PACKS, credTxt, DEFAULT_PACK_INDEX, discountPct, money, packIndexFor, unitPriceCents } from '@qr/core';
 import { Button, RadioCard, Tag, toast, cn } from '@qr/ui';
 import { useQuery } from '@tanstack/react-query';
@@ -145,8 +145,11 @@ export function CreditsSheet({ need }: { need?: number | undefined }) {
         return;
       }
       setPix(purchase);
-    } catch {
-      toast('Não foi possível iniciar o pagamento. Tente de novo.', 'err');
+    } catch (err) {
+      toast(
+        err instanceof ApiError ? err.problem.title : 'Não foi possível iniciar o pagamento. Tente de novo.',
+        'err',
+      );
     } finally {
       setBusy(false);
     }
