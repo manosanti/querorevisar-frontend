@@ -30,7 +30,7 @@ Você vai construir o QueroRevisar do zero seguindo `docs/PLAN.json`. Leia este 
 - Se uma tarefa depender de decisão do dono, implemente a opção marcada em `decisoes` do PLAN.json. Se não houver, implemente o mínimo atrás de feature flag e registre em `PENDENCIAS.md`.
 - Ao instalar dependências, use a versão estável mais recente e deixe o lockfile registrar. Não fixe versões de memória.
 - Antes de usar uma API externa, confira a documentação oficial atual (os links estão nos docs). Se algo mudou em relação ao que está escrito aqui, siga a documentação oficial e atualize o doc correspondente.
-- Ao escrever arquivos, escapes Unicode (`\\u0300`, `\\u00a0`) precisam chegar ao arquivo como texto; confira com `grep` depois de gravar.
+- Ao escrever arquivos, escapes Unicode (`\u0300`, `\u00a0`) precisam chegar ao arquivo como texto; confira com `grep` depois de gravar.
 
 ## Desvios do plano (decididos na implementação)
 
