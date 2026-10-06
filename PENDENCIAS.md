@@ -99,4 +99,4 @@ Os workflows em `.github/workflows/` leem **variables** (não sigilosas) e **sec
 
 ## Acessibilidade (contraste)
 
-- [ ] ✏️ O token `--subtle` (#929292) do protótipo tem contraste 3,1:1 sobre branco, abaixo do AA (4,5:1) para texto pequeno. Ele aparece em rótulos de tabela, "Publicidade", "Patrocinado" e textos de apoio. No login, o "OU" passou a usar `--muted` (#6a6a6a) para o Lighthouse/axe aprovar. Decidir se o token escurece no design system todo (uma mudança só em `packages/tokens`).
+- [ ] ✏️ O token `--subtle` (#929292) do protótipo tem contraste 3,1:1 sobre branco, abaixo do AA (4,5:1) para texto pequeno. Ele aparece em rótulos de tabela, "Publicidade", "Patrocinado" e textos de apoio. No login, o "OU" passou a usar `--muted` (#6a6a6a) para o Lighthouse/axe aprovar. Decidir se o token escurece no design system todo (uma mudança só em `packages/tokens`). Proposta: #767676 (4,54:1, o cinza mais claro que passa AA). A auditoria axe das telas logadas só acusa esse ponto: abas inativas, cabeçalhos de tabela, "Publicidade" e "Patrocinado". O teste `apps/web/e2e/a11y.spec.ts` ignora contraste até essa decisão.

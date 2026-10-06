@@ -39,6 +39,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "@qr/config": "workspace:*",
     "@sentry/vite-plugin": "^5.4.0",
