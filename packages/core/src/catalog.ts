@@ -52,8 +52,19 @@ export interface CatalogItem extends CatalogItemRaw {
 
 export const DEFAULT_SOURCE = 'Média QueroRevisar';
 
+/**
+ * Plan of brand+model. FIPE names differ in case and carry versions ("PULSAR N150 160"), so the match is
+ * accent/case-insensitive on the brand and accepts a model equal to, or starting with, the plan model.
+ */
 export function findPlan(plans: readonly ManufacturerPlan[], brand: string, model: string): ManufacturerPlan | null {
-  return plans.find(p => p.brand === brand && p.model === model) ?? null;
+  const b = normalizeText(brand);
+  const m = normalizeText(model);
+  return (
+    plans.find(p => {
+      const pm = normalizeText(p.model);
+      return normalizeText(p.brand) === b && (m === pm || m.startsWith(`${pm} `));
+    }) ?? null
+  );
 }
 
 export function catalogForVehicle(

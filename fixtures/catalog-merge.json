@@ -141,6 +141,107 @@
           "source": "Média QueroRevisar"
         }
       ]
+    },
+    {
+      "vehicle": {
+        "type": "moto",
+        "brand": "BAJAJ",
+        "model": "PULSAR N150 160"
+      },
+      "count": 99,
+      "overridden": [
+        {
+          "id": "m1",
+          "km": 10000,
+          "months": 12,
+          "source": "Plano Bajaj"
+        },
+        {
+          "id": "m183",
+          "km": 10000,
+          "months": 12,
+          "source": "Plano Bajaj"
+        },
+        {
+          "id": "m195",
+          "km": 5000,
+          "months": 6,
+          "source": "Plano Bajaj"
+        }
+      ],
+      "sample": [
+        {
+          "id": "m1",
+          "km": 10000,
+          "months": 12,
+          "source": "Plano Bajaj"
+        },
+        {
+          "id": "m2",
+          "km": 10000,
+          "months": 12,
+          "source": "Média QueroRevisar"
+        },
+        {
+          "id": "m3",
+          "km": 10000,
+          "months": 12,
+          "source": "Média QueroRevisar"
+        },
+        {
+          "id": "m4",
+          "km": 1000,
+          "months": 1,
+          "source": "Média QueroRevisar"
+        },
+        {
+          "id": "m5",
+          "km": 20000,
+          "months": 12,
+          "source": "Média QueroRevisar"
+        }
+      ]
+    },
+    {
+      "vehicle": {
+        "type": "moto",
+        "brand": "Bajaj",
+        "model": "Pulsar N1500"
+      },
+      "count": 99,
+      "overridden": [],
+      "sample": [
+        {
+          "id": "m1",
+          "km": 10000,
+          "months": 12,
+          "source": "Média QueroRevisar"
+        },
+        {
+          "id": "m2",
+          "km": 10000,
+          "months": 12,
+          "source": "Média QueroRevisar"
+        },
+        {
+          "id": "m3",
+          "km": 10000,
+          "months": 12,
+          "source": "Média QueroRevisar"
+        },
+        {
+          "id": "m4",
+          "km": 1000,
+          "months": 1,
+          "source": "Média QueroRevisar"
+        },
+        {
+          "id": "m5",
+          "km": 20000,
+          "months": 12,
+          "source": "Média QueroRevisar"
+        }
+      ]
     }
   ]
 }
