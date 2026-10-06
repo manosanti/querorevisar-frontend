@@ -131,3 +131,4 @@ Dois casos de borda do protótipo foram corrigidos (as fixtures em `fixtures/due
 - Item sem intervalo em km (só meses) com registro sem data ficava "Em dia" com a linha "Faltam ~0 km · esta semana". A implementação mostra o intervalo: "A cada {meses} meses".
 - Datas de registro (`done_on`, `YYYY-MM-DD`) são interpretadas como meia-noite UTC daquele dia, como faz o `new Date('YYYY-MM-DD')` do protótipo, nas duas linguagens.
 - Ao recalcular `kmPerMonth`, o valor mínimo é 1 km/mês, para a conta de tempo nunca dividir por zero.
+- O plano do fabricante é encontrado com tolerância aos nomes da FIPE: marca igual ignorando maiúsculas e acentos, e modelo igual ao do plano ou começando por ele seguido de espaço ("PULSAR N150 160" usa o plano "Pulsar N150"; "Pulsar N1500" não usa).

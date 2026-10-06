@@ -438,7 +438,13 @@ writeFileSync(
 const catalog = JSON.parse(readFileSync(join(root, 'data', 'catalog.json'), 'utf8'));
 const plans = JSON.parse(readFileSync(join(root, 'data', 'planos.json'), 'utf8')).plans;
 function catalogItems(v: { type: string; brand: string; model: string }) {
-  const fab = plans.find((p: any) => p.brand === v.brand && p.model === v.model) || null;
+  // Deviation 4: tolerant plan lookup (FIPE names): same brand ignoring case/accents, model equal or starting with it.
+  const fab =
+    plans.find(
+      (p: any) =>
+        norm(p.brand) === norm(v.brand) &&
+        (norm(v.model) === norm(p.model) || norm(v.model).startsWith(norm(p.model) + ' ')),
+    ) || null;
   const fabMap: Record<string, { km: number; months: number }> = {};
   if (fab)
     fab.categories.forEach((c: any) =>
@@ -466,6 +472,8 @@ const mergeCases = [
   { type: 'moto', brand: 'Bajaj', model: 'Pulsar N150' },
   { type: 'moto', brand: 'Honda', model: 'CG 160' },
   { type: 'car', brand: 'Chevrolet', model: 'Onix' },
+  { type: 'moto', brand: 'BAJAJ', model: 'PULSAR N150 160' },
+  { type: 'moto', brand: 'Bajaj', model: 'Pulsar N1500' },
 ].map(v => {
   const items = catalogItems(v);
   return {
