@@ -1,0 +1,1209 @@
+openapi: 3.1.0
+info:
+  title: QueroRevisar API
+  version: v1
+  description: |
+    Contract-first spec for the QueroRevisar API (docs/api.md). JSON in camelCase, money in cents,
+    ISO 8601 dates. Errors use application/problem+json (RFC 9457) with an extra `code` member.
+    Writes require an `Idempotency-Key` header (UUID). Authentication: `Authorization: Bearer <JWT>`.
+    `pnpm api:gen` replaces this file with the live springdoc output once the API serves it; schema and
+    property names below are the contract the Kotlin DTOs must keep.
+servers:
+  - url: http://localhost:8080
+security:
+  - bearerAuth: []
+
+tags:
+  - name: me
+  - name: sync
+  - name: vehicles
+  - name: records
+  - name: catalog
+  - name: push
+  - name: billing
+  - name: credits
+  - name: lookups
+  - name: dev-auth
+  - name: mock-payments
+  - name: internal
+
+paths:
+  /v1/catalog/version:
+    get:
+      tags: [catalog]
+      operationId: getCatalogVersion
+      security: []
+      responses:
+        '200':
+          description: Current catalog version and the static file that holds it
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogVersion' }
+
+  /v1/me:
+    get:
+      tags: [me]
+      operationId: getMe
+      responses:
+        '200':
+          description: Current user
+          headers:
+            ETag: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '304': { description: Not modified }
+        '401': { $ref: '#/components/responses/Problem' }
+    patch:
+      tags: [me]
+      operationId: updateMe
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MeUpdate' }
+      responses:
+        '200':
+          description: Updated user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        default: { $ref: '#/components/responses/Problem' }
+    delete:
+      tags: [me]
+      operationId: deleteMe
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '204': { description: Account and data deleted }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/me/export:
+    get:
+      tags: [me]
+      operationId: exportMe
+      responses:
+        '200':
+          description: Every piece of data the user owns (LGPD)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MeExport' }
+
+  /v1/sync:
+    get:
+      tags: [sync]
+      operationId: getSync
+      parameters:
+        - name: since
+          in: query
+          required: false
+          description: Cursor from the previous sync. Without it the whole state is returned.
+          schema: { type: string }
+      responses:
+        '200':
+          description: Everything that changed since the cursor
+          headers:
+            ETag: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SyncResponse' }
+        '304': { description: Not modified }
+        default: { $ref: '#/components/responses/Problem' }
+    post:
+      tags: [sync]
+      operationId: postSync
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SyncPush' }
+      responses:
+        '200':
+          description: Result per mutation, applied in order
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SyncPushResult' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/vehicles:
+    get:
+      tags: [vehicles]
+      operationId: listVehicles
+      responses:
+        '200':
+          description: Active and archived vehicles
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Vehicle' } }
+    post:
+      tags: [vehicles]
+      operationId: createVehicle
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VehicleCreate' }
+      responses:
+        '200':
+          description: Created vehicle
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        '402': { $ref: '#/components/responses/Problem' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/vehicles/{id}:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    patch:
+      tags: [vehicles]
+      operationId: updateVehicle
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VehicleUpdate' }
+      responses:
+        '200':
+          description: Updated vehicle
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        default: { $ref: '#/components/responses/Problem' }
+    delete:
+      tags: [vehicles]
+      operationId: deleteVehicle
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '204': { description: Soft deleted together with its records }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/vehicles/{id}/km:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    post:
+      tags: [vehicles]
+      operationId: updateVehicleKm
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/KmUpdate' }
+      responses:
+        '200':
+          description: Vehicle with the new km
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/vehicles/{id}/archive:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    post:
+      tags: [vehicles]
+      operationId: archiveVehicle
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '200':
+          description: Archived (sold or replaced)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/vehicles/{id}/restore:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    post:
+      tags: [vehicles]
+      operationId: restoreVehicle
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '200':
+          description: Active again
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        '402': { $ref: '#/components/responses/Problem' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/vehicles/{id}/fipe:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    get:
+      tags: [vehicles]
+      operationId: getVehicleFipe
+      responses:
+        '200':
+          description: FIPE price for the vehicle (7-day cache)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VehicleFipe' }
+        '404': { $ref: '#/components/responses/Problem' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/vehicles/{id}/records:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    get:
+      tags: [records]
+      operationId: listVehicleRecords
+      responses:
+        '200':
+          description: Records of the vehicle; the free plan only gets the last 12 months
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RecordList' }
+
+  /v1/records:
+    post:
+      tags: [records]
+      operationId: createRecord
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RecordCreate' }
+      responses:
+        '200':
+          description: Created record
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MaintenanceRecord' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/records/{id}:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    patch:
+      tags: [records]
+      operationId: updateRecord
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RecordUpdate' }
+      responses:
+        '200':
+          description: Updated record
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MaintenanceRecord' }
+        default: { $ref: '#/components/responses/Problem' }
+    delete:
+      tags: [records]
+      operationId: deleteRecord
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '204': { description: Soft deleted }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/catalog/vehicles/{type}/brands:
+    get:
+      tags: [catalog]
+      operationId: listFipeBrands
+      parameters:
+        - { $ref: '#/components/parameters/VehicleTypePath' }
+      responses:
+        '200':
+          description: FIPE brands (30-day cache)
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/FipeOption' } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/catalog/vehicles/{type}/brands/{brand}/models:
+    get:
+      tags: [catalog]
+      operationId: listFipeModels
+      parameters:
+        - { $ref: '#/components/parameters/VehicleTypePath' }
+        - { name: brand, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: FIPE models of the brand
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/FipeOption' } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/catalog/vehicles/{type}/brands/{brand}/models/{model}/years:
+    get:
+      tags: [catalog]
+      operationId: listFipeYears
+      parameters:
+        - { $ref: '#/components/parameters/VehicleTypePath' }
+        - { name: brand, in: path, required: true, schema: { type: string } }
+        - { name: model, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: FIPE years of the model (code like "2019-1", name like "2019 Gasolina")
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/FipeOption' } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/catalog/manufacturer-plan:
+    get:
+      tags: [catalog]
+      operationId: getManufacturerPlan
+      parameters:
+        - { name: brand, in: query, required: true, schema: { type: string } }
+        - { name: model, in: query, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Manufacturer plan (structure of data/planos.json)
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /v1/push/subscriptions:
+    post:
+      tags: [push]
+      operationId: createPushSubscription
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PushSubscriptionCreate' }
+      responses:
+        '204': { description: Stored }
+        default: { $ref: '#/components/responses/Problem' }
+    delete:
+      tags: [push]
+      operationId: deletePushSubscription
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PushSubscriptionDelete' }
+      responses:
+        '204': { description: Removed }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/billing/premium:
+    get:
+      tags: [billing]
+      operationId: getPremium
+      responses:
+        '200':
+          description: Premium subscription state
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PremiumStatus' }
+
+  /v1/billing/premium/checkout:
+    post:
+      tags: [billing]
+      operationId: startPremiumCheckout
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '200':
+          description: Mercado Pago link to redirect to
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CheckoutRedirect' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/billing/premium/cancel:
+    post:
+      tags: [billing]
+      operationId: cancelPremium
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '200':
+          description: Cancelled; Premium stays until premiumUntil
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PremiumStatus' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/credits/packs:
+    get:
+      tags: [credits]
+      operationId: listCreditPacks
+      responses:
+        '200':
+          description: Credit packs
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/CreditPack' } }
+
+  /v1/credits/purchases:
+    post:
+      tags: [credits]
+      operationId: createCreditPurchase
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreditPurchaseCreate' }
+      responses:
+        '200':
+          description: Pix data (QR code) or the card checkout link
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CreditPurchase' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/credits/purchases/{id}:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    get:
+      tags: [credits]
+      operationId: getCreditPurchase
+      responses:
+        '200':
+          description: Purchase status (polled every 3 s by the web)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CreditPurchase' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/credits/ledger:
+    get:
+      tags: [credits]
+      operationId: listCreditLedger
+      responses:
+        '200':
+          description: Credit statement, newest first
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/LedgerEntry' } }
+
+  /v1/lookups/products:
+    get:
+      tags: [lookups]
+      operationId: listLookupProducts
+      responses:
+        '200':
+          description: Products, cost in credits and parts
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/LookupProduct' } }
+
+  /v1/lookups:
+    get:
+      tags: [lookups]
+      operationId: listLookups
+      responses:
+        '200':
+          description: Previous lookups, newest first
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/LookupSummary' } }
+    post:
+      tags: [lookups]
+      operationId: createLookup
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LookupCreate' }
+      responses:
+        '200':
+          description: Lookup result (credits debited in the same transaction)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LookupResult' }
+        '402': { $ref: '#/components/responses/Problem' }
+        '422': { $ref: '#/components/responses/Problem' }
+        '503': { $ref: '#/components/responses/Problem' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /v1/lookups/{id}:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    get:
+      tags: [lookups]
+      operationId: getLookup
+      responses:
+        '200':
+          description: Saved result; reopening never charges
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LookupResult' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /dev/auth/anonymous:
+    post:
+      tags: [dev-auth]
+      operationId: devAuthAnonymous
+      description: Only when AUTH_MODE=dev (local profile). Emulates Supabase signInAnonymously.
+      security: []
+      responses:
+        '200':
+          description: New anonymous session
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DevSession' }
+
+  /dev/auth/signup:
+    post:
+      tags: [dev-auth]
+      operationId: devAuthSignup
+      description: With a bearer token of an anonymous user, links email+password to the same user id.
+      security: [{}, { bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DevSignup' }
+      responses:
+        '200':
+          description: Session of the (now permanent) user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DevSession' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+  /dev/auth/signin:
+    post:
+      tags: [dev-auth]
+      operationId: devAuthSignin
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DevSignin' }
+      responses:
+        '200':
+          description: Session
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DevSession' }
+        '401': { $ref: '#/components/responses/Problem' }
+
+  /dev/auth/oauth:
+    post:
+      tags: [dev-auth]
+      operationId: devAuthOauth
+      description: Fake Google/Apple login. Links the current anonymous user or signs in the fake account.
+      security: [{}, { bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DevOauth' }
+      responses:
+        '200':
+          description: Session
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DevSession' }
+
+  /dev/auth/recover:
+    post:
+      tags: [dev-auth]
+      operationId: devAuthRecover
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DevRecover' }
+      responses:
+        '204': { description: Recovery e-mail written to the local outbox }
+
+  /v1/mock/payments/{id}/approve:
+    parameters: [{ $ref: '#/components/parameters/IdPath' }]
+    post:
+      tags: [mock-payments]
+      operationId: approveMockPayment
+      description: |
+        Only when PAYMENTS_MODE=mock. `id` is a credit purchase id or a premium checkout id returned in the
+        mock initPoint. Runs the same handler the Mercado Pago webhook runs.
+      responses:
+        '204': { description: Approved }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /internal/jobs/{job}:
+    post:
+      tags: [internal]
+      operationId: runInternalJob
+      description: Cloud Scheduler (OIDC) or X-Internal-Token in local/dev.
+      security: []
+      parameters:
+        - name: job
+          in: path
+          required: true
+          schema: { type: string, enum: [daily, send-alerts, premium-credits, fipe-refresh, cleanup] }
+        - name: X-Internal-Token
+          in: header
+          required: false
+          schema: { type: string }
+      responses:
+        '200':
+          description: Job result (idempotent per run date)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobRun' }
+
+  /webhooks/mercadopago:
+    post:
+      tags: [billing]
+      operationId: mercadoPagoWebhook
+      security: []
+      parameters:
+        - { name: data.id, in: query, required: false, schema: { type: string } }
+        - { name: type, in: query, required: false, schema: { type: string } }
+        - { name: x-signature, in: header, required: false, schema: { type: string } }
+        - { name: x-request-id, in: header, required: false, schema: { type: string } }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: Received }
+        '401': { description: Invalid signature }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    VehicleTypePath:
+      name: type
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/VehicleType' }
+
+  responses:
+    Problem:
+      description: Problem details (RFC 9457)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code]
+      properties:
+        type: { type: string, description: 'URI reference, e.g. /problems/vehicle-limit' }
+        title: { type: string, description: 'pt-BR, safe to show to the user' }
+        status: { type: integer }
+        detail: { type: [string, 'null'] }
+        instance: { type: [string, 'null'] }
+        code:
+          type: string
+          enum:
+            [
+              validation,
+              not-found,
+              unauthorized,
+              vehicle-limit,
+              history-locked,
+              insufficient-credits,
+              invalid-plate,
+              provider-unavailable,
+              rate-limited,
+              conflict,
+              payment-error,
+              internal,
+            ]
+        missing: { type: [integer, 'null'], description: 'insufficient-credits: credits still missing' }
+        errors:
+          type: [array, 'null']
+          items: { $ref: '#/components/schemas/FieldError' }
+
+    FieldError:
+      type: object
+      required: [field, message]
+      properties:
+        field: { type: string }
+        message: { type: string }
+
+    VehicleType:
+      type: string
+      enum: [car, moto]
+
+    Plan:
+      type: string
+      enum: [free, premium]
+
+    Tone:
+      type: string
+      enum: [ok, warn, over]
+
+    CatalogVersion:
+      type: object
+      required: [version, url]
+      properties:
+        version: { type: integer }
+        url: { type: string, description: 'e.g. /catalog.v1.json' }
+
+    Flags:
+      type: object
+      required: [appleLogin, partsMarketplace, ads, vehicleLookups, fipeCard]
+      properties:
+        appleLogin: { type: boolean }
+        partsMarketplace: { type: boolean }
+        ads: { type: boolean }
+        vehicleLookups: { type: boolean }
+        fipeCard: { type: boolean }
+
+    Me:
+      type: object
+      required: [id, isAnonymous, name, email, plan, premiumUntil, credits, flags]
+      properties:
+        id: { type: string, format: uuid }
+        isAnonymous: { type: boolean }
+        name: { type: [string, 'null'] }
+        email: { type: [string, 'null'] }
+        plan: { $ref: '#/components/schemas/Plan' }
+        premiumUntil: { type: [string, 'null'], format: date-time }
+        credits: { type: integer, minimum: 0 }
+        flags: { $ref: '#/components/schemas/Flags' }
+
+    MeUpdate:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+
+    MeExport:
+      type: object
+      required: [me, vehicles, records, lookups, ledger, exportedAt]
+      properties:
+        me: { $ref: '#/components/schemas/Me' }
+        vehicles: { type: array, items: { $ref: '#/components/schemas/Vehicle' } }
+        records: { type: array, items: { $ref: '#/components/schemas/MaintenanceRecord' } }
+        lookups: { type: array, items: { $ref: '#/components/schemas/LookupResult' } }
+        ledger: { type: array, items: { $ref: '#/components/schemas/LedgerEntry' } }
+        exportedAt: { type: string, format: date-time }
+
+    Vehicle:
+      type: object
+      required:
+        [
+          id,
+          type,
+          brand,
+          model,
+          year,
+          plate,
+          km,
+          kmAt,
+          kmPerMonth,
+          fipeBrandCode,
+          fipeModelCode,
+          fipeYearCode,
+          fipeCode,
+          status,
+          position,
+          archivedAt,
+          createdAt,
+          updatedAt,
+        ]
+      properties:
+        id: { type: string, format: uuid }
+        type: { $ref: '#/components/schemas/VehicleType' }
+        brand: { type: string }
+        model: { type: string }
+        year: { type: integer }
+        plate: { type: [string, 'null'] }
+        km: { type: integer, minimum: 0 }
+        kmAt: { type: string, format: date-time }
+        kmPerMonth: { type: integer, minimum: 0 }
+        fipeBrandCode: { type: [string, 'null'] }
+        fipeModelCode: { type: [string, 'null'] }
+        fipeYearCode: { type: [string, 'null'] }
+        fipeCode: { type: [string, 'null'] }
+        status: { type: string, enum: [active, archived] }
+        position: { type: integer }
+        archivedAt: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    VehicleCreate:
+      type: object
+      required: [id, type, brand, model, year, km]
+      properties:
+        id: { type: string, format: uuid, description: 'UUID v7 generated on the client' }
+        type: { $ref: '#/components/schemas/VehicleType' }
+        brand: { type: string, minLength: 1 }
+        model: { type: string, minLength: 1 }
+        year: { type: integer, minimum: 1950, maximum: 2100 }
+        km: { type: integer, minimum: 0 }
+        plate: { type: [string, 'null'] }
+        fipeBrandCode: { type: [string, 'null'] }
+        fipeModelCode: { type: [string, 'null'] }
+        fipeYearCode: { type: [string, 'null'] }
+        replacesVehicleId:
+          type: [string, 'null']
+          format: uuid
+          description: 'When set, that vehicle is archived in the same transaction ("Cadastrar o novo veículo")'
+
+    VehicleUpdate:
+      type: object
+      properties:
+        brand: { type: string, minLength: 1 }
+        model: { type: string, minLength: 1 }
+        year: { type: integer, minimum: 1950, maximum: 2100 }
+        plate: { type: [string, 'null'] }
+        position: { type: integer }
+        fipeBrandCode: { type: [string, 'null'] }
+        fipeModelCode: { type: [string, 'null'] }
+        fipeYearCode: { type: [string, 'null'] }
+
+    KmUpdate:
+      type: object
+      properties:
+        km: { type: [integer, 'null'], minimum: 0 }
+        confirmEstimate: { type: [boolean, 'null'] }
+
+    VehicleFipe:
+      type: object
+      required: [valueCents, referenceMonth, deltaPct30d, updatedAt]
+      properties:
+        valueCents: { type: integer }
+        referenceMonth: { type: string, description: 'e.g. "outubro de 2026"' }
+        deltaPct30d: { type: number, description: 'percentage; 1.2 means +1,2%' }
+        updatedAt: { type: string, format: date-time }
+
+    MaintenanceRecord:
+      type: object
+      required: [id, vehicleId, itemId, km, date, costCents, brand, where, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        vehicleId: { type: string, format: uuid }
+        itemId: { type: string }
+        km: { type: integer, minimum: 1 }
+        date: { type: [string, 'null'], format: date }
+        costCents: { type: [integer, 'null'], minimum: 0 }
+        brand: { type: [string, 'null'] }
+        where: { type: string, enum: [home, shop] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    RecordCreate:
+      type: object
+      required: [id, vehicleId, itemId, km, where]
+      properties:
+        id: { type: string, format: uuid, description: 'UUID v7 generated on the client' }
+        vehicleId: { type: string, format: uuid }
+        itemId: { type: string }
+        km: { type: integer, minimum: 1 }
+        date: { type: [string, 'null'], format: date }
+        costCents: { type: [integer, 'null'], minimum: 0 }
+        brand: { type: [string, 'null'], maxLength: 80 }
+        where: { type: string, enum: [home, shop] }
+
+    RecordUpdate:
+      type: object
+      properties:
+        itemId: { type: string }
+        km: { type: integer, minimum: 1 }
+        date: { type: [string, 'null'], format: date }
+        costCents: { type: [integer, 'null'], minimum: 0 }
+        brand: { type: [string, 'null'], maxLength: 80 }
+        where: { type: string, enum: [home, shop] }
+
+    RecordList:
+      type: object
+      required: [records, locked]
+      properties:
+        records: { type: array, items: { $ref: '#/components/schemas/MaintenanceRecord' } }
+        locked: { type: boolean, description: 'true when the free plan hides records older than 12 months' }
+
+    SyncResponse:
+      type: object
+      required: [cursor, full, catalogVersion, me, vehicles, records, lookups, deleted]
+      properties:
+        cursor: { type: string }
+        full: { type: boolean, description: 'true when `since` was absent or too old: replace local state' }
+        catalogVersion: { type: integer }
+        me: { $ref: '#/components/schemas/Me' }
+        vehicles: { type: array, items: { $ref: '#/components/schemas/Vehicle' } }
+        records: { type: array, items: { $ref: '#/components/schemas/MaintenanceRecord' } }
+        lookups: { type: array, items: { $ref: '#/components/schemas/LookupSummary' } }
+        deleted: { $ref: '#/components/schemas/SyncDeleted' }
+
+    SyncDeleted:
+      type: object
+      required: [vehicles, records]
+      properties:
+        vehicles: { type: array, items: { type: string, format: uuid } }
+        records: { type: array, items: { type: string, format: uuid } }
+
+    SyncMutation:
+      type: object
+      required: [id, type, payload, clientTime]
+      properties:
+        id: { type: string, format: uuid, description: 'Idempotency key of the mutation' }
+        type:
+          type: string
+          enum:
+            [vehicle.upsert, vehicle.archive, vehicle.restore, vehicle.delete, vehicle.km, record.upsert, record.delete]
+        payload:
+          type: object
+          additionalProperties: true
+          description: |
+            vehicle.upsert → VehicleCreate · vehicle.archive|restore|delete → { id } ·
+            vehicle.km → { id, km?, confirmEstimate? } · record.upsert → RecordCreate · record.delete → { id }
+        clientTime: { type: string, format: date-time }
+
+    SyncPush:
+      type: object
+      required: [mutations]
+      properties:
+        mutations: { type: array, maxItems: 200, items: { $ref: '#/components/schemas/SyncMutation' } }
+
+    SyncRejection:
+      type: object
+      required: [id, problem]
+      properties:
+        id: { type: string, format: uuid }
+        problem: { $ref: '#/components/schemas/Problem' }
+
+    SyncPushResult:
+      type: object
+      required: [applied, rejected, cursor]
+      properties:
+        applied: { type: array, items: { type: string, format: uuid } }
+        rejected: { type: array, items: { $ref: '#/components/schemas/SyncRejection' } }
+        cursor: { type: string }
+
+    FipeOption:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string }
+        name: { type: string }
+
+    PushSubscriptionCreate:
+      type: object
+      required: [endpoint, keys]
+      properties:
+        endpoint: { type: string }
+        keys: { $ref: '#/components/schemas/PushKeys' }
+        userAgent: { type: [string, 'null'] }
+
+    PushKeys:
+      type: object
+      required: [p256dh, auth]
+      properties:
+        p256dh: { type: string }
+        auth: { type: string }
+
+    PushSubscriptionDelete:
+      type: object
+      required: [endpoint]
+      properties:
+        endpoint: { type: string }
+
+    PremiumStatus:
+      type: object
+      required: [status, nextBillingDate, premiumUntil]
+      properties:
+        status: { type: string, enum: [none, pending, authorized, paused, cancelled] }
+        nextBillingDate: { type: [string, 'null'], format: date-time }
+        premiumUntil: { type: [string, 'null'], format: date-time }
+
+    CheckoutRedirect:
+      type: object
+      required: [initPoint]
+      properties:
+        initPoint: { type: string }
+
+    CreditPack:
+      type: object
+      required: [id, credits, priceCents, unitPriceCents, discountPct, tag]
+      properties:
+        id: { type: string }
+        credits: { type: integer }
+        priceCents: { type: integer }
+        unitPriceCents: { type: integer }
+        discountPct: { type: integer }
+        tag: { type: [string, 'null'] }
+
+    CreditPurchaseCreate:
+      type: object
+      required: [packId, method]
+      properties:
+        packId: { type: string }
+        method: { type: string, enum: [pix, card] }
+        payerCpf: { type: [string, 'null'] }
+
+    CreditPurchase:
+      type: object
+      required: [purchaseId, status, method, credits, amountCents, qrCode, qrCodeBase64, expiresAt, initPoint]
+      properties:
+        purchaseId: { type: string, format: uuid }
+        status: { type: string, enum: [pending, approved, rejected, expired, refunded] }
+        method: { type: string, enum: [pix, card] }
+        credits: { type: integer }
+        amountCents: { type: integer }
+        qrCode: { type: [string, 'null'], description: 'Pix copia e cola' }
+        qrCodeBase64: { type: [string, 'null'], description: 'PNG image, base64' }
+        expiresAt: { type: [string, 'null'], format: date-time }
+        initPoint: { type: [string, 'null'], description: 'Checkout Pro link (card)' }
+
+    LedgerEntry:
+      type: object
+      required: [id, delta, reason, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        delta: { type: integer }
+        reason: { type: string, enum: [purchase, premium_bonus, lookup, refund, admin] }
+        createdAt: { type: string, format: date-time }
+
+    LookupProduct:
+      type: object
+      required: [id, name, desc, credits, priceCents, tag, parts]
+      properties:
+        id: { $ref: '#/components/schemas/LookupProductId' }
+        name: { type: string }
+        desc: { type: string }
+        credits: { type: integer }
+        priceCents: { type: integer }
+        tag: { type: [string, 'null'] }
+        parts: { type: array, items: { type: string, enum: [basica, restricoes, leilao, debitos, fipe] } }
+
+    LookupProductId:
+      type: string
+      enum: [laudo, restricoes, leilao, debitos, basica, fipe]
+
+    LookupCreate:
+      type: object
+      required: [plate, product, mine]
+      properties:
+        plate: { type: string, description: 'ABC1D23; normalized server-side' }
+        product: { $ref: '#/components/schemas/LookupProductId' }
+        mine: { type: boolean }
+        vehicleId: { type: [string, 'null'], format: uuid }
+
+    LookupVehicle:
+      type: object
+      required: [model, year, color, fuel, city]
+      properties:
+        model: { type: string }
+        year: { type: string }
+        color: { type: [string, 'null'] }
+        fuel: { type: [string, 'null'] }
+        city: { type: [string, 'null'] }
+
+    LookupRow:
+      type: object
+      required: [label, value, tone]
+      properties:
+        label: { type: string }
+        value: { type: string }
+        tone:
+          oneOf:
+            - { $ref: '#/components/schemas/Tone' }
+            - { type: 'null' }
+
+    LookupSection:
+      type: object
+      required: [key, title, rows]
+      properties:
+        key: { type: string }
+        title: { type: string }
+        rows: { type: array, items: { $ref: '#/components/schemas/LookupRow' } }
+
+    LookupResultSummary:
+      type: object
+      required: [flags, text, tone]
+      properties:
+        flags: { type: integer }
+        text: { type: string }
+        tone: { $ref: '#/components/schemas/Tone' }
+
+    LookupResult:
+      type: object
+      required: [id, plate, product, mine, createdAt, creditsSpent, vehicle, sections, summary]
+      properties:
+        id: { type: string, format: uuid }
+        plate: { type: string }
+        product: { $ref: '#/components/schemas/LookupProductId' }
+        mine: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        creditsSpent: { type: integer }
+        vehicle: { $ref: '#/components/schemas/LookupVehicle' }
+        sections: { type: array, items: { $ref: '#/components/schemas/LookupSection' } }
+        summary: { $ref: '#/components/schemas/LookupResultSummary' }
+
+    LookupSummary:
+      type: object
+      required: [id, plate, product, mine, createdAt, model, year]
+      properties:
+        id: { type: string, format: uuid }
+        plate: { type: string }
+        product: { $ref: '#/components/schemas/LookupProductId' }
+        mine: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        model: { type: string }
+        year: { type: string }
+
+    DevSession:
+      type: object
+      required: [accessToken, expiresAt, user]
+      properties:
+        accessToken: { type: string }
+        expiresAt: { type: string, format: date-time }
+        user: { $ref: '#/components/schemas/DevUser' }
+
+    DevUser:
+      type: object
+      required: [id, isAnonymous, email, name]
+      properties:
+        id: { type: string, format: uuid }
+        isAnonymous: { type: boolean }
+        email: { type: [string, 'null'] }
+        name: { type: [string, 'null'] }
+
+    DevSignup:
+      type: object
+      required: [email, password, name]
+      properties:
+        email: { type: string }
+        password: { type: string, minLength: 6 }
+        name: { type: string }
+
+    DevSignin:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    DevOauth:
+      type: object
+      required: [provider]
+      properties:
+        provider: { type: string, enum: [google, apple] }
+
+    DevRecover:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string }
+
+    JobRun:
+      type: object
+      required: [job, runDate, status, stats]
+      properties:
+        job: { type: string }
+        runDate: { type: string, format: date }
+        status: { type: string, enum: [ran, skipped] }
+        stats: { type: object, additionalProperties: true }

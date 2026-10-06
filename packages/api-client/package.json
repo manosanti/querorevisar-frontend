@@ -1,0 +1,25 @@
+{
+  "name": "@qr/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "gen": "orval --config ./orval.config.ts",
+    "contract:compare": "node scripts/compare-contract.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.104.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "orval": "^8.40.0",
+    "react": "^19.3.0",
+    "yaml": "^2.9.1"
+  }
+}

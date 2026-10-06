@@ -1,0 +1,11 @@
+{
+  "extends": "@qr/config/tsconfig.react.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false,
+    "verbatimModuleSyntax": false,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src", "scripts", "orval.config.ts"]
+}
