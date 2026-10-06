@@ -1,0 +1,6 @@
+# Cloud Run dev service (Supabase project qr-dev, Mercado Pago sandbox).
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

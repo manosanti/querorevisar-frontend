@@ -1,0 +1,5 @@
+# Cloud Run prod service (Supabase project qr-prod, Mercado Pago live). No springdoc.
+app:
+  payments:
+    # Without MP credentials prod stays in mock mode but never approves anything by itself.
+    mock-approvals: false

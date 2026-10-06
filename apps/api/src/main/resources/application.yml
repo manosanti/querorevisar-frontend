@@ -1,0 +1,128 @@
+# QueroRevisar API. Every value comes from the environment (env/api.env.example); `<SEM_TOKEN>`/`<PREENCHER>`
+# keep the matching integration in mock mode. DATABASE_URL is converted to JDBC by ApiEnvironmentPostProcessor.
+spring:
+  application:
+    name: querorevisar-api
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    hikari:
+      maximum-pool-size: ${DATABASE_POOL_MAX:5}
+      connection-timeout: 5000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  flyway:
+    locations: classpath:db/migration
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+  mvc:
+    problemdetails:
+      enabled: false
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+springdoc:
+  api-docs:
+    enabled: false
+    version: openapi_3_1
+  swagger-ui:
+    enabled: false
+  default-produces-media-type: application/json
+
+logging:
+  structured:
+    format:
+      console: ${LOG_FORMAT:ecs}
+  level:
+    root: INFO
+    org.hibernate: WARN
+    com.zaxxer.hikari: WARN
+
+sentry:
+  # SENTRY_DSN; `<SEM_TOKEN>` disables Sentry (ApiEnvironmentPostProcessor).
+  send-default-pii: false
+  traces-sample-rate: 0.0
+
+app:
+  app-url: ${APP_URL:http://localhost:5173}
+  api-url: ${API_URL:http://localhost:8080}
+  web-origins: ${WEB_ORIGINS:http://localhost:5173}
+  supabase:
+    url: ${SUPABASE_URL:http://127.0.0.1:54321}
+    jwks-url: ${SUPABASE_JWKS_URL:${app.supabase.url}/auth/v1/.well-known/jwks.json}
+    jwt-secret: ${SUPABASE_JWT_SECRET:<SEM_TOKEN>}
+    service-role-key: ${SUPABASE_SERVICE_ROLE_KEY:<SEM_TOKEN>}
+  auth:
+    mode: ${AUTH_MODE:supabase}
+    dev-secret: ${DEV_AUTH_SECRET:}
+  db:
+    auth-stub: ${DB_AUTH_STUB:false}
+  internal:
+    audience: ${INTERNAL_JOBS_AUDIENCE:<PREENCHER>}
+    token: ${INTERNAL_TOKEN:<SEM_TOKEN>}
+    service-account: ${INTERNAL_JOBS_SERVICE_ACCOUNT:}
+  payments:
+    mode: ${PAYMENTS_MODE:mock}
+    access-token: ${MP_ACCESS_TOKEN:<SEM_TOKEN>}
+    webhook-secret: ${MP_WEBHOOK_SECRET:<SEM_TOKEN>}
+    premium-plan-id: ${MP_PREMIUM_PLAN_ID:<PREENCHER>}
+    premium-price-cents: ${MP_PREMIUM_PRICE_CENTS:1490}
+    back-url-success: ${MP_BACK_URL_SUCCESS:${app.app-url}/conta?pagamento=ok}
+    back-url-pending: ${MP_BACK_URL_PENDING:${app.app-url}/conta?pagamento=pendente}
+    back-url-failure: ${MP_BACK_URL_FAILURE:${app.app-url}/conta?pagamento=erro}
+    notification-url: ${MP_NOTIFICATION_URL:${app.api-url}/webhooks/mercadopago}
+    pix-expiration-minutes: ${MP_PIX_EXPIRATION_MINUTES:30}
+  credits:
+    unit-price-cents: ${CREDIT_UNIT_PRICE_CENTS:490}
+    premium-monthly: ${PREMIUM_MONTHLY_CREDITS:2}
+  fipe:
+    mode: ${FIPE_MODE:live}
+    base-url: ${FIPE_BASE_URL:https://fipe.parallelum.com.br/api/v2}
+    token: ${FIPE_API_TOKEN:<SEM_TOKEN>}
+    cache-days: ${FIPE_CACHE_DAYS:7}
+    daily-budget: ${FIPE_DAILY_BUDGET:450}
+  vehicle-data:
+    mode: ${VEHICLE_DATA_MODE:mock}
+    provider: ${VEHICLE_DATA_PROVIDER:<PREENCHER>}
+    base-url: ${VEHICLE_DATA_BASE_URL:<PREENCHER>}
+    api-key: ${VEHICLE_DATA_API_KEY:<SEM_TOKEN>}
+  push:
+    mode: ${PUSH_MODE:log}
+    vapid-public-key: ${VAPID_PUBLIC_KEY:<PREENCHER>}
+    vapid-private-key: ${VAPID_PRIVATE_KEY:<SEM_TOKEN>}
+    vapid-subject: ${VAPID_SUBJECT:mailto:<PREENCHER>}
+  email:
+    mode: ${EMAIL_MODE:log}
+    resend-api-key: ${RESEND_API_KEY:<SEM_TOKEN>}
+    from: ${EMAIL_FROM:QueroRevisar <alertas@<PREENCHER>>}
+    outbox-dir: ${MAIL_OUTBOX_DIR:build/mail-outbox}
+  posthog:
+    key: ${POSTHOG_KEY:<SEM_TOKEN>}
+    host: ${POSTHOG_HOST:https://us.i.posthog.com}
