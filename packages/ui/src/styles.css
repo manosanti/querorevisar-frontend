@@ -152,6 +152,21 @@
   }
 }
 
+/* Static splash in index.html (brand icon centered on white) until React renders. */
+.qr-splash {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+}
+
+.qr-splash img {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+
 .qr-skeleton {
   background: var(--divider);
   animation: qrsk 1.3s ease-in-out infinite;

@@ -2,7 +2,20 @@ import { Button, EmptyState, ToastViewport } from '@qr/ui';
 import type { QueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, Outlet, useNavigate } from '@tanstack/react-router';
 import { ConsentBanner, OfflineIndicator, UpdatePrompt } from '../components/GlobalBanners.tsx';
-import { SheetsHost } from '../features/sheets/SheetsHost.tsx';
+import { lazy, Suspense } from 'react';
+import { useUi } from '../lib/ui-store.ts';
+
+const SheetsHost = lazy(() => import('../features/sheets/SheetsHost.tsx').then(m => ({ default: m.SheetsHost })));
+
+/** Sheets are only downloaded when one opens (keeps them out of the first load). */
+function LazySheets() {
+  const open = useUi(s => !!s.sheet);
+  return open ? (
+    <Suspense fallback={null}>
+      <SheetsHost />
+    </Suspense>
+  ) : null;
+}
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   component: Root,
@@ -14,7 +27,7 @@ function Root() {
   return (
     <>
       <Outlet />
-      <SheetsHost />
+      <LazySheets />
       <ToastViewport />
       <OfflineIndicator />
       <UpdatePrompt />

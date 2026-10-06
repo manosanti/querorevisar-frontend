@@ -25,12 +25,12 @@ declare module '@tanstack/react-router' {
   }
 }
 
-await initAuth();
-startSyncLoop();
+void initAuth().then(() => {
+  startSyncLoop();
+  if (useUi.getState().consent === 'granted') void startAnalytics(useAuth.getState().session?.user.id ?? null);
+});
 void startPwa();
 void startSentry();
-if (useUi.getState().consent === 'granted') void startAnalytics(useAuth.getState().session?.user.id ?? null);
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>

@@ -32,7 +32,7 @@ function MockCheckout() {
   return (
     <div className="flex min-h-screen justify-center bg-page">
       <div className="flex w-full max-w-[480px] flex-col justify-center gap-5 bg-white px-8 py-10">
-        <img src="/brand/icone.webp" alt="" className="h-16 w-16 self-center" />
+        <img src="/brand/icone.webp" alt="" className="h-16 w-16 self-center object-contain" />
         <h1 className="m-0 text-center text-[24px] font-bold tracking-[-0.02em]">Pagamento de teste</h1>
         <Notice tone="neutral">
           Ambiente de teste: nenhum valor é cobrado.{' '}

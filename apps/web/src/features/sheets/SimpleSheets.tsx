@@ -12,7 +12,7 @@ import { clearQueryCache } from '../../lib/data/query.ts';
 import { clearOutbox } from '../../lib/data/sync.ts';
 import { useAppModel } from '../../lib/model.ts';
 import { closeSheet, openSheet, useUi } from '../../lib/ui-store.ts';
-import { goToPremiumCheckout } from '../conta/Conta.tsx';
+import { goToPremiumCheckout } from '../../lib/billing.ts';
 
 const Title = ({ children }: { children: ReactNode }) => (
   <h2 className="m-0 text-[22px] font-bold tracking-[-0.02em]">{children}</h2>

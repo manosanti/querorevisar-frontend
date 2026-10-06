@@ -13,10 +13,16 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" />
+    <!-- Figtree without blocking the first render (display=swap + preload, applied when loaded). -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" /></noscript>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static splash painted before the JS loads; React replaces it on the first render. -->
+      <div class="qr-splash"><img src="/brand/icone.webp" width="84" height="84" alt="QueroRevisar" fetchpriority="high" /></div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

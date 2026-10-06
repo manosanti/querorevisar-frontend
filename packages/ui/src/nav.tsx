@@ -77,7 +77,7 @@ export function SideNav({ variant, items, onRegister, onLookup, lookupHref, logo
       {full ? (
         <img src={logoSrc} alt="QueroRevisar" className="mx-2.5 my-1 h-[30px] w-auto self-start" />
       ) : (
-        <img src={iconSrc} alt="QueroRevisar" className="h-11 w-11 self-center" />
+        <img src={iconSrc} alt="QueroRevisar" className="h-11 w-11 self-center object-contain" />
       )}
       {full ? (
         <button

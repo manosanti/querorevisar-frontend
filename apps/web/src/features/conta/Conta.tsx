@@ -24,6 +24,7 @@ import { useAds } from '../../lib/ads.ts';
 import { track } from '../../lib/analytics.ts';
 import { useAuth } from '../../lib/auth/store.ts';
 import { refreshState } from '../../lib/data/sync.ts';
+import { goToPremiumCheckout } from '../../lib/billing.ts';
 import { useAppModel } from '../../lib/model.ts';
 import { addVehicleOrPaywall } from '../../lib/navigation.ts';
 import { enablePush, pushAvailability, type PushAvailability } from '../../lib/push.ts';
@@ -35,19 +36,6 @@ const soldAt = (iso: string | null) =>
     .toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })
     .replace('.', '')
     .replace(' de ', '/');
-
-async function goToPremiumCheckout() {
-  try {
-    track('premium_checkout_started');
-    sessionStorage.setItem('qr-pending-payment', JSON.stringify({ kind: 'premium' }));
-    const { initPoint } = await api.startPremiumCheckout();
-    window.location.assign(initPoint);
-  } catch {
-    toast('Não foi possível abrir o pagamento. Tente de novo.', 'err');
-  }
-}
-
-export { goToPremiumCheckout };
 
 function AlertsRow() {
   const [state, setState] = useState<PushAvailability | null>(null);

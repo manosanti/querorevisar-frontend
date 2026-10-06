@@ -127,7 +127,13 @@ export function Login({ initialMode, initialEmail, autoProvider, afterAuth = '/'
 
         <div className="flex flex-1 flex-col justify-center gap-7 px-8 pt-3 pb-6">
           <div className="flex flex-col items-center gap-[14px] text-center">
-            <img src="/brand/icone.webp" alt="" width={84} height={84} className="block h-[84px] w-[84px]" />
+            <img
+              src="/brand/icone.webp"
+              alt=""
+              width={84}
+              height={84}
+              className="block h-[84px] w-[84px] object-contain"
+            />
             <div>
               <h1 className="m-0 text-[28px] font-bold tracking-[-0.02em]">
                 Quero<span className="text-primary">Revisar</span>
@@ -197,7 +203,7 @@ export function Login({ initialMode, initialEmail, autoProvider, afterAuth = '/'
             ) : null}
           </form>
 
-          <div className="flex items-center gap-[14px] text-[13px] font-semibold text-subtle">
+          <div aria-hidden="true" className="flex items-center gap-[14px] text-[13px] font-semibold text-muted">
             <span className="h-px flex-1 bg-border" />
             OU
             <span className="h-px flex-1 bg-border" />

@@ -96,3 +96,7 @@ Os workflows em `.github/workflows/` leem **variables** (não sigilosas) e **sec
 - [ ] 🔒 `PUBLIC_POSTHOG_KEY` da landing (sem ela não há banner nem analytics). ✏️ `PUBLIC_POSTHOG_HOST` é opcional (padrão `https://us.i.posthog.com`) e ainda não está em `env/landing.env.example`. No projeto PostHog, ativar "Discard client IP data" (LGPD).
 - [ ] ✏️ `PUBLIC_SITE_URL` e `PUBLIC_APP_URL` de produção no build da landing (canonical, Open Graph, sitemap e robots usam `PUBLIC_SITE_URL`).
 - Integração com o app (F06): a landing abre `PUBLIC_APP_URL/entrar` com `?mode=signup`, `?provider=google|apple`, `&plan=premium` e o e-mail digitado no fragmento (`#email=…`, nunca na query). O app precisa ler o fragmento e limpá-lo com `history.replaceState` antes de iniciar o PostHog. O botão "Consultar placa" de `/precos` abre `PUBLIC_APP_URL/consultas`.
+
+## Acessibilidade (contraste)
+
+- [ ] ✏️ O token `--subtle` (#929292) do protótipo tem contraste 3,1:1 sobre branco, abaixo do AA (4,5:1) para texto pequeno. Ele aparece em rótulos de tabela, "Publicidade", "Patrocinado" e textos de apoio. No login, o "OU" passou a usar `--muted` (#6a6a6a) para o Lighthouse/axe aprovar. Decidir se o token escurece no design system todo (uma mudança só em `packages/tokens`).
