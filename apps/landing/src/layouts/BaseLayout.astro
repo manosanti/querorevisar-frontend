@@ -14,9 +14,11 @@ interface Props {
   description: string;
   /** Home page: header and footer links become in-page anchors. */
   home?: boolean;
+  /** False for pages without a canonical address (404). */
+  canonical?: boolean;
 }
 
-const { title, description, home = false } = Astro.props;
+const { title, description, home = false, canonical: withCanonical = true } = Astro.props;
 const path = normalizePath(Astro.url.pathname);
 const canonical = new URL(path, Astro.site).href;
 const ogImage = new URL('/og.png', Astro.site).href;
@@ -33,7 +35,7 @@ const fontHref = 'https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {withCanonical && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content={colors.band} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />

@@ -9,7 +9,14 @@ import {
 } from '../src/lib/consent.ts';
 import { isValidEmail } from '../src/lib/email.ts';
 import { appUrl, signInUrl } from '../src/lib/links.ts';
-import { annualDiscountLabel, lookupViews, packViews, premiumPrice } from '../src/lib/pricing.ts';
+import {
+  annualDiscountLabel,
+  lookupCostLine,
+  lookupViews,
+  packViews,
+  premiumCreditsLine,
+  premiumPrice,
+} from '../src/lib/pricing.ts';
 import { isNoindex, normalizePath } from '../src/lib/seo.ts';
 import { simulateAlert } from '../src/lib/simulator.ts';
 
@@ -109,6 +116,8 @@ describe('pricing', () => {
     expect(byId.laudo).toMatchObject({ price: brl('R$ 29,40'), cost: '6 créditos · economiza 2' });
     expect(byId.basica).toMatchObject({ price: brl('R$ 4,90'), cost: '1 crédito' });
     expect(byId.fipe).toMatchObject({ price: 'Grátis', cost: '' });
+    expect(lookupCostLine).toBe('Cada consulta custa de 1 a 6 créditos. Pacotes saem mais barato que o avulso.');
+    expect(premiumCreditsLine).toBe('No Premium você ganha 2 créditos de consulta todo mês.');
   });
 });
 

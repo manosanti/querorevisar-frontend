@@ -41,8 +41,6 @@ export const annualDiscountLabel = `\u2212${Math.round((1 - ANNUAL_MONTHS_CHARGE
 /** "R$ 14,90/mês" */
 export const premiumMonthlyLabel = `${money(PREMIUM_PRICE_CENTS)}/mês`;
 
-export const premiumCreditsLabel = `${PREMIUM_MONTHLY_CREDITS} créditos de consulta por mês`;
-
 export interface PackView {
   id: string;
   name: string;
@@ -92,3 +90,11 @@ export const lookupViews: readonly LookupView[] = LOOKUP_PRODUCTS.map(p => {
     cost: p.credits ? credTxt(p.credits) + (saving > 0 ? ` · economiza ${saving}` : '') : '',
   };
 });
+
+const paidCredits = LOOKUP_PRODUCTS.map(p => p.credits).filter(c => c > 0);
+
+/** "Cada consulta custa de 1 a 6 créditos." (copy of the app's credit sheet, numbers from LOOKUP_PRODUCTS) */
+export const lookupCostLine = `Cada consulta custa de ${Math.min(...paidCredits)} a ${Math.max(...paidCredits)} créditos. Pacotes saem mais barato que o avulso.`;
+
+/** "No Premium você ganha 2 créditos de consulta todo mês." */
+export const premiumCreditsLine = `No Premium você ganha ${PREMIUM_MONTHLY_CREDITS} créditos de consulta todo mês.`;

@@ -3,7 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { pageTitle } from '../lib/seo';
 ---
 
-<BaseLayout title={pageTitle('Página não encontrada')} description="Esta página não existe no QueroRevisar.">
+<BaseLayout
+  title={pageTitle('Página não encontrada')}
+  description="Esta página não existe no QueroRevisar."
+  canonical={false}
+>
   <section class="mx-auto flex max-w-[640px] flex-col items-start gap-5 px-6 py-28">
     <h1 class="m-0 text-[clamp(32px,3.6vw,46px)] leading-[1.08] font-extrabold tracking-[-0.035em]">
       Página não encontrada

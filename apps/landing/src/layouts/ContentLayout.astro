@@ -1,0 +1,114 @@
+---
+// Layout of the Markdown pages (src/pages/*.md): ajuda, privacidade, termos.
+import ConsentControls from '../components/ConsentControls.astro';
+import { POSTHOG_KEY } from '../config';
+import { isAnalyticsConfigured } from '../lib/consent';
+import { pageTitle } from '../lib/seo';
+import { eyebrowClass } from '../lib/ui';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    /** Short name used in the <title> ("Privacidade"). */
+    title: string;
+    /** Visible page title (h1). */
+    heading?: string;
+    description: string;
+    eyebrow?: string;
+    /** Shows the "Texto em revisão" notice (texts that depend on the owner, see PENDENCIAS.md). */
+    review?: boolean;
+    /** Renders the analytics consent controls after the text (privacy page). */
+    consentControls?: boolean;
+  };
+}
+
+const { frontmatter } = Astro.props;
+const showConsent = frontmatter.consentControls && isAnalyticsConfigured(POSTHOG_KEY);
+---
+
+<BaseLayout title={pageTitle(frontmatter.title)} description={frontmatter.description}>
+  <article class="mx-auto box-content max-w-[760px] px-6 pt-[72px] pb-24">
+    {frontmatter.eyebrow && <div class:list={[eyebrowClass, 'mb-2.5']}>{frontmatter.eyebrow}</div>}
+    <h1 class="m-0 text-[clamp(32px,3.6vw,46px)] leading-[1.08] font-extrabold tracking-[-0.035em] text-balance">
+      {frontmatter.heading ?? frontmatter.title}
+    </h1>
+    {frontmatter.review && (
+      <div role="note" class="mt-6 rounded-16 bg-warn-bg px-4 py-3.5 text-[15px] text-warn-label">
+        <strong class="font-bold">Texto em revisão.</strong> Os trechos marcados com{' '}
+        <code class="font-sans font-semibold">&lt;PREENCHER&gt;</code> ainda serão completados pelo responsável pelo
+        QueroRevisar.
+      </div>
+    )}
+    <div class="prose mt-8">
+      <slot />
+    </div>
+    {showConsent && <ConsentControls />}
+  </article>
+</BaseLayout>
+
+<style>
+  .prose {
+    color: var(--ink-2);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .prose :global(h2) {
+    margin: 40px 0 12px;
+    color: var(--ink);
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .prose :global(h3) {
+    margin: 28px 0 8px;
+    color: var(--ink);
+    font-size: 19px;
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 14px;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 22px;
+  }
+  .prose :global(ul) {
+    list-style: disc;
+  }
+  .prose :global(ol) {
+    list-style: decimal;
+  }
+  .prose :global(li) {
+    margin: 4px 0;
+  }
+  .prose :global(a) {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose :global(strong) {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .prose :global(code) {
+    padding: 1px 6px;
+    border-radius: var(--radius-6);
+    background: var(--warn-bg);
+    color: var(--warn-label);
+    font-family: inherit;
+    font-size: 0.9em;
+    font-weight: 600;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .prose :global(hr) {
+    margin: 32px 0;
+    border: 0;
+    border-top: 1px solid var(--divider);
+  }
+</style>

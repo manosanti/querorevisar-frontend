@@ -1,0 +1,140 @@
+---
+// Plans and credit packs. Values come from @qr/core (docs/domain.md#planos, #créditos, #consultas-veiculares);
+// copy from the landing prototype and the app prototype (QueroRevisar v7 responsivo.dc.html).
+import { PREMIUM_MONTHLY_CREDITS, moneyShort } from '@qr/core';
+import PlanCards from '../components/PlanCards.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { APP_URL } from '../config';
+import { appUrl, signInUrl } from '../lib/links';
+import { lookupCostLine, lookupViews, packViews, premiumCreditsLine, premiumMonthlyLabel } from '../lib/pricing';
+import { pageTitle } from '../lib/seo';
+import { eyebrowClass, h2Class, leadClass } from '../lib/ui';
+
+const title = pageTitle('Planos');
+const description = `Comece grátis. Os alertas são sempre completos. Premium por ${premiumMonthlyLabel}: vários veículos, histórico completo e PDF, sem anúncio, cadastro por placa e ${PREMIUM_MONTHLY_CREDITS} créditos de consulta por mês.`;
+
+// docs/domain.md#planos
+const comparison: ReadonlyArray<readonly [string, string, string]> = [
+  ['Preço', moneyShort(0), premiumMonthlyLabel],
+  ['Veículos', '1', 'Ilimitados'],
+  ['Alertas', 'Todos', 'Todos'],
+  ['Histórico', 'Últimos 12 meses', 'Completo e PDF'],
+  ['Anúncio', 'Sim', 'Não'],
+  ['Cadastro por placa', 'Não', 'Sim'],
+  ['Créditos de consulta', '—', `${PREMIUM_MONTHLY_CREDITS} por mês`],
+];
+const lookupsUrl = appUrl(APP_URL, '/consultas').href;
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="bg-surface-1">
+    <div class="mx-auto box-content max-w-[1000px] px-6 pt-[72px] pb-[104px]">
+      <PlanCards
+        freeHref={signInUrl(APP_URL, { signup: true })}
+        premiumHref={signInUrl(APP_URL, { signup: true, plan: 'premium' })}
+        titleTag="h2"
+      >
+        <div class={eyebrowClass}>Planos</div>
+        <h1 class={h2Class}>Comece grátis. Os alertas são sempre completos.</h1>
+      </PlanCards>
+    </div>
+  </section>
+
+  <section class="mx-auto box-content max-w-[1000px] px-6 py-24" aria-labelledby="comparativo">
+    <h2 id="comparativo" class={h2Class}>
+      Grátis e Premium
+    </h2>
+    <div class="mt-8 overflow-x-auto rounded-24 border border-border">
+      <table class="w-full border-collapse text-left text-[15.5px]">
+        <thead>
+          <tr class="border-b border-border bg-surface-1">
+            <th scope="col" class="px-5 py-4 text-xs font-semibold tracking-[.04em] text-subtle uppercase">
+              <span class="sr-only">Recurso</span>
+            </th>
+            <th scope="col" class="px-5 py-4 text-base font-bold text-ink">
+              Grátis
+            </th>
+            <th scope="col" class="px-5 py-4 text-base font-bold text-primary">
+              Premium
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {comparison.map(([label, free, premium]) => (
+            <tr class="border-b border-divider last:border-b-0">
+              <th scope="row" class="px-5 py-3.5 font-semibold text-ink">
+                {label}
+              </th>
+              <td class="px-5 py-3.5 text-ink-2 tabular-nums">{free}</td>
+              <td class="px-5 py-3.5 text-ink-2 tabular-nums">{premium}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="bg-surface-1" aria-labelledby="consultas">
+    <div class="mx-auto box-content max-w-[1000px] px-6 py-24">
+      <div class="max-w-[640px]">
+        <h2 id="consultas" class={h2Class}>
+          Consultas veiculares
+        </h2>
+        <p class:list={[leadClass, 'mt-4 mb-0']}>{lookupCostLine}</p>
+        <p class="mt-2 mb-0 text-[15px] text-muted">{premiumCreditsLine}</p>
+      </div>
+
+      <h3 class="mt-12 mb-4 text-xl font-bold tracking-[-0.02em]">Comprar créditos</h3>
+      <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] gap-3 p-0">
+        {packViews.map(p => (
+          <li
+            class:list={[
+              'flex flex-col gap-1 rounded-18 bg-white p-5',
+              p.tag ? 'border-2 border-primary' : 'border border-border',
+            ]}
+          >
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-base font-semibold">{p.name}</span>
+              {p.tag && (
+                <span class="rounded-20 bg-primary-tint px-2 py-0.5 text-[11.5px] font-bold text-primary">{p.tag}</span>
+              )}
+            </div>
+            <span class="text-[13px] text-muted">{p.unit}</span>
+            <span class="mt-2 text-[22px] font-extrabold tracking-[-0.02em] tabular-nums">{p.price}</span>
+            {p.off && <span class="text-[12.5px] font-semibold text-primary">{p.off}</span>}
+          </li>
+        ))}
+      </ul>
+
+      <h3 class="mt-12 mb-4 text-xl font-bold tracking-[-0.02em]">O que consultar</h3>
+      <ul class="m-0 flex list-none flex-col gap-2 p-0">
+        {lookupViews.map(l => (
+          <li class="flex items-start gap-4 rounded-14 border border-border bg-white p-4">
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-base font-semibold">{l.name}</span>
+                {l.tag && (
+                  <span class="rounded-20 bg-primary-tint px-2 py-0.5 text-[11.5px] font-bold text-primary">
+                    {l.tag}
+                  </span>
+                )}
+              </div>
+              <p class="mt-0.5 mb-0 text-sm text-pretty text-muted">{l.desc}</p>
+            </div>
+            <div class="flex-none text-right">
+              <div class="text-base font-bold tabular-nums">{l.price}</div>
+              {l.cost && <div class="text-[12.5px] text-muted">{l.cost}</div>}
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-4 mb-0 text-sm text-muted">Abrir de novo não gasta crédito.</p>
+      <a
+        href={lookupsUrl}
+        class="mt-8 inline-flex h-12 items-center rounded-12 bg-primary px-5 text-base font-semibold text-white shadow-cta hover:bg-primary-strong hover:text-white"
+      >
+        Consultar placa
+      </a>
+    </div>
+  </section>
+</BaseLayout>
