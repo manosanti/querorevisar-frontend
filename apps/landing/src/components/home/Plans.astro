@@ -1,0 +1,13 @@
+---
+import { eyebrowClass, h2Class } from '../../lib/ui';
+import PlanCards from '../PlanCards.astro';
+---
+
+<section id="planos" class="bg-surface-1">
+  <div class="mx-auto box-content max-w-[1000px] px-6 py-[104px]">
+    <PlanCards freeHref="#criar-conta" premiumHref="#criar-conta">
+      <div class={eyebrowClass}>Planos</div>
+      <h2 class={h2Class}>Comece grátis. Os alertas são sempre completos.</h2>
+    </PlanCards>
+  </div>
+</section>

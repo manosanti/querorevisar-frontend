@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import carIcon from '../../assets/brand/icone-carro.png';
+import motoIcon from '../../assets/brand/icone-moto.png';
+import { VEHICLES } from '../../lib/content';
+import { eyebrowClass, h2Class, leadClass } from '../../lib/ui';
+
+const icons = { car: carIcon, moto: motoIcon } as const;
+---
+
+<section class="bg-surface-1">
+  <div class="mx-auto box-content grid max-w-[1200px] grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-14 px-6 py-24">
+    <div class="flex max-w-[520px] flex-col gap-6">
+      <div>
+        <div class:list={[eyebrowClass, 'mb-2.5']}>Carro e moto</div>
+        <h2 class={h2Class}>A garagem inteira no mesmo app.</h2>
+        <p class:list={[leadClass, 'mt-4 mb-0']}>
+          O catálogo muda conforme o veículo. Moto tem kit relação e lubrificação da corrente; carro tem correia dentada
+          e rodízio de pneus. Quando existe plano do fabricante, ele vale por cima da média.
+        </p>
+      </div>
+      <div
+        role="tablist"
+        aria-label="Tipo de veículo"
+        class="vehicle-tabs inline-flex w-fit gap-1 rounded-14 border border-border bg-white p-1"
+      >
+        {VEHICLES.map((v, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`vehicle-tab-${v.kind}`}
+            aria-controls={`vehicle-panel-${v.kind}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            class="flex h-12 items-center gap-2 rounded-10 bg-white pr-[18px] pl-2 text-[15px] font-semibold text-muted transition-[background-color,color,box-shadow] duration-200 aria-selected:text-primary aria-selected:shadow-[0_0_0_1.5px_var(--primary)]"
+          >
+            <Image
+              src={icons[v.kind]}
+              alt=""
+              width={34}
+              height={34}
+              densities={[1, 2]}
+              class="size-[34px] object-contain"
+            />
+            {v.tab}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {VEHICLES.map((v, i) => (
+      <div
+        role="tabpanel"
+        id={`vehicle-panel-${v.kind}`}
+        aria-labelledby={`vehicle-tab-${v.kind}`}
+        hidden={i !== 0}
+        class="flex flex-col gap-1.5 rounded-[28px] border border-divider bg-white p-7"
+      >
+        <div class="flex items-center gap-4 border-b border-divider pb-3.5">
+          <Image
+            src={icons[v.kind]}
+            alt=""
+            width={96}
+            height={96}
+            densities={[1, 2]}
+            class="-my-4 -mr-1 -ml-2.5 size-24 object-contain"
+          />
+          <div class="min-w-0 flex-1">
+            <h3 class="m-0 text-[22px] font-bold tracking-[-0.02em]">{v.name}</h3>
+            <div class="text-sm text-muted">{v.sub}</div>
+          </div>
+        </div>
+        <ul class="m-0 list-none p-0">
+          {v.items.map(item => (
+            <li class="flex items-center gap-3 border-b border-track py-3">
+              <div class="min-w-0 flex-1">
+                <div class="text-[15.5px] font-semibold">{item.name}</div>
+                <div class="text-[13px] text-muted">{item.cat}</div>
+              </div>
+              <span class="text-[13.5px] whitespace-nowrap text-ink-2 tabular-nums">{item.every}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const tablist = document.querySelector<HTMLElement>('.vehicle-tabs');
+  const tabs = [...(tablist?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? [])];
+
+  function select(tab: HTMLButtonElement, focus: boolean): void {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+      if (panel) panel.hidden = !on;
+    }
+    if (focus) tab.focus();
+  }
+
+  for (const tab of tabs) tab.addEventListener('click', () => select(tab, false));
+
+  tablist?.addEventListener('keydown', event => {
+    const i = tabs.findIndex(t => t === document.activeElement);
+    if (i < 0) return;
+    const keys: Record<string, number> = {
+      ArrowRight: (i + 1) % tabs.length,
+      ArrowLeft: (i - 1 + tabs.length) % tabs.length,
+      Home: 0,
+      End: tabs.length - 1,
+    };
+    const next = keys[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    const tab = tabs[next];
+    if (tab) select(tab, true);
+  });
+</script>

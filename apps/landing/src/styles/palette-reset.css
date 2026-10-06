@@ -1,0 +1,4 @@
+/* Drops Tailwind's default palette so only the design tokens (@qr/tokens/theme.css) produce color utilities. */
+@theme {
+  --color-*: initial;
+}

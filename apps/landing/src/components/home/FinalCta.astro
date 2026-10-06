@@ -1,0 +1,28 @@
+---
+import SignupForm from './SignupForm.astro';
+---
+
+<section class="px-6 pb-24" aria-labelledby="cta-final-title">
+  <div class="relative mx-auto box-content grid max-w-[1152px] grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-center gap-10 overflow-hidden rounded-[32px] bg-primary px-[clamp(24px,6vw,72px)] py-[clamp(40px,7vw,88px)] text-white">
+    <div
+      class="absolute -top-20 -right-20 box-content size-[340px] rounded-full border border-on-dark-faint"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="absolute top-5 right-5 box-content size-[140px] rounded-full border border-on-dark-faint"
+      aria-hidden="true"
+    ></div>
+    <div class="relative flex flex-col gap-4">
+      <h2
+        id="cta-final-title"
+        class="m-0 text-[clamp(32px,4vw,52px)] leading-[1.04] font-extrabold tracking-[-0.04em] text-balance"
+      >
+        Registre a última troca hoje.
+      </h2>
+      <p class="m-0 max-w-[44ch] text-lg text-pretty text-white">
+        Dois minutos para cadastrar o veículo. Depois o app acompanha a km por você.
+      </p>
+    </div>
+    <SignupForm variant="band" />
+  </div>
+</section>

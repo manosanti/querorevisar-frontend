@@ -1,0 +1,39 @@
+---
+// "Privacidade" page: lets the visitor review the analytics choice made in the consent banner.
+---
+
+<section aria-labelledby="consent-controls-title" class="mt-10 rounded-20 border border-border p-5">
+  <h2 id="consent-controls-title" class="m-0 text-[19px] font-bold tracking-[-0.01em]">
+    Cookies de análise
+  </h2>
+  <p class="mt-1 mb-4 text-[15px] text-muted">
+    Sua escolha atual:{' '}
+    <strong class="font-semibold text-ink" data-consent-state>
+      sem escolha
+    </strong>
+    .
+  </p>
+  <button
+    type="button"
+    data-consent-reopen
+    class="press h-11 rounded-12 border border-primary bg-white px-4 text-[15px] font-semibold text-primary hover:bg-primary-tint"
+  >
+    Rever escolha
+  </button>
+</section>
+
+<script>
+  import { currentConsent, reopenConsent } from '../scripts/analytics';
+
+  const labels = { granted: 'aceitos', denied: 'recusados' } as const;
+  const state = document.querySelector<HTMLElement>('[data-consent-state]');
+
+  function render(): void {
+    const consent = currentConsent();
+    if (state) state.textContent = consent ? labels[consent] : 'sem escolha';
+  }
+
+  document.querySelector('[data-consent-reopen]')?.addEventListener('click', reopenConsent);
+  document.addEventListener('qr:consent', render);
+  render();
+</script>

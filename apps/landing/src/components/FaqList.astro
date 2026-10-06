@@ -1,0 +1,26 @@
+---
+// Accordion of questions: native <details name> (one open at a time, no JavaScript), first item open.
+import { ICONS } from '../lib/icons';
+import Icon from './Icon.astro';
+
+interface Props {
+  items: ReadonlyArray<readonly [question: string, answer: string]>;
+  name: string;
+}
+
+const { items, name } = Astro.props;
+---
+
+<div class="flex min-w-0 flex-col border-t border-border">
+  {items.map(([q, a], i) => (
+    <details name={name} open={i === 0} class="group border-b border-border">
+      <summary class="flex w-full cursor-pointer list-none items-center justify-between gap-4 py-[22px] text-left text-lg font-semibold text-ink [&::-webkit-details-marker]:hidden">
+        {q}
+        <span class="flex size-8 flex-none items-center justify-center rounded-full bg-surface-2 text-ink transition-[transform,background-color] duration-200 group-open:rotate-45 group-open:bg-primary group-open:text-white">
+          <Icon d={ICONS.plus} size={15} weight={2.6} />
+        </span>
+      </summary>
+      <p class="-mt-1.5 mb-[22px] max-w-[64ch] pr-12 text-base text-pretty text-ink-2">{a}</p>
+    </details>
+  ))}
+</div>

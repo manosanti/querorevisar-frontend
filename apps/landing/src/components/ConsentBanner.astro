@@ -1,0 +1,45 @@
+---
+// Analytics consent (F12.2). Rendered only when PUBLIC_POSTHOG_KEY holds a real key; hidden until the
+// script finds no stored choice. The copy is new (the prototype has no banner) and awaits owner review.
+---
+
+<section
+  id="consent-banner"
+  aria-labelledby="consent-title"
+  hidden
+  class="fixed inset-x-4 bottom-4 z-30 mx-auto flex max-w-[560px] flex-col gap-3 rounded-20 border border-border bg-white p-5 shadow-popover"
+>
+  <h2 id="consent-title" class="m-0 text-[17px] font-bold tracking-[-0.02em]">
+    Cookies de análise
+  </h2>
+  <p class="m-0 text-[14.5px] text-muted">
+    Usamos cookies de análise para entender como o site é usado. Nenhum dado pessoal é enviado. Você pode mudar a
+    escolha a qualquer momento na página{' '}
+    <a href="/privacidade" class="underline">
+      Privacidade
+    </a>
+    .
+  </p>
+  <div class="flex flex-wrap justify-end gap-2">
+    <button
+      type="button"
+      data-consent="denied"
+      class="press h-11 rounded-12 border border-border bg-white px-4 text-[15px] font-semibold text-ink hover:bg-surface-2"
+    >
+      Recusar
+    </button>
+    <button
+      type="button"
+      data-consent="granted"
+      class="press h-11 rounded-12 bg-primary px-4 text-[15px] font-semibold text-white hover:bg-primary-strong"
+    >
+      Aceitar
+    </button>
+  </div>
+</section>
+
+<script>
+  import { initAnalytics } from '../scripts/analytics';
+
+  initAnalytics();
+</script>

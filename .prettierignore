@@ -9,3 +9,5 @@ packages/api-client/src/generated/
 **/routeTree.gen.ts
 data/*.json
 fixtures/*.json
+packages/tokens/src/tokens.css
+packages/tokens/src/theme.css

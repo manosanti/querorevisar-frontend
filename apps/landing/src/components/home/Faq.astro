@@ -1,0 +1,15 @@
+---
+import { FAQ } from '../../lib/content';
+import { eyebrowClass, h2Class } from '../../lib/ui';
+import FaqList from '../FaqList.astro';
+---
+
+<section id="faq" class="mx-auto box-content flex max-w-[1200px] flex-wrap items-start gap-12 px-6 py-[104px]">
+  <div class="max-w-[380px] flex-[1_1_280px]">
+    <div class:list={[eyebrowClass, 'mb-2.5']}>Dúvidas</div>
+    <h2 class={h2Class}>Perguntas frequentes</h2>
+  </div>
+  <div class="min-w-0 flex-[2_1_480px]">
+    <FaqList items={FAQ} name="faq" />
+  </div>
+</section>

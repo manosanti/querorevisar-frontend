@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-horizontal.png';
+
+// Labels from the prototype footer; the targets are the dedicated pages (the prototype pointed Termos and
+// Privacidade at #topo as placeholders).
+const links = [
+  ['/precos', 'Planos'],
+  ['/ajuda', 'Dúvidas'],
+  ['/termos', 'Termos de uso'],
+  ['/privacidade', 'Privacidade'],
+] as const;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-divider">
+  <div class="mx-auto box-content flex max-w-[1200px] flex-wrap items-center justify-between gap-x-10 gap-y-5 px-6 pt-9 pb-12">
+    <Image src={logo} alt="QueroRevisar" height={24} densities={[1, 2]} class="h-6 w-auto" />
+    <nav aria-label="Rodapé" class="flex flex-wrap gap-x-6 text-sm">
+      {links.map(([href, label]) => (
+        <a href={href} class="inline-flex min-h-11 items-center text-muted hover:text-ink">
+          {label}
+        </a>
+      ))}
+    </nav>
+    <div class="text-[13.5px] text-muted">© {year} QueroRevisar</div>
+  </div>
+</footer>

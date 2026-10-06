@@ -1,0 +1,101 @@
+@import 'tailwindcss';
+@import './palette-reset.css';
+@import '@qr/tokens/theme.css';
+
+/*
+ * Landing-only compositions of the design tokens (docs/reference/QueroRevisar Landing.dc.html).
+ * Every color comes from a token variable; alpha is applied with color-mix.
+ */
+@theme inline {
+  --shadow-cta: 0 6px 14px color-mix(in srgb, var(--primary) 28%, transparent);
+  --shadow-premium: 0 20px 40px -12px color-mix(in srgb, var(--primary) 14%, transparent);
+  --shadow-phone:
+    0 30px 60px -10px color-mix(in srgb, var(--primary-strong) 20%, transparent),
+    0 12px 24px -8px color-mix(in srgb, var(--ink) 14%, transparent);
+  --shadow-float:
+    0 0 0 1px color-mix(in srgb, var(--ink) 5%, transparent),
+    0 14px 32px -6px color-mix(in srgb, var(--primary-strong) 18%, transparent);
+  --shadow-soft: 0 2px 6px color-mix(in srgb, var(--ink) 5%, transparent);
+  --shadow-panel: var(--shadow-popover);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    /* Anchored sections land below the sticky header. */
+    scroll-padding-top: 88px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    margin: 0;
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--primary-strong);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  input[type='range'] {
+    accent-color: var(--primary);
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Keeps the visual size of small controls (chips, segmented buttons) while giving them a 44×44 touch target. */
+@utility hit-44 {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Primary press feedback used by the prototype (style-active="transform: scale(0.97)"). */
+@utility press {
+  transition: transform 0.1s;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}

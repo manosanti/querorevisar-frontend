@@ -2,7 +2,7 @@
 // (Supabase updateUser/linkIdentity, or the dev auth link).
 import { AppleIcon, BackButton, Button, GoogleIcon, Input, toast } from '@qr/ui';
 import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { env } from '../../env.ts';
 import { auth, useAuth } from '../../lib/auth/store.ts';
 import { AuthError, type AuthSession } from '../../lib/auth/types.ts';
@@ -14,7 +14,16 @@ import { goBack } from '../../lib/navigation.ts';
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function Login({ initialMode, initialEmail }: { initialMode: 'signin' | 'signup'; initialEmail?: string }) {
+interface LoginProps {
+  initialMode: 'signin' | 'signup';
+  initialEmail?: string;
+  /** Landing "Continuar com Google/Apple": starts that provider right away. */
+  autoProvider?: 'google' | 'apple';
+  /** Where to go after signing in ("/conta" when the landing asked for Premium). */
+  afterAuth?: '/' | '/conta';
+}
+
+export function Login({ initialMode, initialEmail, autoProvider, afterAuth = '/' }: LoginProps) {
   const navigate = useNavigate();
   const m = useAppModel();
   const session = useAuth(s => s.session);
@@ -42,7 +51,7 @@ export function Login({ initialMode, initialEmail }: { initialMode: 'signin' | '
     const displayName = capitalize(next.user.name ?? next.user.email?.split('@')[0] ?? '');
     if (kind === 'signin') toast(`Bem-vindo de volta, ${displayName}`);
     else toast(hasVehicle ? 'Conta criada · registros salvos' : 'Conta criada · agora cadastre seu veículo');
-    void navigate({ to: '/', replace: true });
+    void navigate({ to: afterAuth, replace: true });
   };
 
   const submit = async () => {
@@ -89,6 +98,15 @@ export function Login({ initialMode, initialEmail }: { initialMode: 'signin' | '
       toast(err instanceof AuthError ? err.message : 'Não foi possível entrar agora. Tente de novo.', 'err');
     }
   };
+
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (!autoProvider || autoStarted.current) return;
+    if (autoProvider === 'apple' && !appleLogin) return;
+    autoStarted.current = true;
+    void social(autoProvider);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoProvider, appleLogin]);
 
   const skip = async () => {
     if (hasVehicle) return goBack(navigate, '/');

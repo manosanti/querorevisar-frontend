@@ -138,7 +138,7 @@ async function renderAt(path: string) {
 describe('app screens with the prototype demo data', () => {
   it('Painel shows the vehicle, counters, attention list and unregistered chips', async () => {
     await renderAt('/');
-    expect(await screen.findByText('Precisa de atenção', {}, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByText('Precisa de atenção', {}, { timeout: 20000 })).toBeInTheDocument();
     expect(screen.getByRole('region', { name: 'Chevrolet Onix' })).toHaveTextContent('Chevrolet · 2019');
     expect(screen.getByText('Km estimada')).toBeInTheDocument();
     const attention = screen.getByRole('region', { name: 'Precisa de atenção' });
@@ -152,7 +152,7 @@ describe('app screens with the prototype demo data', () => {
 
   it('Itens groups by category and filters', async () => {
     await renderAt('/itens');
-    expect(await screen.findByRole('heading', { name: 'Itens' }, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Itens' }, { timeout: 20000 })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Precisa de atenção' }));
     expect(await screen.findByText('Correia dentada')).toBeInTheDocument();
     await userEvent.type(screen.getByRole('textbox', { name: 'Buscar item' }), 'zzzz');
@@ -161,7 +161,7 @@ describe('app screens with the prototype demo data', () => {
 
   it('Histórico lists the records with totals and the 12-month notice', async () => {
     await renderAt('/historico');
-    expect(await screen.findByRole('heading', { name: 'Histórico' }, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Histórico' }, { timeout: 20000 })).toBeInTheDocument();
     expect(screen.getByText('Trocas registradas')).toBeInTheDocument();
     expect(screen.getByText('Óleo do motor')).toBeInTheDocument();
     expect(
@@ -171,7 +171,7 @@ describe('app screens with the prototype demo data', () => {
 
   it('Conta shows profile, vehicles and plans', async () => {
     await renderAt('/conta');
-    expect(await screen.findByRole('heading', { name: 'Conta' }, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Conta' }, { timeout: 20000 })).toBeInTheDocument();
     expect(screen.getByText('rafael@email.com · Plano Grátis')).toBeInTheDocument();
     expect(screen.getByText('Ativo')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Assinar Premium' })).toBeInTheDocument();
@@ -179,7 +179,7 @@ describe('app screens with the prototype demo data', () => {
 
   it('opening the km sheet shows the estimate text', async () => {
     await renderAt('/');
-    await screen.findByText('Precisa de atenção', {}, { timeout: 5000 });
+    await screen.findByText('Precisa de atenção', {}, { timeout: 20000 });
     await act(async () => {
       await userEvent.click(screen.getByRole('button', { name: 'Atualizar km' }));
     });

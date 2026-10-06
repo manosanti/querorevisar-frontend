@@ -1,0 +1,31 @@
+---
+// 24×24 stroke icon (paths from the prototype). Decorative: hidden from assistive technology.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends Omit<HTMLAttributes<'svg'>, 'd'> {
+  d: string | readonly string[];
+  size?: number;
+  weight?: number;
+}
+
+const { d, size = 20, weight = 2, ...rest } = Astro.props;
+const paths = typeof d === 'string' ? [d] : d;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={weight}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  {...rest}
+>
+  {paths.map(p => (
+    <path d={p} />
+  ))}
+</svg>

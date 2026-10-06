@@ -1,0 +1,59 @@
+---
+// The prototype header just wraps (three or four rows on a phone). Here it stays one row: section links from
+// 1024px (where they fit), "Criar conta grátis" from 768px; on phones the hero form is right below the header.
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-horizontal.png';
+import { APP_URL } from '../config';
+import { signInUrl } from '../lib/links';
+
+interface Props {
+  home?: boolean;
+}
+
+const { home = false } = Astro.props;
+const anchor = (id: string) => (home ? `#${id}` : `/#${id}`);
+const sections = [
+  ['como-funciona', 'Como funciona'],
+  ['alertas', 'Alertas'],
+  ['historico', 'Histórico'],
+  ['planos', 'Planos'],
+  ['faq', 'Dúvidas'],
+] as const;
+---
+
+<header class="sticky top-0 z-20 border-b border-divider bg-white/92 backdrop-blur-[12px] backdrop-saturate-[1.4]">
+  <div class="mx-auto box-content flex max-w-[1200px] flex-wrap items-center gap-x-7 gap-y-2.5 px-6 py-3.5">
+    <a href={home ? '#topo' : '/'} class="flex">
+      <Image
+        src={logo}
+        alt="QueroRevisar"
+        height={28}
+        densities={[1, 2]}
+        loading="eager"
+        fetchpriority="high"
+        class="block h-7 w-auto"
+      />
+    </a>
+    <nav aria-label="Principal" class="hidden flex-1 flex-wrap gap-x-6 text-[15px] font-medium lg:flex">
+      {sections.map(([id, label]) => (
+        <a href={anchor(id)} class="inline-flex min-h-11 items-center text-ink-2 hover:text-primary">
+          {label}
+        </a>
+      ))}
+    </nav>
+    <div class="ml-auto flex items-center gap-2 lg:ml-0">
+      <a
+        href={signInUrl(APP_URL)}
+        class="inline-flex min-h-11 items-center rounded-10 px-3.5 text-[15px] font-semibold text-ink hover:bg-surface-2 hover:text-ink"
+      >
+        Entrar
+      </a>
+      <a
+        href={anchor('criar-conta')}
+        class="hidden min-h-11 items-center rounded-10 bg-primary px-4 text-[15px] font-semibold text-white hover:bg-primary-strong hover:text-white tablet:inline-flex"
+      >
+        Criar conta grátis
+      </a>
+    </div>
+  </div>
+</header>

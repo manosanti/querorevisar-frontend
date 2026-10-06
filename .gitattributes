@@ -1,2 +1,8 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Auto detect text files; always LF in the working tree (generated CSS/JSON are compared byte by byte).
+* text=auto eol=lf
+*.png binary
+*.webp binary
+*.ico binary
+*.jar binary
+*.bat text eol=crlf
+*.cmd text eol=crlf

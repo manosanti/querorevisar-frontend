@@ -1,0 +1,29 @@
+---
+// Home: docs/reference/QueroRevisar Landing.dc.html, section by section.
+import Alerts from '../components/home/Alerts.astro';
+import Faq from '../components/home/Faq.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+import Hero from '../components/home/Hero.astro';
+import History from '../components/home/History.astro';
+import HowItWorks from '../components/home/HowItWorks.astro';
+import Plans from '../components/home/Plans.astro';
+import Stats from '../components/home/Stats.astro';
+import Vehicles from '../components/home/Vehicles.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'QueroRevisar · Cada troca lembrada no km certo.';
+const description =
+  'Registre o que foi trocado e com quantos km. O QueroRevisar acompanha a quilometragem e avisa quando cada item pede atenção, vence ou passa do prazo.';
+---
+
+<BaseLayout title={title} description={description} home>
+  <Hero />
+  <Stats />
+  <HowItWorks />
+  <Alerts />
+  <Vehicles />
+  <History />
+  <Plans />
+  <Faq />
+  <FinalCta />
+</BaseLayout>

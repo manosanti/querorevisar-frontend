@@ -1,0 +1,20 @@
+---
+// Pill used for item status (Vencido / Atenção / Em dia). Size classes come from the caller.
+import type { HTMLAttributes } from 'astro/types';
+import type { StatusTone } from '../../lib/content';
+
+interface Props extends HTMLAttributes<'span'> {
+  tone: StatusTone;
+}
+
+const { tone, class: className, ...rest } = Astro.props;
+const toneClass = {
+  ok: 'bg-primary-tint text-primary-strong',
+  warn: 'bg-warn-bg text-warn-fg',
+  over: 'bg-over-bg text-over-fg',
+} as const;
+---
+
+<span class:list={['rounded-20 whitespace-nowrap', toneClass[tone], className]} {...rest}>
+  <slot />
+</span>

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pageTitle } from '../lib/seo';
+---
+
+<BaseLayout
+  title={pageTitle('Página não encontrada')}
+  description="Esta página não existe no QueroRevisar."
+  canonical={false}
+>
+  <section class="mx-auto flex max-w-[640px] flex-col items-start gap-5 px-6 py-28">
+    <h1 class="m-0 text-[clamp(32px,3.6vw,46px)] leading-[1.08] font-extrabold tracking-[-0.035em]">
+      Página não encontrada
+    </h1>
+    <p class="m-0 text-lg text-ink-2">O endereço pode ter mudado ou estar incorreto.</p>
+    <a
+      href="/"
+      class="inline-flex h-12 items-center rounded-12 bg-primary px-5 font-semibold text-white hover:bg-primary-strong hover:text-white"
+    >
+      Voltar para o início
+    </a>
+  </section>
+</BaseLayout>
