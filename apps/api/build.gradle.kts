@@ -128,6 +128,9 @@ tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
     if (System.getenv("SPRING_PROFILES_ACTIVE").isNullOrBlank()) {
         args("--spring.profiles.active=local")
     }
+    // Plain JVM run: AOT output is only for native images, skipping processAot saves ~20 s per start.
+    classpath = files(sourceSets["main"].output, configurations["runtimeClasspath"], configurations["developmentOnly"])
+    jvmArgs("-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8")
 }
 
 val pgDataDir = rootProject.file(".local/pg").absolutePath
@@ -152,6 +155,8 @@ tasks.register<JavaExec>("localDbStop") {
 tasks.register<JavaExec>("createPremiumPlan") {
     group = "application"
     description = "Creates the Mercado Pago preapproval_plan 'QueroRevisar Premium' (mock mode only prints instructions)."
-    classpath = sourceSets["main"].runtimeClasspath
+    // Plain main classes (no AOT processing needed for a command-line script).
+    classpath = files(sourceSets["main"].output, configurations["runtimeClasspath"])
     mainClass = "br.com.querorevisar.api.billing.CreatePremiumPlanKt"
+    jvmArgs("-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8")
 }

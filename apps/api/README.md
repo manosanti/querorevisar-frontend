@@ -23,6 +23,7 @@ Outros comandos:
 ./gradlew :apps:api:localDbStop        # para um Postgres embutido que ficou rodando (terminal fechado à força)
 ./gradlew :apps:api:createPremiumPlan  # cria o plano Premium no Mercado Pago (no modo mock só imprime as instruções)
 node packages/api-client/scripts/compare-contract.ts apps/api/build/openapi.json   # contrato x API (o check gera o arquivo)
+bash apps/api/scripts/smoke.sh         # fluxos principais com curl contra a API rodando (login dev → veículo → ... → Premium)
 ```
 
 Swagger UI: http://localhost:8080/swagger-ui.html (local e dev). Jobs internos no local, sem `INTERNAL_TOKEN`:
@@ -102,4 +103,4 @@ por um `ApplicationRunner` idempotente.
   last-write-wins pelo `updated_at` do servidor (tolerância de 2 min de relógio; mudanças do mesmo lote nunca conflitam).
 - Chamadas externas: conexão 3 s, leitura 10 s (15 s no provedor de consulta veicular), HTTP/1.1.
 - Logs JSON (ECS) com `requestId` e `userId` (UUID, pseudônimo); e-mails, placas (ABC1***) e tokens nunca vão para o log.
-- `processAot` roda antes do `bootRun` por causa do plugin GraalVM (imagem nativa não é gerada aqui).
+- O plugin GraalVM está aplicado (`nativeCompile` no CI); `bootRun` e `createPremiumPlan` rodam na JVM sem `processAot`.
