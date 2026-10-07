@@ -84,7 +84,7 @@ export function Painel() {
     queryFn: () => api.getVehicleFipe(vehicle.id),
     enabled: showFipe,
     staleTime: 6 * 60 * 60 * 1000,
-    retry: 1,
+    retry: 2,
   });
   const fipe = fipeQuery.data
     ? {
@@ -143,6 +143,7 @@ export function Painel() {
               kmLabel={m.kmLabel}
               km={fmtInt(kmShown)}
               fipe={fipe}
+              fipeUnavailable={fipeQuery.isError}
               showFipe={showFipe}
               onManage={() => openSheet({ type: 'vehicle' })}
               onUpdateKm={() => openSheet({ type: 'km' })}
@@ -193,7 +194,7 @@ export function Painel() {
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="md"
-                  className="h-11! min-w-[140px] flex-1 rounded-8! px-4! text-[15px]!"
+                  className="h-11! min-w-[140px] flex-[1_1_auto] rounded-8! px-4! text-[15px]!"
                   onClick={() => void navigate({ to: '/consultas', search: { modo: 'outro' } })}
                 >
                   Consultar placa
@@ -201,7 +202,7 @@ export function Painel() {
                 <Button
                   variant="outline"
                   size="md"
-                  className="h-11! min-w-[140px] flex-1 rounded-8! px-4! text-[15px]!"
+                  className="h-11! min-w-[140px] flex-[1_1_auto] rounded-8! px-4! text-[15px]!"
                   onClick={() => void navigate({ to: '/consultas', search: { modo: 'meu' } })}
                 >
                   Conferir o meu {vehicle.model}

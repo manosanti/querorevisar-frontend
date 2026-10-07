@@ -4,7 +4,9 @@ import { onboardCar, registerChange, serverState } from './helpers.ts';
 
 test('primeiro veículo', async ({ page }) => {
   await onboardCar(page);
-  await expect(page.getByRole('region', { name: /Onix/ })).toContainText('48.000');
+  await expect(page.getByRole('region', { name: /onix/i })).toContainText('48.000');
+  // The FIPE price arrives once the vehicle reached the server (live Parallelum locally, mock in CI).
+  await expect(page.getByText(/Tabela FIPE · atualizada/)).toBeVisible({ timeout: 30_000 });
   const state = await serverState(page);
   expect(state.vehicles.map(v => v.model)).toEqual([expect.stringMatching(/Onix/i)]);
 });

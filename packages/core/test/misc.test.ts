@@ -92,3 +92,20 @@ describe('fipe', () => {
     expect(fipeUpdatedText(now, now)).toBe('atualizada hoje');
   });
 });
+
+describe('FIPE display names', () => {
+  it('shortens FIPE brands and versions to the names the screens expect', async () => {
+    const { fipeDisplayBrand, fipeDisplayModel } = await import('../src/index.ts');
+    expect(fipeDisplayBrand('GM - Chevrolet')).toBe('Chevrolet');
+    expect(fipeDisplayBrand('VW - VolksWagen')).toBe('Volkswagen');
+    expect(fipeDisplayBrand('BAJAJ')).toBe('Bajaj');
+    expect(fipeDisplayBrand('Fiat')).toBe('Fiat');
+    expect(fipeDisplayModel('ONIX  Lollapalooza 1.0 F.Power 5p Mec.')).toBe('Onix Lollapalooza');
+    expect(fipeDisplayModel('HB20 Comfort 1.0 Flex 12V Mec.')).toBe('HB20 Comfort');
+    expect(fipeDisplayModel('Gol 1.0 Flex 12V 5p')).toBe('Gol');
+    expect(fipeDisplayModel('ONIX SEDAN Plus LTZ 1.0 12V TB Flex Aut.')).toBe('Onix Sedan Plus');
+    expect(fipeDisplayModel('CG 160 FAN FLEX')).toBe('CG 160 FAN');
+    expect(fipeDisplayModel('PULSAR N150 160cc')).toBe('Pulsar N150');
+    expect(fipeDisplayModel('Corolla')).toBe('Corolla');
+  });
+});

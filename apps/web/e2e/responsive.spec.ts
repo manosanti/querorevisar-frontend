@@ -28,7 +28,8 @@ for (const size of sizes) {
     await page.screenshot({ path: info.outputPath(`painel-${size.width}.png`), fullPage: true });
 
     await page.getByRole('link', { name: 'Itens' }).click();
-    await page.getByRole('button', { name: 'Precisa de atenção' }).click();
+    // The oil change just registered is "Em dia": that filter opens its group and shows the table.
+    await page.getByRole('button', { name: 'Em dia' }).click();
     if (size.name !== 'mobile') await expect(page.getByText('Situação').first()).toBeVisible();
     await page.screenshot({ path: info.outputPath(`itens-${size.width}.png`), fullPage: true });
 

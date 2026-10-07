@@ -96,6 +96,8 @@ export function flushOutbox(): Promise<void> {
         }
       }
       if (sent || needsFull) await refreshState({ full: needsFull });
+      // A vehicle created offline only gets its FIPE price once the server knows it.
+      if (sent) void queryClient.invalidateQueries({ queryKey: ['fipe'] });
     } catch (err) {
       if (!(err instanceof NetworkError)) console.warn('[sync] flush failed', err);
     } finally {

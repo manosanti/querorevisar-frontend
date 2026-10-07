@@ -23,3 +23,36 @@ export function fipeUpdatedText(updatedAt: string | number, now: number = Date.n
   if (days === 0) return 'atualizada hoje';
   return days === 1 ? 'atualizada há 1 dia' : `atualizada há ${days} dias`;
 }
+
+const BRAND_ALIASES: Record<string, string> = { 'GM - Chevrolet': 'Chevrolet', 'VW - VolksWagen': 'Volkswagen' };
+const SPEC_TOKEN =
+  /^(\d+[.,]\d+|\d+(cc|cv|v)|\d+p|\d+x\d+|flex|mec\.?|aut\.?|turbo|tsi|tfsi|tb|cvt|diesel|gasolina|alcool|álcool|hybrid|elétrico|eletrico)$/i;
+
+/** All-caps words of 4+ letters become title case ("ONIX" → "Onix"); acronyms like "LTZ" or "HB20" stay. */
+function tidyCase(token: string): string {
+  return /^[A-ZÀ-Ý]{4,}$/.test(token) ? token.charAt(0) + token.slice(1).toLowerCase() : token;
+}
+
+/** Display brand from a FIPE brand name: "GM - Chevrolet" → "Chevrolet", "BAJAJ" → "Bajaj". */
+export function fipeDisplayBrand(name: string): string {
+  const clean = name.replace(/\s+/g, ' ').trim();
+  const aliased = BRAND_ALIASES[clean] ?? (clean.includes(' - ') ? clean.split(' - ').pop()! : clean);
+  return aliased
+    .split(' ')
+    .map(w => w.split('-').map(tidyCase).join('-'))
+    .join(' ');
+}
+
+/**
+ * Display model from a FIPE model/version name: keeps the words before the engine/spec part, at most 3.
+ * "ONIX Lollapalooza 1.0 F.Power 5p Mec." → "Onix Lollapalooza", "PULSAR N150 160cc" → "Pulsar N150".
+ */
+export function fipeDisplayModel(name: string): string {
+  const tokens = name.replace(/\s+/g, ' ').trim().split(' ');
+  const out: string[] = [];
+  for (const t of tokens) {
+    if (SPEC_TOKEN.test(t) || out.length === 3) break;
+    out.push(tidyCase(t));
+  }
+  return out.length ? out.join(' ') : name.trim();
+}

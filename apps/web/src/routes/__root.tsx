@@ -5,7 +5,15 @@ import { ConsentBanner, OfflineIndicator, UpdatePrompt } from '../components/Glo
 import { lazy, Suspense } from 'react';
 import { useUi } from '../lib/ui-store.ts';
 
-const SheetsHost = lazy(() => import('../features/sheets/SheetsHost.tsx').then(m => ({ default: m.SheetsHost })));
+const loadSheets = () => import('../features/sheets/SheetsHost.tsx');
+const SheetsHost = lazy(() => loadSheets().then(m => ({ default: m.SheetsHost })));
+
+// Fetch the sheets chunk once the app is idle, so "Registrar troca" also opens offline before the
+// service worker has precached it (first visit, dev server).
+if (typeof window !== 'undefined') {
+  const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1500));
+  idle(() => void loadSheets().catch(() => {}));
+}
 
 /** Sheets are only downloaded when one opens (keeps them out of the first load). */
 function LazySheets() {

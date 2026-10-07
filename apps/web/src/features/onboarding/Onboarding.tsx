@@ -1,7 +1,15 @@
 // "Qual é o seu veículo?" (docs/screens.md#onboarding). Brands/models/years come from FIPE through the API;
 // when FIPE is unavailable the prototype's local list is used and the FIPE codes stay empty.
 import { api, type FipeOption } from '@qr/api-client';
-import { FALLBACK_BRANDS, findPlan, fmtInt, parseNumber, type VehicleType } from '@qr/core';
+import {
+  FALLBACK_BRANDS,
+  findPlan,
+  fipeDisplayBrand,
+  fipeDisplayModel,
+  fmtInt,
+  parseNumber,
+  type VehicleType,
+} from '@qr/core';
 import { BackButton, Button, Field, Input, Notice, Select, VehicleImage, toast, cn } from '@qr/ui';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -79,9 +87,12 @@ export function Onboarding({ mode, replaceId }: { mode: 'primeiro' | 'adicionar'
   const kmValue = parseNumber(km);
   const yearValue = year ? yearFromFipe(year.name) : null;
   const invalid = !(brand && model && kmValue !== null && yearValue && yearValue > 1960 && yearValue < 2030);
+  // FIPE names carry the version ("ONIX Lollapalooza 1.0 F.Power 5p Mec."); screens use the short names.
+  const brandName = brand ? (brand.code ? fipeDisplayBrand(brand.name) : brand.name) : '';
+  const modelName = model ? (model.code ? fipeDisplayModel(model.name) : model.name) : '';
   const hasPlan = useMemo(
-    () => !!(catalogFile && brand && model && findPlan(catalogFile.plans, brand.name, model.name)),
-    [catalogFile, brand, model],
+    () => !!(catalogFile && brandName && modelName && findPlan(catalogFile.plans, brandName, modelName)),
+    [catalogFile, brandName, modelName],
   );
 
   const changeType = (t: VehicleType) => {
@@ -103,8 +114,8 @@ export function Onboarding({ mode, replaceId }: { mode: 'primeiro' | 'adicionar'
     setSaving(true);
     const id = await createVehicle({
       type,
-      brand: brand.name,
-      model: model.name,
+      brand: brandName,
+      model: modelName,
       year: yearValue!,
       km: Math.round(kmValue),
       plate: null,

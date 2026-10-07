@@ -65,6 +65,8 @@ interface VehicleCardProps {
   kmLabel: string;
   km: string;
   fipe: FipeInfo | null;
+  /** When fipe is null: still loading, or the price could not be fetched. */
+  fipeUnavailable?: boolean;
   showFipe: boolean;
   onManage: () => void;
   onUpdateKm: () => void;
@@ -82,6 +84,7 @@ export function VehicleCard({
   kmLabel,
   km,
   fipe,
+  fipeUnavailable,
   showFipe,
   onManage,
   onUpdateKm,
@@ -131,7 +134,9 @@ export function VehicleCard({
       {showFipe ? (
         <div className="mt-4 flex items-center justify-between gap-2.5 border-t border-divider pt-[14px] desktop:mt-0 desktop:border-t-0 desktop:border-l desktop:pt-0 desktop:pl-6">
           <div className="min-w-0">
-            <div className="text-[12.5px] text-muted">Tabela FIPE · {fipe ? fipe.when : 'carregando'}</div>
+            <div className="text-[12.5px] text-muted">
+              Tabela FIPE · {fipe ? fipe.when : fipeUnavailable ? 'indisponível' : 'carregando'}
+            </div>
             <div className="text-[18px] font-bold tracking-[-0.02em] tabular-nums">{fipe ? fipe.value : '—'}</div>
           </div>
           {fipe ? (

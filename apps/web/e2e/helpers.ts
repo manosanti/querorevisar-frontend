@@ -2,15 +2,13 @@ import { expect, type Page } from '@playwright/test';
 
 export const API = process.env.E2E_API_URL ?? 'http://localhost:8080';
 
-/** Picks an option in the QR Select: opens it, types in its search and chooses the first match. */
-export async function pick(page: Page, label: string, search: string) {
+/** Picks an option in the QR Select: opens it, types in its search (when given) and chooses the first match. */
+export async function pick(page: Page, label: string, search?: string) {
   await page.getByRole('button', { name: label, exact: true }).click();
   const box = page.getByRole('textbox', { name: 'Buscar' });
-  if (await box.isVisible().catch(() => false)) await box.fill(search);
-  const option = page
-    .getByRole('option')
-    .filter({ hasText: new RegExp(search, 'i') })
-    .first();
+  if (search && (await box.isVisible().catch(() => false))) await box.fill(search);
+  const options = page.getByRole('option');
+  const option = (search ? options.filter({ hasText: new RegExp(search, 'i') }) : options).first();
   await expect(option).toBeVisible();
   await option.click();
 }
@@ -24,7 +22,8 @@ export async function onboardCar(page: Page, km = '48.000') {
   await page.getByRole('radio', { name: 'Carro' }).click();
   await pick(page, 'Marca', 'Chevrolet');
   await pick(page, 'Modelo', 'Onix');
-  await pick(page, 'Ano', '2019');
+  // Live FIPE years depend on the model version: take the first one offered.
+  await pick(page, 'Ano');
   await page.getByPlaceholder('48.000').fill(km);
   await page.getByRole('button', { name: 'Começar' }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Veículo cadastrado' })).toBeVisible();
