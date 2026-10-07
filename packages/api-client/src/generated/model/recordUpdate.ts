@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { RecordUpdateWhere } from './recordUpdateWhere';
+import type { RecordUpdateWhere } from './recordUpdateWhere.ts';
 
 export interface RecordUpdate {
   itemId?: string;

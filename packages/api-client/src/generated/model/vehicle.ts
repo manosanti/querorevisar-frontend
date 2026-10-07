@@ -10,8 +10,8 @@
  *
  * OpenAPI spec version: v1
  */
-import type { VehicleStatus } from './vehicleStatus';
-import type { VehicleType } from './vehicleType';
+import type { VehicleStatus } from './vehicleStatus.ts';
+import type { VehicleType } from './vehicleType.ts';
 
 export interface Vehicle {
   id: string;

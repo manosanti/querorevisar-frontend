@@ -10,8 +10,8 @@
  *
  * OpenAPI spec version: v1
  */
-import type { CreditPurchaseMethod } from './creditPurchaseMethod';
-import type { CreditPurchaseStatus } from './creditPurchaseStatus';
+import type { CreditPurchaseMethod } from './creditPurchaseMethod.ts';
+import type { CreditPurchaseStatus } from './creditPurchaseStatus.ts';
 
 export interface CreditPurchase {
   purchaseId: string;

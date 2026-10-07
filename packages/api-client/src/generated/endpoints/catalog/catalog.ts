@@ -28,8 +28,8 @@ import type {
   ProblemResponse
 } from '../../model';
 
-import { customFetch } from '../../../http';
-import type { ErrorType } from '../../../http';
+import { customFetch } from '../../../http.ts';
+import type { ErrorType } from '../../../http.ts';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 

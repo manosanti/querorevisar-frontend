@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { LookupRow } from './lookupRow';
+import type { LookupRow } from './lookupRow.ts';
 
 export interface LookupSection {
   key: string;

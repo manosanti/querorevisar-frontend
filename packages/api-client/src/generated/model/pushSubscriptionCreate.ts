@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { PushKeys } from './pushKeys';
+import type { PushKeys } from './pushKeys.ts';
 
 export interface PushSubscriptionCreate {
   endpoint: string;

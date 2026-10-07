@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { MaintenanceRecord } from './maintenanceRecord';
+import type { MaintenanceRecord } from './maintenanceRecord.ts';
 
 export interface RecordList {
   records: MaintenanceRecord[];

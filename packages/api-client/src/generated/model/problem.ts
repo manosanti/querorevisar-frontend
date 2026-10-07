@@ -10,8 +10,8 @@
  *
  * OpenAPI spec version: v1
  */
-import type { FieldError } from './fieldError';
-import type { ProblemCode } from './problemCode';
+import type { FieldError } from './fieldError.ts';
+import type { ProblemCode } from './problemCode.ts';
 
 export interface Problem {
   /** URI reference, e.g. /problems/vehicle-limit */

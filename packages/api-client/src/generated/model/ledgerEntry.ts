@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { LedgerEntryReason } from './ledgerEntryReason';
+import type { LedgerEntryReason } from './ledgerEntryReason.ts';
 
 export interface LedgerEntry {
   id: string;

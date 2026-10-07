@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { MaintenanceRecordWhere } from './maintenanceRecordWhere';
+import type { MaintenanceRecordWhere } from './maintenanceRecordWhere.ts';
 
 export interface MaintenanceRecord {
   id: string;

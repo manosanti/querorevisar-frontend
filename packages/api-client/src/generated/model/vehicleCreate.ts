@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { VehicleType } from './vehicleType';
+import type { VehicleType } from './vehicleType.ts';
 
 export interface VehicleCreate {
   /** UUID v7 generated on the client */

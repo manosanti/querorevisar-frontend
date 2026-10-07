@@ -10,8 +10,8 @@
  *
  * OpenAPI spec version: v1
  */
-import type { SyncMutationPayload } from './syncMutationPayload';
-import type { SyncMutationType } from './syncMutationType';
+import type { SyncMutationPayload } from './syncMutationPayload.ts';
+import type { SyncMutationType } from './syncMutationType.ts';
 
 export interface SyncMutation {
   /** Idempotency key of the mutation */

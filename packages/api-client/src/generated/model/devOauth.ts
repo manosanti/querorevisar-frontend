@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { DevOauthProvider } from './devOauthProvider';
+import type { DevOauthProvider } from './devOauthProvider.ts';
 
 export interface DevOauth {
   provider: DevOauthProvider;

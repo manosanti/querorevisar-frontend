@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { Problem } from './problem';
+import type { Problem } from './problem.ts';
 
 /**
  * Problem details (RFC 9457)

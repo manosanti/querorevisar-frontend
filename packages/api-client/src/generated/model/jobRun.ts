@@ -10,8 +10,8 @@
  *
  * OpenAPI spec version: v1
  */
-import type { JobRunStats } from './jobRunStats';
-import type { JobRunStatus } from './jobRunStatus';
+import type { JobRunStats } from './jobRunStats.ts';
+import type { JobRunStatus } from './jobRunStatus.ts';
 
 export interface JobRun {
   job: string;

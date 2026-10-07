@@ -10,11 +10,11 @@
  *
  * OpenAPI spec version: v1
  */
-import type { LedgerEntry } from './ledgerEntry';
-import type { LookupResult } from './lookupResult';
-import type { MaintenanceRecord } from './maintenanceRecord';
-import type { Me } from './me';
-import type { Vehicle } from './vehicle';
+import type { LedgerEntry } from './ledgerEntry.ts';
+import type { LookupResult } from './lookupResult.ts';
+import type { MaintenanceRecord } from './maintenanceRecord.ts';
+import type { Me } from './me.ts';
+import type { Vehicle } from './vehicle.ts';
 
 export interface MeExport {
   me: Me;

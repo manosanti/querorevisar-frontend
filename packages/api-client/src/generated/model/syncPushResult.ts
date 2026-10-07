@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { SyncRejection } from './syncRejection';
+import type { SyncRejection } from './syncRejection.ts';
 
 export interface SyncPushResult {
   applied: string[];

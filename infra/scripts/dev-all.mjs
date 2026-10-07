@@ -15,6 +15,7 @@ const args = new Set(process.argv.slice(2));
 const withLanding = args.has('--landing');
 const forceEmbedded = args.has('--embedded');
 const children = [];
+let startedEmbeddedDb = false;
 
 const COLORS = { db: 36, api: 35, web: 32, landing: 33, dev: 90 };
 const log = (tag, msg) => process.stdout.write(`\x1b[${COLORS[tag] ?? 37}m[${tag}]\x1b[0m ${msg}\n`);
@@ -45,6 +46,14 @@ function shutdown() {
       else c.kill('SIGINT');
     }
   }
+  // The embedded Postgres runs detached from Gradle: stop it explicitly.
+  if (startedEmbeddedDb)
+    spawnSync(gradle, ['--console=plain', ':apps:api:localDbStop'], {
+      cwd: root,
+      stdio: 'ignore',
+      shell: win,
+      env: { ...process.env, ...(JAVA_HOME ? { JAVA_HOME } : {}) },
+    });
   process.exit(0);
 }
 process.on('SIGINT', shutdown);
@@ -149,6 +158,7 @@ if (dockerAvailable()) {
   log('db', 'Docker not available: starting the embedded Postgres on :54322 (dev auth mode)…');
   if (!(await portOpen(54322))) {
     run('db', gradle, ['--console=plain', ':apps:api:localDb'], { env: apiEnv });
+    startedEmbeddedDb = true;
     await waitFor(() => portOpen(54322), 'embedded Postgres');
   }
   Object.assign(apiEnv, { AUTH_MODE: 'dev', DB_AUTH_STUB: 'true' });

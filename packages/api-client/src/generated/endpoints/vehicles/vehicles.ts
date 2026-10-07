@@ -38,8 +38,8 @@ import type {
   VehicleUpdate
 } from '../../model';
 
-import { customFetch } from '../../../http';
-import type { ErrorType , BodyType } from '../../../http';
+import { customFetch } from '../../../http.ts';
+import type { ErrorType , BodyType } from '../../../http.ts';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 

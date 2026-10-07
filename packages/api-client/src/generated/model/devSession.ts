@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { DevUser } from './devUser';
+import type { DevUser } from './devUser.ts';
 
 export interface DevSession {
   accessToken: string;

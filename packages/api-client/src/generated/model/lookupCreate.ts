@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { LookupProductId } from './lookupProductId';
+import type { LookupProductId } from './lookupProductId.ts';
 
 export interface LookupCreate {
   /** ABC1D23; normalized server-side */

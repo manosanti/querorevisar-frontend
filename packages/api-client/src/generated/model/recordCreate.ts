@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { RecordCreateWhere } from './recordCreateWhere';
+import type { RecordCreateWhere } from './recordCreateWhere.ts';
 
 export interface RecordCreate {
   /** UUID v7 generated on the client */

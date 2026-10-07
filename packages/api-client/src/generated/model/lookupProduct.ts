@@ -10,8 +10,8 @@
  *
  * OpenAPI spec version: v1
  */
-import type { LookupProductId } from './lookupProductId';
-import type { LookupProductPartsItem } from './lookupProductPartsItem';
+import type { LookupProductId } from './lookupProductId.ts';
+import type { LookupProductPartsItem } from './lookupProductPartsItem.ts';
 
 export interface LookupProduct {
   id: LookupProductId;

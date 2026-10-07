@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { Tone } from './tone';
+import type { Tone } from './tone.ts';
 
 export interface LookupResultSummary {
   flags: number;

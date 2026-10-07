@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { SyncMutation } from './syncMutation';
+import type { SyncMutation } from './syncMutation.ts';
 
 export interface SyncPush {
   /** @maxItems 200 */

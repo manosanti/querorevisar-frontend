@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { PremiumStatusStatus } from './premiumStatusStatus';
+import type { PremiumStatusStatus } from './premiumStatusStatus.ts';
 
 export interface PremiumStatus {
   status: PremiumStatusStatus;

@@ -10,7 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
-import type { CreditPurchaseCreateMethod } from './creditPurchaseCreateMethod';
+import type { CreditPurchaseCreateMethod } from './creditPurchaseCreateMethod.ts';
 
 export interface CreditPurchaseCreate {
   packId: string;

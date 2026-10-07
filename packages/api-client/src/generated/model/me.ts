@@ -10,8 +10,8 @@
  *
  * OpenAPI spec version: v1
  */
-import type { Flags } from './flags';
-import type { Plan } from './plan';
+import type { Flags } from './flags.ts';
+import type { Plan } from './plan.ts';
 
 export interface Me {
   id: string;

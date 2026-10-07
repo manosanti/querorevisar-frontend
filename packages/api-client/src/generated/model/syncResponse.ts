@@ -10,11 +10,11 @@
  *
  * OpenAPI spec version: v1
  */
-import type { LookupSummary } from './lookupSummary';
-import type { MaintenanceRecord } from './maintenanceRecord';
-import type { Me } from './me';
-import type { SyncDeleted } from './syncDeleted';
-import type { Vehicle } from './vehicle';
+import type { LookupSummary } from './lookupSummary.ts';
+import type { MaintenanceRecord } from './maintenanceRecord.ts';
+import type { Me } from './me.ts';
+import type { SyncDeleted } from './syncDeleted.ts';
+import type { Vehicle } from './vehicle.ts';
 
 export interface SyncResponse {
   cursor: string;
