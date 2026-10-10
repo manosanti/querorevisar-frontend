@@ -4,11 +4,11 @@
 //   ./gradlew :apps:api:bootRun            API on :8080 with the `local` profile (all integrations in mock mode)
 //   ./gradlew :apps:api:createPremiumPlan  creates the Mercado Pago preapproval_plan (prints instructions in mock mode)
 plugins {
-    kotlin("jvm") version "2.3.21"
-    kotlin("plugin.spring") version "2.3.21"
+    kotlin("jvm") version "2.4.20"
+    kotlin("plugin.spring") version "2.4.20"
     id("org.springframework.boot") version "4.1.1"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.graalvm.buildtools.native") version "1.1.8"
+    id("org.graalvm.buildtools.native") version "1.1.14"
 }
 
 group = "br.com.querorevisar"
@@ -39,7 +39,7 @@ val bucket4jVersion = "8.21.0"
 val webPushVersion = "5.1.2"
 val bouncyCastleVersion = "1.86"
 val zxingVersion = "3.5.4"
-val sentryVersion = "8.59.0"
+val sentryVersion = "8.60.0"
 val zonkyVersion = "2.2.2"
 val wiremockVersion = "3.13.2"
 
