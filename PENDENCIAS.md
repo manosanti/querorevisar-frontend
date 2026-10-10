@@ -13,12 +13,13 @@ Legenda: 🔒 segredo (nunca no repositório) · ✏️ decisão ou dado não si
 
 ## Supabase (dev e prod)
 
-- [ ] ✏️ `SUPABASE_URL` de cada projeto.
-- [ ] 🔒 `SUPABASE_ANON_KEY` (pública, mas fica em variável de ambiente da web).
-- [ ] 🔒 `SUPABASE_SERVICE_ROLE_KEY` (só na API; usado para excluir conta).
-- [ ] 🔒 `SUPABASE_JWT_SECRET` (só se o projeto usar chave JWT legada; com JWKS não precisa).
-- [ ] 🔒 `DATABASE_URL` (pooler, transaction mode) e `DATABASE_DIRECT_URL` (migrações e backup).
-- [ ] ✏️ No painel: ativar Anonymous sign-ins, Email OTP, Google; desativar Phone. Configurar SMTP da Resend. Redirect URLs com o domínio.
+Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:all` pelo `.env.local` da raiz: login anônimo, cadastro com e-mail e confirmação testados (o anônimo vira conta sem perder o veículo). Tokens assinados com ES256 (JWKS): `SUPABASE_JWT_SECRET` não é necessário.
+
+- [x] ✏️ `SUPABASE_URL`, 🔒 `SUPABASE_ANON_KEY` (publishable) e 🔒 `SUPABASE_SERVICE_ROLE_KEY` (secret) do dev, no `.env.local`.
+- [x] ✏️ Dev: Anonymous sign-ins e Email (com confirmação) ligados, Phone desligado, Redirect URL `http://localhost:5173/**`.
+- [ ] ✏️ Projeto de produção (`qr-prod`, São Paulo), com as mesmas configurações.
+- [ ] 🔒 `DATABASE_URL` (Transaction pooler, 6543) e `DATABASE_DIRECT_URL` (Session pooler, 5432) de cada projeto, para o Cloud Run e o backup. Localmente os dados continuam no Postgres embutido.
+- [ ] ✏️ No painel: Google (depende do OAuth Client), SMTP da Resend (sem ele o Supabase só manda e-mail para membros da organização, com limite baixo), Redirect URLs com o domínio.
 
 ## Google
 
