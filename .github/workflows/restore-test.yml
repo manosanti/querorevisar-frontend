@@ -44,7 +44,7 @@ jobs:
           AGE_IDENTITY: ${{ secrets.BACKUP_AGE_PRIVATE_KEY }}
           TARGET_URL: postgresql://postgres:postgres@localhost:5432/postgres
         run: bash infra/backup/restore.sh
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
