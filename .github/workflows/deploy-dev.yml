@@ -101,12 +101,12 @@ jobs:
           SENTRY_PROJECT_WEB: ${{ vars.SENTRY_PROJECT_WEB }}
           PUBLIC_APP_URL: ${{ vars.DEV_APP_URL }}
           PUBLIC_SITE_URL: ${{ vars.DEV_LANDING_URL }}
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy apps/web/dist --project-name=querorevisar-app --branch=main
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
