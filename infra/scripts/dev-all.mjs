@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 // pnpm dev:all — local database + API + web (+ landing with --landing).
-// With Docker: Supabase CLI (Postgres + Auth). Without Docker: embedded Postgres on :54322 and the API's
-// dev auth (AUTH_MODE=dev). Every integration runs in mock mode while its token is <SEM_TOKEN>.
+// The root .env.local (gitignored) holds the owner's keys; every integration without a key runs in mock mode.
+// Auth and database, first match wins:
+//   1. SUPABASE_URL + SUPABASE_ANON_KEY in .env.local: Auth of that Supabase project. With DATABASE_URL, its
+//      database too; without it, the embedded Postgres on :54322 (users copied into the auth.users stub).
+//   2. Docker: Supabase CLI (Postgres + Auth).
+//   3. Embedded Postgres on :54322 and the API's dev auth (AUTH_MODE=dev).
+// --embedded ignores .env.local and Docker: option 3 with every integration in mock mode (used by the e2e).
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createConnection } from 'node:net';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -113,6 +118,44 @@ function supabaseEnv() {
   return env;
 }
 
+const isSet = v => !!v && !v.includes('<SEM_TOKEN>') && !v.includes('<PREENCHER>');
+
+/** KEY=value lines of a dotenv file; quotes and trailing " # comments" are stripped, placeholders dropped. */
+function readEnvFile(file) {
+  const out = {};
+  if (!existsSync(file)) return out;
+  for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {
+    const m = /^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*)$/.exec(line);
+    if (!m) continue;
+    const quoted = /^(["'])(.*?)\1/.exec(m[2]);
+    const value = quoted ? quoted[2] : m[2].replace(/\s+#.*$/, '').trim();
+    if (isSet(value)) out[m[1]] = value;
+  }
+  return out;
+}
+
+/** New projects sign tokens with asymmetric keys (JWKS); older ones need the legacy JWT secret. */
+async function checkSupabaseKeys(url) {
+  try {
+    const r = await fetch(`${url}/auth/v1/.well-known/jwks.json`);
+    const body = r.ok ? await r.json() : null;
+    if (!body?.keys?.length && !secrets.SUPABASE_JWT_SECRET)
+      log(
+        'dev',
+        'Supabase signs tokens with the legacy JWT secret: put SUPABASE_JWT_SECRET in .env.local or migrate to JWT signing keys in the dashboard.',
+      );
+  } catch {
+    log('dev', `could not read the Supabase JWKS at ${url} — check SUPABASE_URL in .env.local`);
+  }
+}
+
+async function startEmbeddedDb() {
+  if (await portOpen(54322)) return;
+  run('db', gradle, ['--console=plain', ':apps:api:localDb'], { env: apiEnv });
+  startedEmbeddedDb = true;
+  await waitFor(() => portOpen(54322), 'embedded Postgres');
+}
+
 function writeWebEnv(vars) {
   const file = join(root, 'apps', 'web', '.env.local');
   const body = Object.entries(vars)
@@ -125,6 +168,15 @@ const gradle = win ? join(root, 'gradlew.bat') : './gradlew';
 const JAVA_HOME = javaHome();
 if (!JAVA_HOME) log('dev', 'JAVA_HOME not set and no JDK 21 found in ~/.jdks — the API needs Java 21.');
 
+// Owner keys: API variables pass through as they are, VITE_* go to the web. Supabase and database keys are
+// handled below, only together with the real Supabase Auth.
+const secrets = forceEmbedded ? {} : readEnvFile(join(root, '.env.local'));
+const SUPABASE_KEYS = new Set(['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'DATABASE_URL', 'DATABASE_DIRECT_URL']);
+const passThrough = Object.fromEntries(
+  Object.entries(secrets).filter(([k]) => !SUPABASE_KEYS.has(k) && !k.startsWith('VITE_')),
+);
+const webExtra = Object.fromEntries(Object.entries(secrets).filter(([k]) => k.startsWith('VITE_')));
+
 const apiEnv = {
   SPRING_PROFILES_ACTIVE: 'local',
   PORT: '8080',
@@ -133,10 +185,41 @@ const apiEnv = {
   WEB_ORIGINS: 'http://localhost:5173,http://127.0.0.1:5173',
   DATABASE_URL: 'postgresql://postgres:postgres@127.0.0.1:54322/postgres',
   DATABASE_DIRECT_URL: 'postgresql://postgres:postgres@127.0.0.1:54322/postgres',
+  ...passThrough,
   ...(JAVA_HOME ? { JAVA_HOME } : {}),
 };
+const webEnv = {
+  VITE_API_URL: 'http://localhost:8080',
+  VITE_SUPABASE_URL: '<SEM_TOKEN>',
+  VITE_SUPABASE_ANON_KEY: '<SEM_TOKEN>',
+};
 
-if (dockerAvailable()) {
+if (secrets.SUPABASE_URL && secrets.SUPABASE_ANON_KEY) {
+  const url = secrets.SUPABASE_URL.replace(/\/+$/, '');
+  const remoteDb = !!secrets.DATABASE_URL;
+  log(
+    'db',
+    `.env.local: Supabase Auth at ${url}; database: ${remoteDb ? 'the Supabase project' : 'embedded Postgres on :54322'}`,
+  );
+  await checkSupabaseKeys(url);
+  if (remoteDb) {
+    if (!secrets.DATABASE_DIRECT_URL) log('db', 'DATABASE_DIRECT_URL not set: migrations go through DATABASE_URL');
+    Object.assign(apiEnv, {
+      DATABASE_URL: secrets.DATABASE_URL,
+      DATABASE_DIRECT_URL: secrets.DATABASE_DIRECT_URL ?? secrets.DATABASE_URL,
+    });
+  } else {
+    await startEmbeddedDb();
+  }
+  Object.assign(apiEnv, {
+    AUTH_MODE: 'supabase',
+    DB_AUTH_STUB: remoteDb ? 'false' : 'true',
+    DB_MIRROR_AUTH_USERS: remoteDb ? 'false' : 'true',
+    SUPABASE_URL: url,
+    SUPABASE_JWKS_URL: `${url}/auth/v1/.well-known/jwks.json`,
+  });
+  Object.assign(webEnv, { VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: secrets.SUPABASE_ANON_KEY });
+} else if (dockerAvailable()) {
   log('db', 'Docker found: starting Supabase local (Postgres + Auth)…');
   const r = spawnSync('npx', ['supabase', 'start', '--workdir', 'infra'], { cwd: root, stdio: 'inherit', shell: win });
   if (r.status !== 0) throw new Error('supabase start failed');
@@ -149,25 +232,16 @@ if (dockerAvailable()) {
     ...(s.JWT_SECRET ? { SUPABASE_JWT_SECRET: s.JWT_SECRET } : {}),
     ...(s.SERVICE_ROLE_KEY ? { SUPABASE_SERVICE_ROLE_KEY: s.SERVICE_ROLE_KEY } : {}),
   });
-  writeWebEnv({
-    VITE_API_URL: 'http://localhost:8080',
-    VITE_SUPABASE_URL: s.API_URL,
-    VITE_SUPABASE_ANON_KEY: s.ANON_KEY ?? s.PUBLISHABLE_KEY,
-  });
+  Object.assign(webEnv, { VITE_SUPABASE_URL: s.API_URL, VITE_SUPABASE_ANON_KEY: s.ANON_KEY ?? s.PUBLISHABLE_KEY });
 } else {
-  log('db', 'Docker not available: starting the embedded Postgres on :54322 (dev auth mode)…');
-  if (!(await portOpen(54322))) {
-    run('db', gradle, ['--console=plain', ':apps:api:localDb'], { env: apiEnv });
-    startedEmbeddedDb = true;
-    await waitFor(() => portOpen(54322), 'embedded Postgres');
-  }
+  log(
+    'db',
+    `${forceEmbedded ? '--embedded' : 'Docker not available'}: starting the embedded Postgres on :54322 (dev auth mode)…`,
+  );
+  await startEmbeddedDb();
   Object.assign(apiEnv, { AUTH_MODE: 'dev', DB_AUTH_STUB: 'true' });
-  writeWebEnv({
-    VITE_API_URL: 'http://localhost:8080',
-    VITE_SUPABASE_URL: '<SEM_TOKEN>',
-    VITE_SUPABASE_ANON_KEY: '<SEM_TOKEN>',
-  });
 }
+writeWebEnv({ ...webEnv, ...webExtra });
 log('db', 'database ready');
 
 run('api', gradle, ['--console=plain', ':apps:api:bootRun'], { env: apiEnv });

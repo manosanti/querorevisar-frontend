@@ -46,6 +46,7 @@ class ProfileService(
     fun ensure(user: CurrentUser) {
         val cacheKey = "${user.id}:${user.isAnonymous}"
         if (known.getIfPresent(cacheKey) == true) return
+        if (props.db.authStub && props.db.mirrorAuthUsers) mirrorAuthUser(user)
         try {
             jdbc.sql("insert into profiles(user_id, name) values (:u, :n) on conflict (user_id) do nothing")
                 .param("u", user.id).param("n", user.name?.take(80)).update()
@@ -55,6 +56,23 @@ class ProfileService(
         }
         if (!user.isAnonymous && user.email != null) sendWelcomeOnce(user)
         known.put(cacheKey, true)
+    }
+
+    /**
+     * Local embedded database with a real Supabase project: the auth.users stub does not know the token's user, so
+     * it is copied there first. An older stub row with the same e-mail (deleted account) gives the e-mail up.
+     */
+    private fun mirrorAuthUser(user: CurrentUser) {
+        if (user.email != null) {
+            jdbc.sql("update auth.users set email = null where email = :e and id <> :id")
+                .param("e", user.email).param("id", user.id).update()
+        }
+        jdbc.sql(
+            """insert into auth.users(id, email, is_anonymous, raw_user_meta_data)
+               values (:id, :e, :a, case when cast(:n as text) is null then '{}'::jsonb else jsonb_build_object('name', cast(:n as text)) end)
+               on conflict (id) do update set email = excluded.email, is_anonymous = excluded.is_anonymous,
+                 raw_user_meta_data = excluded.raw_user_meta_data""",
+        ).param("id", user.id).param("e", user.email).param("a", user.isAnonymous).param("n", user.name).update()
     }
 
     private fun sendWelcomeOnce(user: CurrentUser) {

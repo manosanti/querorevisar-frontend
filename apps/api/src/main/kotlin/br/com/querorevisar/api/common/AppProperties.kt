@@ -45,7 +45,11 @@ data class AppProperties(
         val devTokenTtl: Duration = Duration.ofDays(7),
     )
 
-    data class Db(val authStub: Boolean = false)
+    /**
+     * authStub: plain Postgres gets the auth.users stub (local and tests). mirrorAuthUsers: each token's user is
+     * copied into that stub, for a local embedded database signed in through a real Supabase project (pnpm dev:all).
+     */
+    data class Db(val authStub: Boolean = false, val mirrorAuthUsers: Boolean = false)
 
     data class Internal(
         val audience: String = "<PREENCHER>",

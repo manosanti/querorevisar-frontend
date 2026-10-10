@@ -18,6 +18,10 @@ object StartupGuard {
         check(authMode != "dev" || "local" in profiles) {
             "AUTH_MODE=dev is only allowed with the local profile (active: ${profiles.joinToString()})"
         }
+        val mirror = env.getProperty("app.db.mirror-auth-users", Boolean::class.java, false)
+        check(!mirror || (env.getProperty("app.db.auth-stub", Boolean::class.java, false) && "local" in profiles)) {
+            "DB_MIRROR_AUTH_USERS=true needs DB_AUTH_STUB=true and the local profile"
+        }
         val payments = env.getProperty("app.payments.mode", "mock")
         check(payments in setOf("mock", "sandbox", "live")) { "PAYMENTS_MODE must be mock, sandbox or live (got '$payments')" }
     }

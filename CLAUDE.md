@@ -35,7 +35,7 @@ Você vai construir o QueroRevisar do zero seguindo `docs/PLAN.json`. Leia este 
 ## Desvios do plano (decididos na implementação)
 
 - **Spring Boot 4.x** no lugar do 3.x da decisão D05: o suporte gratuito da linha 3.x terminou em junho de 2026 e o Spring Initializr só gera 4.x.
-- **Ambiente local sem Docker:** quando o Docker não está disponível, `pnpm dev:all` sobe um Postgres embutido na porta 54322 (mesma do Supabase local) e a API emite tokens de desenvolvimento (`AUTH_MODE=dev`, só no profile `local`). Com Docker, o caminho do plano (Supabase CLI) continua valendo.
+- **Ambiente local sem Docker:** quando o Docker não está disponível, `pnpm dev:all` sobe um Postgres embutido na porta 54322 (mesma do Supabase local) e a API emite tokens de desenvolvimento (`AUTH_MODE=dev`, só no profile `local`). Com Docker, o caminho do plano (Supabase CLI) continua valendo. Com `SUPABASE_URL` e `SUPABASE_ANON_KEY` no `.env.local` da raiz (ignorado pelo git), o login é o do projeto Supabase real, mesmo sem Docker.
 - Testes da API usam Testcontainers quando há Docker e Postgres embutido (zonky) quando não há.
 
 ## Comandos esperados (depois da F01)

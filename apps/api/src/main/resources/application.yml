@@ -84,6 +84,7 @@ app:
     dev-secret: ${DEV_AUTH_SECRET:}
   db:
     auth-stub: ${DB_AUTH_STUB:false}
+    mirror-auth-users: ${DB_MIRROR_AUTH_USERS:false}
   internal:
     audience: ${INTERNAL_JOBS_AUDIENCE:<PREENCHER>}
     token: ${INTERNAL_TOKEN:<SEM_TOKEN>}

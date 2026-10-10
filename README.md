@@ -12,30 +12,33 @@ pnpm install
 pnpm dev:all             # banco + API (:8080) + web (:5173)
 ```
 
-Pré-requisitos: Node 22+ e JDK 21 (`JAVA_HOME`, ou um JDK em `~/.jdks`). O `dev:all` escolhe o banco sozinho:
+Pré-requisitos: Node 22+ e JDK 21 (`JAVA_HOME`, ou um JDK em `~/.jdks`). O `dev:all` escolhe o banco e o login sozinho (o primeiro que valer):
 
-| Docker disponível | Banco e login                                                                                                                 |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Sim               | Supabase CLI (`infra/supabase`): Postgres + Auth reais, login anônimo e por e-mail                                            |
-| Não               | Postgres embutido na porta 54322 e login de desenvolvimento emitido pela própria API (`AUTH_MODE=dev`, só no profile `local`) |
+| Situação                                                      | Banco e login                                                                                                                 |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `.env.local` na raiz com `SUPABASE_URL` e `SUPABASE_ANON_KEY` | Login real do projeto Supabase; banco do projeto se houver `DATABASE_URL`, senão o Postgres embutido na porta 54322           |
+| Docker disponível                                             | Supabase CLI (`infra/supabase`): Postgres + Auth reais, login anônimo e por e-mail                                            |
+| Nenhum dos dois                                               | Postgres embutido na porta 54322 e login de desenvolvimento emitido pela própria API (`AUTH_MODE=dev`, só no profile `local`) |
+
+As chaves do dono ficam no `.env.local` da raiz (ignorado pelo git; modelo em [`env/local.env.example`](env/local.env.example)). O `dev:all` repassa as variáveis da API para a API e as `VITE_*` para a web.
 
 Com todos os segredos em `<SEM_TOKEN>` o app funciona de ponta a ponta em modo mock: pagamentos aprovam sozinhos (Pix em 3 s, Premium e cartão na página `/mock/checkout`), a consulta por placa usa dados determinísticos, push e e-mail vão para o log. A FIPE usa a API pública da Parallelum (sem token, com limite diário).
 
 ## Comandos
 
-| Comando                        | O que faz                                                                                           |
-| ------------------------------ | --------------------------------------------------------------------------------------------------- |
-| `pnpm dev:all`                 | Banco local + API + web (`--landing` sobe a landing também; `--embedded` força o Postgres embutido) |
-| `pnpm dev`                     | Só os apps TypeScript (turbo)                                                                       |
-| `pnpm test`                    | Vitest em todos os pacotes                                                                          |
-| `pnpm lint` / `pnpm typecheck` | ESLint e TypeScript em todos os pacotes                                                             |
-| `pnpm check:colors`            | Falha se houver cor fora de `packages/tokens`                                                       |
-| `./gradlew :apps:api:check`    | Testes da API (Testcontainers com Docker, Postgres embutido sem)                                    |
-| `pnpm e2e`                     | Playwright (precisa do `dev:all` rodando)                                                           |
-| `pnpm api:gen`                 | Lê o OpenAPI da API local, confere com o contrato e regenera `packages/api-client`                  |
-| `pnpm fixtures:gen`            | Regenera `fixtures/*.json` a partir da lógica de referência do protótipo                            |
-| `pnpm data:convert`            | Converte `docs/reference/catalog.js` e `planos.js` em `data/*.json`                                 |
-| `pnpm brand:gen`               | Gera WebP otimizados e os ícones do PWA a partir de `docs/reference/brand`                          |
+| Comando                        | O que faz                                                                                                                               |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev:all`                 | Banco local + API + web (`--landing` sobe a landing também; `--embedded` ignora o `.env.local` e usa o Postgres embutido, tudo em mock) |
+| `pnpm dev`                     | Só os apps TypeScript (turbo)                                                                                                           |
+| `pnpm test`                    | Vitest em todos os pacotes                                                                                                              |
+| `pnpm lint` / `pnpm typecheck` | ESLint e TypeScript em todos os pacotes                                                                                                 |
+| `pnpm check:colors`            | Falha se houver cor fora de `packages/tokens`                                                                                           |
+| `./gradlew :apps:api:check`    | Testes da API (Testcontainers com Docker, Postgres embutido sem)                                                                        |
+| `pnpm e2e`                     | Playwright (sobe o `dev:all --embedded` se nada responder na 5173)                                                                      |
+| `pnpm api:gen`                 | Lê o OpenAPI da API local, confere com o contrato e regenera `packages/api-client`                                                      |
+| `pnpm fixtures:gen`            | Regenera `fixtures/*.json` a partir da lógica de referência do protótipo                                                                |
+| `pnpm data:convert`            | Converte `docs/reference/catalog.js` e `planos.js` em `data/*.json`                                                                     |
+| `pnpm brand:gen`               | Gera WebP otimizados e os ícones do PWA a partir de `docs/reference/brand`                                                              |
 
 ## Estrutura
 

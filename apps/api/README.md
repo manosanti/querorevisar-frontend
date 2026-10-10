@@ -63,6 +63,7 @@ O jar não tem profile padrão: sem `SPRING_PROFILES_ACTIVE` a aplicação não 
 | `AUTH_MODE` | `supabase` (`dev` no profile local) | `dev` emite tokens locais em `/dev/auth/*` |
 | `DEV_AUTH_SECRET` | vazio | segredo HS256 dos tokens dev; vazio gera um em `apps/api/build/dev-auth-secret` |
 | `DB_AUTH_STUB` | `false` (`true` no local) | aplica `db/auth-stub` (tabela `auth.users`) em Postgres sem Supabase |
+| `DB_MIRROR_AUTH_USERS` | `false` | só no profile `local` com `DB_AUTH_STUB=true`: copia o usuário de cada token do Supabase real para o stub (`pnpm dev:all` com `.env.local` e sem `DATABASE_URL`) |
 | `INTERNAL_JOBS_SERVICE_ACCOUNT` | vazio | opcional: e-mail da service account do Cloud Scheduler exigido no token OIDC |
 | `LOG_FORMAT` | `ecs` (vazio no local) | formato dos logs estruturados (`ecs`, `logstash`, `gelf`; vazio = texto) |
 | `MAIL_OUTBOX_DIR` | `build/mail-outbox` | pasta dos e-mails no `EMAIL_MODE=log` |

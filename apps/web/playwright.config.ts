@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// F14.1 — runs against the local stack (pnpm dev:all). Starts it when nothing answers on :5173.
+// F14.1 — runs against the local stack (pnpm dev:all). Starts it in --embedded mode (dev auth, every integration
+// in mock mode) when nothing answers on :5173.
 export default defineConfig({
   testDir: './e2e',
   timeout: 90_000,
@@ -18,7 +19,7 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 390, height: 844 } } }],
   webServer: {
-    command: 'node ../../infra/scripts/dev-all.mjs',
+    command: 'node ../../infra/scripts/dev-all.mjs --embedded',
     url: 'http://localhost:5173',
     reuseExistingServer: true,
     timeout: 8 * 60_000,
