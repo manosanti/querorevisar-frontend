@@ -196,7 +196,8 @@ const webEnv = {
 
 if (secrets.SUPABASE_URL && secrets.SUPABASE_ANON_KEY) {
   const url = secrets.SUPABASE_URL.replace(/\/+$/, '');
-  const remoteDb = !!secrets.DATABASE_URL;
+  // A DATABASE_URL on this machine (the example's 127.0.0.1:54322) means the embedded database.
+  const remoteDb = !!secrets.DATABASE_URL && !/@(127\.0\.0\.1|localhost)[:/]/.test(secrets.DATABASE_URL);
   log(
     'db',
     `.env.local: Supabase Auth at ${url}; database: ${remoteDb ? 'the Supabase project' : 'embedded Postgres on :54322'}`,
