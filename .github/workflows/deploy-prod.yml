@@ -100,12 +100,12 @@ jobs:
           PUBLIC_APP_URL: ${{ vars.PROD_APP_URL }}
           PUBLIC_SITE_URL: ${{ vars.PROD_LANDING_URL }}
           PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy apps/web/dist --project-name=querorevisar-app --branch=production
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
