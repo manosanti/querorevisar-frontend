@@ -45,6 +45,26 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+const getHeaders = (...sources: (RequestInit['headers'] | Record<string, string | undefined>)[]) => {
+  const seen = new Set<string>();
+  const layers: [string, string | readonly string[]][][] = [];
+  for (const source of sources.reverse()) {
+    if (!source) continue;
+    const entries = source instanceof Headers
+      ? source.entries()
+      : Symbol.iterator in source
+        ? Array.from(source as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string])
+        : Object.entries<string | readonly string[] | undefined>(source);
+    const layer: [string, string | readonly string[]][] = [];
+    for (const [name, value] of entries) {
+      if (value !== undefined && !seen.has(name.toLowerCase())) layer.push([name, value]);
+    }
+    for (const [name] of layer) seen.add(name.toLowerCase());
+    layers.push(layer);
+  }
+  return Object.fromEntries(layers.reverse().flat()) as Extract<RequestInit['headers'], Record<string, unknown>>;
+};
+
 
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
   const result = { queryKey } as T & { queryKey: K };
@@ -116,6 +136,7 @@ export type DevAuthAnonymousQueryResult = NonNullable<Awaited<ReturnType<typeof 
 export type DevAuthAnonymousQueryError = ErrorType<unknown>
 
 
+/** Only when AUTH_MODE=dev (local profile). Emulates Supabase signInAnonymously. */
 export function useDevAuthAnonymous<TData = Awaited<ReturnType<typeof devAuthAnonymous>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthAnonymous>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -126,6 +147,7 @@ export function useDevAuthAnonymous<TData = Awaited<ReturnType<typeof devAuthAno
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** Only when AUTH_MODE=dev (local profile). Emulates Supabase signInAnonymously. */
 export function useDevAuthAnonymous<TData = Awaited<ReturnType<typeof devAuthAnonymous>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthAnonymous>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -136,11 +158,12 @@ export function useDevAuthAnonymous<TData = Awaited<ReturnType<typeof devAuthAno
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** Only when AUTH_MODE=dev (local profile). Emulates Supabase signInAnonymously. */
 export function useDevAuthAnonymous<TData = Awaited<ReturnType<typeof devAuthAnonymous>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthAnonymous>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
+/** Only when AUTH_MODE=dev (local profile). Emulates Supabase signInAnonymously. */
 export function useDevAuthAnonymous<TData = Awaited<ReturnType<typeof devAuthAnonymous>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthAnonymous>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -171,25 +194,11 @@ export const getDevAuthSignupUrl = () => {
  */
 export const devAuthSignup = async (devSignup: DevSignup, options?: Parameters<typeof customFetch>[1]): Promise<DevSession> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<DevSession>(getDevAuthSignupUrl(),
+  return customFetch<DevSession>(getDevAuthSignupUrl(),
   {
     ...options,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(devSignup)
   }
 );}
@@ -227,6 +236,7 @@ export type DevAuthSignupQueryResult = NonNullable<Awaited<ReturnType<typeof dev
 export type DevAuthSignupQueryError = ErrorType<ProblemResponse>
 
 
+/** With a bearer token of an anonymous user, links email+password to the same user id. */
 export function useDevAuthSignup<TData = Awaited<ReturnType<typeof devAuthSignup>>, TError = ErrorType<ProblemResponse>>(
  devSignup: BodyType<DevSignup>, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthSignup>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -237,6 +247,7 @@ export function useDevAuthSignup<TData = Awaited<ReturnType<typeof devAuthSignup
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** With a bearer token of an anonymous user, links email+password to the same user id. */
 export function useDevAuthSignup<TData = Awaited<ReturnType<typeof devAuthSignup>>, TError = ErrorType<ProblemResponse>>(
  devSignup: BodyType<DevSignup>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthSignup>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -247,11 +258,12 @@ export function useDevAuthSignup<TData = Awaited<ReturnType<typeof devAuthSignup
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** With a bearer token of an anonymous user, links email+password to the same user id. */
 export function useDevAuthSignup<TData = Awaited<ReturnType<typeof devAuthSignup>>, TError = ErrorType<ProblemResponse>>(
  devSignup: BodyType<DevSignup>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthSignup>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
+/** With a bearer token of an anonymous user, links email+password to the same user id. */
 export function useDevAuthSignup<TData = Awaited<ReturnType<typeof devAuthSignup>>, TError = ErrorType<ProblemResponse>>(
  devSignup: BodyType<DevSignup>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthSignup>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -279,25 +291,11 @@ export const getDevAuthSigninUrl = () => {
 
 export const devAuthSignin = async (devSignin: DevSignin, options?: Parameters<typeof customFetch>[1]): Promise<DevSession> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<DevSession>(getDevAuthSigninUrl(),
+  return customFetch<DevSession>(getDevAuthSigninUrl(),
   {
     ...options,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(devSignin)
   }
 );}
@@ -359,7 +357,6 @@ export function useDevAuthSignin<TData = Awaited<ReturnType<typeof devAuthSignin
  devSignin: BodyType<DevSignin>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthSignin>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useDevAuthSignin<TData = Awaited<ReturnType<typeof devAuthSignin>>, TError = ErrorType<ProblemResponse>>(
  devSignin: BodyType<DevSignin>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthSignin>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -390,25 +387,11 @@ export const getDevAuthOauthUrl = () => {
  */
 export const devAuthOauth = async (devOauth: DevOauth, options?: Parameters<typeof customFetch>[1]): Promise<DevSession> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<DevSession>(getDevAuthOauthUrl(),
+  return customFetch<DevSession>(getDevAuthOauthUrl(),
   {
     ...options,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(devOauth)
   }
 );}
@@ -446,6 +429,7 @@ export type DevAuthOauthQueryResult = NonNullable<Awaited<ReturnType<typeof devA
 export type DevAuthOauthQueryError = ErrorType<unknown>
 
 
+/** Fake Google/Apple login. Links the current anonymous user or signs in the fake account. */
 export function useDevAuthOauth<TData = Awaited<ReturnType<typeof devAuthOauth>>, TError = ErrorType<unknown>>(
  devOauth: BodyType<DevOauth>, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthOauth>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -456,6 +440,7 @@ export function useDevAuthOauth<TData = Awaited<ReturnType<typeof devAuthOauth>>
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** Fake Google/Apple login. Links the current anonymous user or signs in the fake account. */
 export function useDevAuthOauth<TData = Awaited<ReturnType<typeof devAuthOauth>>, TError = ErrorType<unknown>>(
  devOauth: BodyType<DevOauth>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthOauth>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -466,11 +451,12 @@ export function useDevAuthOauth<TData = Awaited<ReturnType<typeof devAuthOauth>>
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** Fake Google/Apple login. Links the current anonymous user or signs in the fake account. */
 export function useDevAuthOauth<TData = Awaited<ReturnType<typeof devAuthOauth>>, TError = ErrorType<unknown>>(
  devOauth: BodyType<DevOauth>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthOauth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
+/** Fake Google/Apple login. Links the current anonymous user or signs in the fake account. */
 export function useDevAuthOauth<TData = Awaited<ReturnType<typeof devAuthOauth>>, TError = ErrorType<unknown>>(
  devOauth: BodyType<DevOauth>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthOauth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -498,25 +484,11 @@ export const getDevAuthRecoverUrl = () => {
 
 export const devAuthRecover = async (devRecover: DevRecover, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<void>(getDevAuthRecoverUrl(),
+  return customFetch<void>(getDevAuthRecoverUrl(),
   {
     ...options,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(devRecover)
   }
 );}
@@ -578,7 +550,6 @@ export function useDevAuthRecover<TData = Awaited<ReturnType<typeof devAuthRecov
  devRecover: BodyType<DevRecover>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthRecover>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useDevAuthRecover<TData = Awaited<ReturnType<typeof devAuthRecover>>, TError = ErrorType<unknown>>(
  devRecover: BodyType<DevRecover>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof devAuthRecover>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient

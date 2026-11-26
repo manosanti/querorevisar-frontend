@@ -111,6 +111,7 @@ export type RunInternalJobQueryResult = NonNullable<Awaited<ReturnType<typeof ru
 export type RunInternalJobQueryError = ErrorType<unknown>
 
 
+/** Cloud Scheduler (OIDC) or X-Internal-Token in local/dev. */
 export function useRunInternalJob<TData = Awaited<ReturnType<typeof runInternalJob>>, TError = ErrorType<unknown>>(
  job: 'daily' | 'send-alerts' | 'premium-credits' | 'fipe-refresh' | 'cleanup', options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof runInternalJob>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -121,6 +122,7 @@ export function useRunInternalJob<TData = Awaited<ReturnType<typeof runInternalJ
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** Cloud Scheduler (OIDC) or X-Internal-Token in local/dev. */
 export function useRunInternalJob<TData = Awaited<ReturnType<typeof runInternalJob>>, TError = ErrorType<unknown>>(
  job: 'daily' | 'send-alerts' | 'premium-credits' | 'fipe-refresh' | 'cleanup', options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof runInternalJob>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -131,11 +133,12 @@ export function useRunInternalJob<TData = Awaited<ReturnType<typeof runInternalJ
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** Cloud Scheduler (OIDC) or X-Internal-Token in local/dev. */
 export function useRunInternalJob<TData = Awaited<ReturnType<typeof runInternalJob>>, TError = ErrorType<unknown>>(
  job: 'daily' | 'send-alerts' | 'premium-credits' | 'fipe-refresh' | 'cleanup', options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof runInternalJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
+/** Cloud Scheduler (OIDC) or X-Internal-Token in local/dev. */
 export function useRunInternalJob<TData = Awaited<ReturnType<typeof runInternalJob>>, TError = ErrorType<unknown>>(
  job: 'daily' | 'send-alerts' | 'premium-credits' | 'fipe-refresh' | 'cleanup', options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof runInternalJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient

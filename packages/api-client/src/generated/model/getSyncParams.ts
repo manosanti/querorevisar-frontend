@@ -12,8 +12,6 @@
  */
 
 export type GetSyncParams = {
-/**
- * Cursor from the previous sync. Without it the whole state is returned.
- */
-since?: string;
+  /** Cursor from the previous sync. Without it the whole state is returned. */
+  since?: string;
 };

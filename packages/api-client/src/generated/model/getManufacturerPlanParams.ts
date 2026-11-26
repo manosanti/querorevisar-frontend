@@ -12,6 +12,6 @@
  */
 
 export type GetManufacturerPlanParams = {
-brand: string;
-model: string;
+  brand: string;
+  model: string;
 };

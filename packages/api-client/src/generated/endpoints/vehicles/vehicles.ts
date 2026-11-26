@@ -49,6 +49,26 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+const getHeaders = (...sources: (RequestInit['headers'] | Record<string, string | undefined>)[]) => {
+  const seen = new Set<string>();
+  const layers: [string, string | readonly string[]][][] = [];
+  for (const source of sources.reverse()) {
+    if (!source) continue;
+    const entries = source instanceof Headers
+      ? source.entries()
+      : Symbol.iterator in source
+        ? Array.from(source as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string])
+        : Object.entries<string | readonly string[] | undefined>(source);
+    const layer: [string, string | readonly string[]][] = [];
+    for (const [name, value] of entries) {
+      if (value !== undefined && !seen.has(name.toLowerCase())) layer.push([name, value]);
+    }
+    for (const [name] of layer) seen.add(name.toLowerCase());
+    layers.push(layer);
+  }
+  return Object.fromEntries(layers.reverse().flat()) as Extract<RequestInit['headers'], Record<string, unknown>>;
+};
+
 
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
   const result = { queryKey } as T & { queryKey: K };
@@ -142,25 +162,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 export const createVehicle = async (vehicleCreate: VehicleCreate, options?: Parameters<typeof customFetch>[1]): Promise<Vehicle> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<Vehicle>(getCreateVehicleUrl(),
+  return customFetch<Vehicle>(getCreateVehicleUrl(),
   {
     ...options,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(vehicleCreate)
   }
 );}
@@ -222,7 +228,6 @@ export function useCreateVehicle<TData = Awaited<ReturnType<typeof createVehicle
  vehicleCreate: BodyType<VehicleCreate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof createVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useCreateVehicle<TData = Awaited<ReturnType<typeof createVehicle>>, TError = ErrorType<ProblemResponse>>(
  vehicleCreate: BodyType<VehicleCreate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof createVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -251,25 +256,11 @@ export const getUpdateVehicleUrl = (id: string,) => {
 export const updateVehicle = async (id: string,
     vehicleUpdate: VehicleUpdate, options?: Parameters<typeof customFetch>[1]): Promise<Vehicle> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<Vehicle>(getUpdateVehicleUrl(id),
+  return customFetch<Vehicle>(getUpdateVehicleUrl(id),
   {
     ...options,
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(vehicleUpdate)
   }
 );}
@@ -336,7 +327,6 @@ export function useUpdateVehicle<TData = Awaited<ReturnType<typeof updateVehicle
     vehicleUpdate: BodyType<VehicleUpdate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof updateVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useUpdateVehicle<TData = Awaited<ReturnType<typeof updateVehicle>>, TError = ErrorType<ProblemResponse>>(
  id: string,
     vehicleUpdate: BodyType<VehicleUpdate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof updateVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -431,7 +421,6 @@ export function useDeleteVehicle<TData = Awaited<ReturnType<typeof deleteVehicle
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useDeleteVehicle<TData = Awaited<ReturnType<typeof deleteVehicle>>, TError = ErrorType<ProblemResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -460,25 +449,11 @@ export const getUpdateVehicleKmUrl = (id: string,) => {
 export const updateVehicleKm = async (id: string,
     kmUpdate: KmUpdate, options?: Parameters<typeof customFetch>[1]): Promise<Vehicle> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<Vehicle>(getUpdateVehicleKmUrl(id),
+  return customFetch<Vehicle>(getUpdateVehicleKmUrl(id),
   {
     ...options,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(kmUpdate)
   }
 );}
@@ -545,7 +520,6 @@ export function useUpdateVehicleKm<TData = Awaited<ReturnType<typeof updateVehic
     kmUpdate: BodyType<KmUpdate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof updateVehicleKm>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useUpdateVehicleKm<TData = Awaited<ReturnType<typeof updateVehicleKm>>, TError = ErrorType<ProblemResponse>>(
  id: string,
     kmUpdate: BodyType<KmUpdate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof updateVehicleKm>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -640,7 +614,6 @@ export function useArchiveVehicle<TData = Awaited<ReturnType<typeof archiveVehic
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof archiveVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useArchiveVehicle<TData = Awaited<ReturnType<typeof archiveVehicle>>, TError = ErrorType<ProblemResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof archiveVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -734,7 +707,6 @@ export function useRestoreVehicle<TData = Awaited<ReturnType<typeof restoreVehic
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof restoreVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useRestoreVehicle<TData = Awaited<ReturnType<typeof restoreVehicle>>, TError = ErrorType<ProblemResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof restoreVehicle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient

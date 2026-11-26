@@ -47,6 +47,26 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+const getHeaders = (...sources: (RequestInit['headers'] | Record<string, string | undefined>)[]) => {
+  const seen = new Set<string>();
+  const layers: [string, string | readonly string[]][][] = [];
+  for (const source of sources.reverse()) {
+    if (!source) continue;
+    const entries = source instanceof Headers
+      ? source.entries()
+      : Symbol.iterator in source
+        ? Array.from(source as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string])
+        : Object.entries<string | readonly string[] | undefined>(source);
+    const layer: [string, string | readonly string[]][] = [];
+    for (const [name, value] of entries) {
+      if (value !== undefined && !seen.has(name.toLowerCase())) layer.push([name, value]);
+    }
+    for (const [name] of layer) seen.add(name.toLowerCase());
+    layers.push(layer);
+  }
+  return Object.fromEntries(layers.reverse().flat()) as Extract<RequestInit['headers'], Record<string, unknown>>;
+};
+
 
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
   const result = { queryKey } as T & { queryKey: K };
@@ -140,25 +160,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 export const updateMe = async (meUpdate: MeUpdate, options?: Parameters<typeof customFetch>[1]): Promise<Me> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<Me>(getUpdateMeUrl(),
+  return customFetch<Me>(getUpdateMeUrl(),
   {
     ...options,
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
     body: JSON.stringify(meUpdate)
   }
 );}
@@ -220,7 +226,6 @@ export function useUpdateMe<TData = Awaited<ReturnType<typeof updateMe>>, TError
  meUpdate: BodyType<MeUpdate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof updateMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useUpdateMe<TData = Awaited<ReturnType<typeof updateMe>>, TError = ErrorType<ProblemResponse>>(
  meUpdate: BodyType<MeUpdate>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof updateMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -314,7 +319,6 @@ export function useDeleteMe<TData = Awaited<ReturnType<typeof deleteMe>>, TError
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
 export function useDeleteMe<TData = Awaited<ReturnType<typeof deleteMe>>, TError = ErrorType<ProblemResponse>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient

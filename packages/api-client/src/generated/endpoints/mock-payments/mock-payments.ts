@@ -112,6 +112,10 @@ export type ApproveMockPaymentQueryResult = NonNullable<Awaited<ReturnType<typeo
 export type ApproveMockPaymentQueryError = ErrorType<ProblemResponse>
 
 
+/**
+ * Only when PAYMENTS_MODE=mock. `id` is a credit purchase id or a premium checkout id returned in the
+ * mock initPoint. Runs the same handler the Mercado Pago webhook runs.
+ */
 export function useApproveMockPayment<TData = Awaited<ReturnType<typeof approveMockPayment>>, TError = ErrorType<ProblemResponse>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof approveMockPayment>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -122,6 +126,10 @@ export function useApproveMockPayment<TData = Awaited<ReturnType<typeof approveM
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Only when PAYMENTS_MODE=mock. `id` is a credit purchase id or a premium checkout id returned in the
+ * mock initPoint. Runs the same handler the Mercado Pago webhook runs.
+ */
 export function useApproveMockPayment<TData = Awaited<ReturnType<typeof approveMockPayment>>, TError = ErrorType<ProblemResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof approveMockPayment>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -132,11 +140,18 @@ export function useApproveMockPayment<TData = Awaited<ReturnType<typeof approveM
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Only when PAYMENTS_MODE=mock. `id` is a credit purchase id or a premium checkout id returned in the
+ * mock initPoint. Runs the same handler the Mercado Pago webhook runs.
+ */
 export function useApproveMockPayment<TData = Awaited<ReturnType<typeof approveMockPayment>>, TError = ErrorType<ProblemResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof approveMockPayment>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
+/**
+ * Only when PAYMENTS_MODE=mock. `id` is a credit purchase id or a premium checkout id returned in the
+ * mock initPoint. Runs the same handler the Mercado Pago webhook runs.
+ */
 export function useApproveMockPayment<TData = Awaited<ReturnType<typeof approveMockPayment>>, TError = ErrorType<ProblemResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof approveMockPayment>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
