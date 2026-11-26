@@ -49,7 +49,7 @@ Pronto quando, para todos os itens: commit no GitHub e CI verde. Se o item tiver
 - [x] **C2 · Trabalho parado.** Commit do diagnóstico de assinatura do webhook e da correção do `Redact.error`, e push dos 3 commits locais. Pronto quando: `git status -sb` mostra a branch igual à `origin` e sem alterações.
 - [x] **C3 · Domínio no repositório.** Atualizar `docs/PLAN.json`, `env/*.example` e `PENDENCIAS.md` com os endereços do [Anexo A](#anexo-a-endereços). Pronto quando: `grep -rn "querorevisar.<PREENCHER>" docs env` não acha nada.
 - [ ] **C4 · Deploy passa tudo de que a API precisa.** `--set-env-vars` apaga toda variável fora da lista. Hoje faltam `PUSH_MODE=live`, `EMAIL_MODE=live`, `EMAIL_FROM`, `VAPID_PUBLIC_KEY`, `VAPID_SUBJECT`, `INTERNAL_JOBS_SERVICE_ACCOUNT` e `DATABASE_DIRECT_URL`, e sem isso push e e-mail ficam só no log. Também entram: `--service-account` com a conta de execução própria (3C), `INTERNAL_TOKEN` só no dev (para disparar os jobs na etapa 5), `VEHICLE_DATA_MODE` conforme D3 e `ADS_MODE` com padrão `off` no build. Pronto quando: `node scripts/check-launch-queue.ts` passa com os nomes novos.
-- [ ] **C5 · Produção não sobe incompleta.** No profile `prod`, a API se recusa a iniciar nestes casos:
+- [x] **C5 · Produção não sobe incompleta.** No profile `prod`, a API se recusa a iniciar nestes casos:
   - push ou e-mail fora do modo real;
   - Mercado Pago sem credencial ou sem o segredo do webhook;
   - `DATABASE_DIRECT_URL` vazio;

@@ -115,3 +115,21 @@ class LiveVehicleDataProvider(private val props: AppProperties) : VehicleDataPro
 
     override fun debts(q: PlateQuery): Debts = notImplemented()
 }
+
+/**
+ * Production without a configured vehicle data provider: every call fails with [ProviderUnavailableException], which
+ * [LookupService] turns into a refund and 503 `provider-unavailable`. Production never serves the mock data.
+ */
+class UnavailableVehicleDataProvider(private val reason: String) : VehicleDataProvider {
+    override val name = "unavailable"
+
+    private fun unavailable(): Nothing = throw ProviderUnavailableException(reason)
+
+    override fun basic(q: PlateQuery): BasicData = unavailable()
+
+    override fun restrictions(q: PlateQuery): Restrictions = unavailable()
+
+    override fun auctionAndClaims(q: PlateQuery): AuctionClaims = unavailable()
+
+    override fun debts(q: PlateQuery): Debts = unavailable()
+}

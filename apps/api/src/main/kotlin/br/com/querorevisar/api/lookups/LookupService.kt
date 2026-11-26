@@ -22,6 +22,7 @@ import br.com.querorevisar.api.vehicles.VehicleRepository
 import br.com.querorevisar.api.vehicles.VehicleRow
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
+import org.springframework.core.env.Environment
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
@@ -35,10 +36,15 @@ class LookupConfig {
 
     /** VEHICLE_DATA_MODE=mock (default, or whenever the provider key/URL are placeholders) or live. */
     @Bean
-    fun vehicleDataProvider(props: AppProperties): VehicleDataProvider =
+    fun vehicleDataProvider(props: AppProperties, env: Environment): VehicleDataProvider =
         if (props.vehicleData.isMock) {
-            log.warn("VEHICLE_DATA_MODE=mock: plate lookups return the prototype's deterministic data")
-            MockVehicleDataProvider()
+            if ("prod" in env.activeProfiles) {
+                log.warn("VEHICLE_DATA_MODE is not live in prod: plate lookups are refused (never the mock data)")
+                UnavailableVehicleDataProvider("No vehicle data provider is configured in production")
+            } else {
+                log.warn("VEHICLE_DATA_MODE=mock: plate lookups return the prototype's deterministic data")
+                MockVehicleDataProvider()
+            }
         } else {
             LiveVehicleDataProvider(props)
         }
