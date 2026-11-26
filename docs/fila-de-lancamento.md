@@ -72,7 +72,7 @@ Pronto quando, para todos os itens: commit no GitHub e CI verde. Se o item tiver
 - [x] **C11 · Chaves VAPID.** Um script gera o par sem dependência externa. A chave pública vai para `VAPID_PUBLIC_KEY` e a privada para `qr-vapid-private`.
 - [x] **C12 · E-mails do Supabase em português.** Modelos de confirmação, código ou link de acesso, troca de e-mail e redefinição de senha em `infra/supabase/templates/`, para colar no painel (3A). Os textos são novos, então passam pela sua revisão (J4; a lista está em `PENDENCIAS.md`). _Não verificado: sem Docker aqui, o Supabase local não subiu, e as variáveis vêm da documentação conhecida (supabase.com estava fora da rede da sessão)._
 - [ ] **C13 · Preços conforme D6** (só se algum valor mudar). `packages/core`, `CREDIT_UNIT_PRICE_CENTS`, `MP_PREMIUM_PRICE_CENTS` e a landing com os mesmos valores. Pronto quando: os testes de preço passam e a landing mostra o que o app cobra.
-- [ ] **C14 · Documentos.** `PENDENCIAS.md` e `docs/checklist-lancamento.md` apontando para esta fila.
+- [x] **C14 · Documentos.** `PENDENCIAS.md` e `docs/checklist-lancamento.md` apontando para esta fila.
 
 ## 2. Domínio e DNS (👤)
 

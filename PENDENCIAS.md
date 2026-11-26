@@ -2,6 +2,8 @@
 
 Tudo aqui depende de você. Enquanto estiver `<SEM_TOKEN>` ou `<PREENCHER>`, a integração roda em modo mock e o app continua funcionando.
 
+O roteiro ordenado até o lançamento, com decisões, contas, segredos e provas, está em [docs/fila-de-lancamento.md](docs/fila-de-lancamento.md). Este arquivo guarda o inventário do que depende do dono; em caso de dúvida sobre a ordem, vale a fila.
+
 Legenda: 🔒 segredo (nunca no repositório) · ✏️ decisão ou dado não sigiloso · ⛔ bloqueia o lançamento
 
 ## Domínio e marca

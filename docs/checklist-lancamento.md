@@ -1,5 +1,7 @@
 # Checklist de lançamento (F14.2)
 
+> O roteiro completo até o ar em `querorevisar.com.br` (decisões, contas, segredos, deploys e prova final) está em [fila-de-lancamento.md](fila-de-lancamento.md). Este arquivo guarda só as medições de 06/10/2026.
+
 Situação medida em 06/10/2026 na máquina de desenvolvimento (Windows, sem Docker), com todos os segredos em `<SEM_TOKEN>`.
 
 | Item                                       | Situação                                                   | Como foi conferido                                                                                                                                                                                                                                              |
