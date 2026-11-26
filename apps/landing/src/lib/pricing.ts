@@ -2,6 +2,8 @@
 import {
   CREDIT_PACKS,
   LOOKUP_PRODUCTS,
+  PREMIUM_ANNUAL_MONTHS_CHARGED,
+  PREMIUM_ANNUAL_PRICE_CENTS,
   PREMIUM_MONTHLY_CREDITS,
   PREMIUM_PRICE_CENTS,
   credTxt,
@@ -14,12 +16,8 @@ import {
 
 export type Billing = 'mensal' | 'anual';
 
-/**
- * Annual Premium from the landing prototype: R$ 149/ano = 10 × the monthly price (17% off, "R$ 12,42 por mês").
- * docs/domain.md and the Mercado Pago plan only define the monthly price, so this is an owner decision
- * (PENDENCIAS.md) and the toggle sits behind FEATURES.annualBilling.
- */
-export const ANNUAL_MONTHS_CHARGED = 10;
+/** Annual Premium: R$ 149/ano = 10 × the monthly price (17% off, "R$ 12,42 por mês"), the same price the API charges. */
+export const ANNUAL_MONTHS_CHARGED = PREMIUM_ANNUAL_MONTHS_CHARGED;
 
 export interface PremiumPrice {
   price: string;
@@ -29,7 +27,7 @@ export interface PremiumPrice {
 
 export function premiumPrice(billing: Billing): PremiumPrice {
   if (billing === 'anual') {
-    const annual = PREMIUM_PRICE_CENTS * ANNUAL_MONTHS_CHARGED;
+    const annual = PREMIUM_ANNUAL_PRICE_CENTS;
     return { price: moneyShort(annual), per: '/ano', note: `Equivale a ${money(Math.round(annual / 12))} por mês` };
   }
   return { price: money(PREMIUM_PRICE_CENTS), per: '/mês', note: 'Cancele quando quiser' };

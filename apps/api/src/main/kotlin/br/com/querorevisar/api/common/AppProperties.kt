@@ -66,6 +66,8 @@ data class AppProperties(
         val webhookSecret: String = "<SEM_TOKEN>",
         val premiumPlanId: String = "<PREENCHER>",
         val premiumPriceCents: Int = 1490,
+        /** Annual Premium: 10 months of the monthly price (R$ 149,00). */
+        val premiumAnnualPriceCents: Int = 14900,
         val backUrlSuccess: String = "http://localhost:5173/conta?pagamento=ok",
         val backUrlPending: String = "http://localhost:5173/conta?pagamento=pendente",
         val backUrlFailure: String = "http://localhost:5173/conta?pagamento=erro",

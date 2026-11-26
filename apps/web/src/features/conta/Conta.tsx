@@ -1,6 +1,6 @@
 // Conta (docs/screens.md#conta) + LGPD export/delete (F12.4), alerts (F08) and install (F07.3).
 import { api } from '@qr/api-client';
-import { dateBR, recordsTxt } from '@qr/core';
+import { PREMIUM_ANNUAL_PRICE_CENTS, dateBR, money, moneyShort, recordsTxt } from '@qr/core';
 import {
   AdSlot,
   Avatar,
@@ -301,9 +301,20 @@ export function Conta() {
               mês
             </div>
             {isFree ? (
-              <Button block onClick={() => void goToPremiumCheckout()}>
-                Assinar Premium
-              </Button>
+              <>
+                <Button block onClick={() => void goToPremiumCheckout()}>
+                  Assinar Premium
+                </Button>
+                <Button
+                  block
+                  variant="outline-neutral"
+                  size="md"
+                  className="font-medium! text-[14px]!"
+                  onClick={() => void goToPremiumCheckout('annual')}
+                >
+                  {`Assinar por ${moneyShort(PREMIUM_ANNUAL_PRICE_CENTS)}/ano · ${money(Math.round(PREMIUM_ANNUAL_PRICE_CENTS / 12))} por mês`}
+                </Button>
+              </>
             ) : (
               <Button
                 variant="outline-neutral"

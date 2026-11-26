@@ -9,7 +9,7 @@ export const POSTHOG_HOST = PUBLIC_POSTHOG_HOST;
 /**
  * Feature switches for prototype elements that depend on owner decisions (PENDENCIAS.md).
  * - appleLogin: mirrors the app flag `apple_login` (off, decision D07). The prototype shows an Apple button.
- * - annualBilling: the prototype's Mensal/Anual toggle; only the monthly plan exists in docs/domain.md.
+ * - annualBilling: the Mensal/Anual toggle; the annual plan exists in the API (docs/domain.md, decided 26/11/2026).
  */
 export const FEATURES = {
   appleLogin: false,

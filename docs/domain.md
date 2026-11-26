@@ -67,17 +67,19 @@ Painel: "Precisa de atenção" lista over e warn, over primeiro, depois maior pc
 
 ## Planos
 
-|                      | Grátis                                     | Premium         |
-| -------------------- | ------------------------------------------ | --------------- |
-| Preço                | R$ 0                                       | ✏️ R$ 14,90/mês |
-| Veículos             | 1                                          | ilimitados      |
-| Alertas              | todos (nunca esconder um alerta)           | todos           |
-| Histórico            | últimos 12 meses                           | completo + PDF  |
-| Anúncio              | sim (nativo, fora do painel e dos alertas) | não             |
-| Cadastro por placa   | não                                        | sim             |
-| Créditos de consulta | —                                          | ✏️ 2 por mês    |
+|                      | Grátis                                     | Premium                          |
+| -------------------- | ------------------------------------------ | -------------------------------- |
+| Preço                | R$ 0                                       | ✏️ R$ 14,90/mês ou R$ 149,00/ano |
+| Veículos             | 1                                          | ilimitados                       |
+| Alertas              | todos (nunca esconder um alerta)           | todos                            |
+| Histórico            | últimos 12 meses                           | completo + PDF                   |
+| Anúncio              | sim (nativo, fora do painel e dos alertas) | não                              |
+| Cadastro por placa   | não                                        | sim                              |
+| Créditos de consulta | —                                          | ✏️ 2 por mês                     |
 
 Ao ativar o Premium: +2 créditos e toast "Premium ativado · +2 créditos de consulta". A cada cobrança mensal aprovada: +2 créditos.
+
+**Plano anual (decidido em 26/11/2026):** R$ 149,00 a cada 12 meses (10 × o mensal, "−17%"). Uma assinatura do Mercado Pago com `frequency: 12`. Cada cobrança aprovada estende `premium_until` em 12 meses, e os 2 créditos mensais continuam a cada mês pelo job `premium-credits` (o primeiro vem ao ativar). Escolha em `POST /v1/billing/premium/checkout?interval=annual`; `subscriptions.billing_interval` guarda `monthly` ou `annual`.
 
 ## Créditos ✏️
 

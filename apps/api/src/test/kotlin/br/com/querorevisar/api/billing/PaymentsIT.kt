@@ -97,6 +97,23 @@ class PaymentsIT : IntegrationTest() {
         assertEquals(404, post("/v1/billing/premium/cancel", user = user).status)
     }
 
+    @Test
+    fun `annual premium lasts 12 months and keeps the monthly credit bonus`() {
+        val user = newUser()
+        val checkout = post("/v1/billing/premium/checkout?interval=annual", user = user).expect(200)
+        val id = checkout.text("/initPoint").substringAfter("id=")
+        assertEquals("annual", get("/v1/billing/premium", user).text("/interval"))
+        post("/v1/mock/payments/$id/approve", user = user, key = null).expect(204)
+        val me = get("/v1/me", user).expect(200)
+        assertEquals("premium", me.text("/plan"))
+        assertEquals(2, me.at("/credits").asInt())
+        val until = Instant.parse(me.text("/premiumUntil")).atZone(ZoneId.of("America/Sao_Paulo")).toLocalDate()
+        val expected = java.time.LocalDate.now(ZoneId.of("America/Sao_Paulo")).plusMonths(12)
+        assertTrue(!until.isBefore(expected.minusDays(1)) && !until.isAfter(expected.plusDays(1)), "premiumUntil $until")
+        assertEquals(409, post("/v1/billing/premium/checkout?interval=annual", user = user).status)
+        assertEquals(400, post("/v1/billing/premium/checkout?interval=weekly", user = newUser()).status)
+    }
+
     // ---- webhook ------------------------------------------------------------------------------------------
 
     private fun webhook(dataId: String, type: String, secret: String = "test-webhook-secret", requestId: String = UUID.randomUUID().toString(), tsOverride: String? = null): Int {

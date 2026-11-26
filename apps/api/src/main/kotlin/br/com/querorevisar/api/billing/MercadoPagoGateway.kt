@@ -118,13 +118,13 @@ class MercadoPagoGateway(private val props: AppProperties) : PaymentGateway {
      * Subscription without a plan, status pending: the payer authorizes the card on the MP page (init_point). With a
      * plan MP requires card_token_id, i.e. our own card form (docs/mercadopago.md).
      */
-    override fun createSubscription(subscriptionId: UUID, userId: UUID, payerEmail: String?, priceCents: Int): GatewayPreapproval {
+    override fun createSubscription(subscriptionId: UUID, userId: UUID, payerEmail: String?, priceCents: Int, months: Int): GatewayPreapproval {
         val body = linkedMapOf<String, Any>(
-            "reason" to "QueroRevisar Premium",
+            "reason" to if (months == 12) "QueroRevisar Premium anual" else "QueroRevisar Premium",
             "external_reference" to userId.toString(),
             "payer_email" to (payerEmail ?: throw PaymentGatewayException("Subscription needs the payer e-mail")),
             "auto_recurring" to mapOf(
-                "frequency" to 1, "frequency_type" to "months", "transaction_amount" to amount(priceCents), "currency_id" to "BRL",
+                "frequency" to months, "frequency_type" to "months", "transaction_amount" to amount(priceCents), "currency_id" to "BRL",
             ),
             "back_url" to props.payments.backUrlSuccess,
             "status" to "pending",

@@ -34,7 +34,8 @@ import type {
   MercadoPagoWebhookBody,
   MercadoPagoWebhookParams,
   PremiumStatus,
-  ProblemResponse
+  ProblemResponse,
+  StartPremiumCheckoutParams
 } from '../../model';
 
 import { customFetch } from '../../../http.ts';
@@ -151,17 +152,24 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getGetPremiumMutationOptions(options), queryClient);
     }
-    export const getStartPremiumCheckoutUrl = () => {
+    export const getStartPremiumCheckoutUrl = (params?: StartPremiumCheckoutParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/v1/billing/premium/checkout`
+  return stringifiedParams.length > 0 ? `/v1/billing/premium/checkout?${stringifiedParams}` : `/v1/billing/premium/checkout`
 }
 
-export const startPremiumCheckout = async ( options?: Parameters<typeof customFetch>[1]): Promise<CheckoutRedirect> => {
+export const startPremiumCheckout = async (params?: StartPremiumCheckoutParams, options?: Parameters<typeof customFetch>[1]): Promise<CheckoutRedirect> => {
 
-  return customFetch<CheckoutRedirect>(getStartPremiumCheckoutUrl(),
+  return customFetch<CheckoutRedirect>(getStartPremiumCheckoutUrl(params),
   {
     ...options,
     method: 'POST'
@@ -174,23 +182,23 @@ export const startPremiumCheckout = async ( options?: Parameters<typeof customFe
 
 
 
-export const getStartPremiumCheckoutQueryKey = () => {
+export const getStartPremiumCheckoutQueryKey = (params?: StartPremiumCheckoutParams,) => {
     return [
-    'POST', `/v1/billing/premium/checkout`
+    'POST', `/v1/billing/premium/checkout`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getStartPremiumCheckoutQueryOptions = <TData = Awaited<ReturnType<typeof startPremiumCheckout>>, TError = ErrorType<ProblemResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getStartPremiumCheckoutQueryOptions = <TData = Awaited<ReturnType<typeof startPremiumCheckout>>, TError = ErrorType<ProblemResponse>>(params?: StartPremiumCheckoutParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getStartPremiumCheckoutQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getStartPremiumCheckoutQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof startPremiumCheckout>>> = ({ signal }) => startPremiumCheckout({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof startPremiumCheckout>>> = ({ signal }) => startPremiumCheckout(params, { signal, ...requestOptions });
 
 
 
@@ -204,7 +212,7 @@ export type StartPremiumCheckoutQueryError = ErrorType<ProblemResponse>
 
 
 export function useStartPremiumCheckout<TData = Awaited<ReturnType<typeof startPremiumCheckout>>, TError = ErrorType<ProblemResponse>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>> & Pick<
+ params: undefined |  StartPremiumCheckoutParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof startPremiumCheckout>>,
           TError,
@@ -214,7 +222,7 @@ export function useStartPremiumCheckout<TData = Awaited<ReturnType<typeof startP
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useStartPremiumCheckout<TData = Awaited<ReturnType<typeof startPremiumCheckout>>, TError = ErrorType<ProblemResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>> & Pick<
+ params?: StartPremiumCheckoutParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof startPremiumCheckout>>,
           TError,
@@ -224,15 +232,15 @@ export function useStartPremiumCheckout<TData = Awaited<ReturnType<typeof startP
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useStartPremiumCheckout<TData = Awaited<ReturnType<typeof startPremiumCheckout>>, TError = ErrorType<ProblemResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: StartPremiumCheckoutParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useStartPremiumCheckout<TData = Awaited<ReturnType<typeof startPremiumCheckout>>, TError = ErrorType<ProblemResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: StartPremiumCheckoutParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof startPremiumCheckout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getStartPremiumCheckoutQueryOptions(options)
+  const queryOptions = getStartPremiumCheckoutQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

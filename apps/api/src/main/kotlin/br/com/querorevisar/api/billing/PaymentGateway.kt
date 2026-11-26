@@ -56,7 +56,8 @@ interface PaymentGateway {
 
     fun getPayment(id: String): GatewayPayment
 
-    fun createSubscription(subscriptionId: UUID, userId: UUID, payerEmail: String?, priceCents: Int): GatewayPreapproval
+    /** [months] is the billing frequency: 1 (monthly) or 12 (annual). */
+    fun createSubscription(subscriptionId: UUID, userId: UUID, payerEmail: String?, priceCents: Int, months: Int = 1): GatewayPreapproval
 
     fun getPreapproval(id: String): GatewayPreapproval
 

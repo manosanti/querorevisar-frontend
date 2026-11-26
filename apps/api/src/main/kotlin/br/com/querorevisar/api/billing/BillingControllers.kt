@@ -24,7 +24,8 @@ class PremiumController(private val premium: PremiumService) {
 
     @PostMapping("/v1/billing/premium/checkout")
     @Operation(operationId = "startPremiumCheckout", summary = "Mercado Pago link to redirect to")
-    fun checkout(user: CurrentUser): CheckoutRedirect = premium.checkout(user)
+    fun checkout(user: CurrentUser, @RequestParam(defaultValue = "monthly") interval: BillingInterval): CheckoutRedirect =
+        premium.checkout(user, interval)
 
     @PostMapping("/v1/billing/premium/cancel")
     @Operation(operationId = "cancelPremium", summary = "Cancelled; Premium stays until premiumUntil")

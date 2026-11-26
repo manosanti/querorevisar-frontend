@@ -10,6 +10,7 @@
  *
  * OpenAPI spec version: v1
  */
+import type { PremiumStatusInterval } from './premiumStatusInterval.ts';
 import type { PremiumStatusStatus } from './premiumStatusStatus.ts';
 
 export interface PremiumStatus {
@@ -18,4 +19,9 @@ export interface PremiumStatus {
   nextBillingDate: string | null;
   /** @nullable */
   premiumUntil: string | null;
+  /**
+     * Billing frequency of the current subscription; null without one.
+     * @nullable
+     */
+  interval?: PremiumStatusInterval;
 }

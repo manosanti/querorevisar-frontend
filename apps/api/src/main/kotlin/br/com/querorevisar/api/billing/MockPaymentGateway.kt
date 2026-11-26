@@ -17,6 +17,8 @@ class MockPaymentGateway(private val props: AppProperties, private val clock: Cl
     private val approved = ConcurrentHashMap<String, Instant>()
     private val cancelled = ConcurrentHashMap.newKeySet<String>()
 
+    private val annual: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
+
     fun markApproved(id: String) {
         approved.putIfAbsent(id, clock.instant())
     }
@@ -42,14 +44,16 @@ class MockPaymentGateway(private val props: AppProperties, private val clock: Cl
         return GatewayPayment(id, if (at != null) "approved" else "pending", ref, at)
     }
 
-    override fun createSubscription(subscriptionId: UUID, userId: UUID, payerEmail: String?, priceCents: Int): GatewayPreapproval =
-        GatewayPreapproval(
+    override fun createSubscription(subscriptionId: UUID, userId: UUID, payerEmail: String?, priceCents: Int, months: Int): GatewayPreapproval {
+        if (months == 12) annual.add(preapprovalId(subscriptionId))
+        return GatewayPreapproval(
             id = preapprovalId(subscriptionId),
             status = "pending",
             externalReference = userId.toString(),
             nextPaymentDate = null,
             initPoint = "${props.appUrl.trimEnd('/')}/mock/checkout?kind=premium&id=$subscriptionId",
         )
+    }
 
     override fun getPreapproval(id: String): GatewayPreapproval {
         val status = when {
@@ -57,7 +61,7 @@ class MockPaymentGateway(private val props: AppProperties, private val clock: Cl
             approved.containsKey(id) -> "authorized"
             else -> "pending"
         }
-        val next = approved[id]?.let { java.time.ZonedDateTime.ofInstant(it, java.time.ZoneOffset.UTC).plusMonths(1).toInstant() }
+        val next = approved[id]?.let { java.time.ZonedDateTime.ofInstant(it, java.time.ZoneOffset.UTC).plusMonths(if (annual.contains(id)) 12 else 1).toInstant() }
         return GatewayPreapproval(id, status, null, if (status == "authorized") next else null, null)
     }
 
