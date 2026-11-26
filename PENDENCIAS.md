@@ -41,7 +41,7 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 
 ## FIPE
 
-- [ ] 🔒 `FIPE_API_TOKEN` (token gratuito em fipe.online). Opcional: sem ele o limite diário é menor.
+- [ ] 🔒 `FIPE_API_TOKEN` (fipe.online). Obrigatório no deploy (`qr-fipe-token` no Secret Manager): o dono já tem o token.
 
 ## Consulta veicular (placa)
 

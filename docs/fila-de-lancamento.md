@@ -48,7 +48,7 @@ Pronto quando, para todos os itens: commit no GitHub e CI verde. Se o item tiver
 - [x] **C1 · CI da API.** O Gradle não encontra o plugin GraalVM 1.1.8. Mesclar o PR #19, que sobe para 1.1.19, refazer o #20 e revisar os PRs #1 a #5 e #8. Pronto quando: `./gradlew :apps:api:check` passa e os PRs mesclados estão verdes. _Feito em 26/11/2026: os updates dos PRs #19 e #20 foram trazidos para a branch `claude/etapa-1-codigo` (a API passa em `check`; `pnpm lint`, `typecheck` e `test` passam). Os PRs #1 a #5 (actions) e #8 (TypeScript 6) continuam abertos e não foram tocados._
 - [x] **C2 · Trabalho parado.** Commit do diagnóstico de assinatura do webhook e da correção do `Redact.error`, e push dos 3 commits locais. Pronto quando: `git status -sb` mostra a branch igual à `origin` e sem alterações.
 - [x] **C3 · Domínio no repositório.** Atualizar `docs/PLAN.json`, `env/*.example` e `PENDENCIAS.md` com os endereços do [Anexo A](#anexo-a-endereços). Pronto quando: `grep -rn "querorevisar.<PREENCHER>" docs env` não acha nada.
-- [ ] **C4 · Deploy passa tudo de que a API precisa.** `--set-env-vars` apaga toda variável fora da lista. Hoje faltam `PUSH_MODE=live`, `EMAIL_MODE=live`, `EMAIL_FROM`, `VAPID_PUBLIC_KEY`, `VAPID_SUBJECT`, `INTERNAL_JOBS_SERVICE_ACCOUNT` e `DATABASE_DIRECT_URL`, e sem isso push e e-mail ficam só no log. Também entram: `--service-account` com a conta de execução própria (3C), `INTERNAL_TOKEN` só no dev (para disparar os jobs na etapa 5), `VEHICLE_DATA_MODE` conforme D3 e `ADS_MODE` com padrão `off` no build. Pronto quando: `node scripts/check-launch-queue.ts` passa com os nomes novos.
+- [x] **C4 · Deploy passa tudo de que a API precisa.** `--set-env-vars` apaga toda variável fora da lista. Hoje faltam `PUSH_MODE=live`, `EMAIL_MODE=live`, `EMAIL_FROM`, `VAPID_PUBLIC_KEY`, `VAPID_SUBJECT`, `INTERNAL_JOBS_SERVICE_ACCOUNT` e `DATABASE_DIRECT_URL`, e sem isso push e e-mail ficam só no log. Também entram: `--service-account` com a conta de execução própria (3C), `INTERNAL_TOKEN` só no dev (para disparar os jobs na etapa 5), `VEHICLE_DATA_MODE` conforme D3 e `ADS_MODE` com padrão `off` no build. Pronto quando: `node scripts/check-launch-queue.ts` passa com os nomes novos.
 - [x] **C5 · Produção não sobe incompleta.** No profile `prod`, a API se recusa a iniciar nestes casos:
   - push ou e-mail fora do modo real;
   - Mercado Pago sem credencial ou sem o segredo do webhook;
@@ -342,11 +342,11 @@ Todos precisam existir antes do primeiro deploy, com `<SEM_TOKEN>` enquanto não
 | `qr-sentry-api`                        | `SENTRY_DSN`                      | 3G ou `<SEM_TOKEN>`                          |
 | `qr-dev-internal-token` (C4)           | `INTERNAL_TOKEN` (só dev)         | 32 caracteres aleatórios ou mais (bloco D4)  |
 | `qr-vehicle-data-api-key` (C4, D3 = b) | `VEHICLE_DATA_API_KEY`            | chave do fornecedor                          |
-| `qr-fipe-token` (C4, opcional)         | `FIPE_API_TOKEN`                  | token grátis do fipe.online                  |
+| `qr-fipe-token` (C4)                   | `FIPE_API_TOKEN`                  | token do fipe.online (o dono já tem)         |
 
 ### B4. Variáveis da API no Cloud Run
 
-Quem define é o workflow. Não edite pelo console do Cloud Run: o próximo deploy apaga a alteração (`--set-env-vars` substitui tudo).
+Quem define é o workflow (as variáveis vão num arquivo gerado no passo, por causa do `EMAIL_FROM`, que tem espaço e `<>`). Não edite pelo console do Cloud Run: o próximo deploy apaga a alteração (`--set-env-vars` substitui tudo).
 
 | Nome                                 | Produção                        | Dev                     |
 | ------------------------------------ | ------------------------------- | ----------------------- |
@@ -367,7 +367,7 @@ Quem define é o workflow. Não edite pelo console do Cloud Run: o próximo depl
 | `VEHICLE_DATA_MODE` (C4)             | conforme D3                     | conforme D3             |
 | `INTERNAL_TOKEN` (C4)                | nunca                           | `qr-dev-internal-token` |
 
-Segredos montados pelo `--set-secrets` (valores no B3): `DATABASE_URL`, `DATABASE_DIRECT_URL` (C4), `SUPABASE_SERVICE_ROLE_KEY`, `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `VAPID_PRIVATE_KEY`, `RESEND_API_KEY` e `SENTRY_DSN`.
+Segredos montados pelo `--set-secrets` (valores no B3): `DATABASE_URL`, `DATABASE_DIRECT_URL` (C4), `SUPABASE_SERVICE_ROLE_KEY`, `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `VAPID_PRIVATE_KEY`, `RESEND_API_KEY`, `SENTRY_DSN`, `FIPE_API_TOKEN` (C4) e, só no dev, `INTERNAL_TOKEN` (C4).
 
 ## Anexo C: o que esta fila não garante sozinha
 
