@@ -65,7 +65,7 @@ Pronto quando, para todos os itens: commit no GitHub e CI verde. Se o item tiver
 
   Pronto quando: o teste do caminho escolhido passa.
 
-- [ ] **C7 · Backup sem alarme falso.** `backup.yml` e `restore-test.yml` terminam verdes, com aviso, enquanto não houver banco de produção. O backup sai do environment `production` e vai para um environment `backup`, porque com aprovação manual ele ficaria esperando alguém aprovar todo dia. Pronto quando: uma execução manual sem segredos termina verde com o aviso.
+- [ ] **C7 · Backup sem alarme falso.** `backup.yml` e `restore-test.yml` terminam verdes, com aviso, enquanto não houver banco de produção. O backup sai do environment `production` e vai para um environment `backup`, porque com aprovação manual ele ficaria esperando alguém aprovar todo dia. Pronto quando: uma execução manual sem segredos termina verde com o aviso. _Estado (26/11/2026): código pronto e a verificação de segredos foi simulada localmente (sai o aviso e `ready=false`). Falta a execução manual no GitHub (Actions → backup → Run workflow), que só existe depois que estes workflows chegarem à branch padrão; por isso o item continua aberto._
 - [ ] **C8 · Google conforme D5.** Se a decisão for "não", o botão sai do app e da landing. Pronto quando: o e2e do login passa sem o botão.
 - [ ] **C9 · Plano anual conforme D4.** Desligar `FEATURES.annualBilling` ou criar o plano anual (API, Mercado Pago e app).
 - [ ] **C10 · Identificação de quem vende** (depois de D2). Nome, CNPJ ou CPF, endereço e e-mail no rodapé da landing (Decreto 7.962/2013). Pronto quando: aparece em todas as páginas do build da landing.
