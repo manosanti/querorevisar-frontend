@@ -21,8 +21,17 @@ import java.util.UUID
 @Suppress("EnumEntryName")
 enum class PremiumState { none, pending, authorized, paused, cancelled }
 
+@Suppress("EnumEntryName")
+enum class BillingInterval { monthly, annual }
+
 @ApiDto
-data class PremiumStatus(val status: PremiumState, val nextBillingDate: Instant?, val premiumUntil: Instant?)
+data class PremiumStatus(
+    val status: PremiumState,
+    val nextBillingDate: Instant?,
+    val premiumUntil: Instant?,
+    /** Billing frequency of the current subscription; null without one. */
+    val interval: BillingInterval? = null,
+)
 
 @ApiDto
 data class CheckoutRedirect(val initPoint: String)
@@ -51,10 +60,11 @@ class PremiumService(
             status = state,
             nextBillingDate = if (state == PremiumState.authorized) sub?.nextBillingAt else null,
             premiumUntil = profile?.premiumUntil,
+            interval = sub?.let { BillingInterval.valueOf(it.billingInterval) },
         )
     }
 
-    fun checkout(user: CurrentUser): CheckoutRedirect {
+    fun checkout(user: CurrentUser, interval: BillingInterval = BillingInterval.monthly): CheckoutRedirect {
         val current = subscriptions.current(user.id)
         if (current?.status == "authorized" && profiles.isPremium(user.id)) throw ApiException.conflict("Você já é Premium.")
         val email = user.email ?: authUsers.email(user.id)
@@ -63,13 +73,18 @@ class PremiumService(
         }
         val id = UUID.randomUUID()
         val pre = try {
-            gateway.createSubscription(id, user.id, email, props.payments.premiumPriceCents)
+            val annual = interval == BillingInterval.annual
+            gateway.createSubscription(
+                id, user.id, email,
+                if (annual) props.payments.premiumAnnualPriceCents else props.payments.premiumPriceCents,
+                if (annual) 12 else 1,
+            )
         } catch (e: PaymentGatewayException) {
             Redact.error(log, "Could not create the Premium subscription", e)
             throw ApiException(ProblemCode.PAYMENT_ERROR)
         }
         val now = clock.instant()
-        subscriptions.insert(SubscriptionRow(id, user.id, pre.id, "pending", null, now, now))
+        subscriptions.insert(SubscriptionRow(id, user.id, pre.id, "pending", null, now, now, interval.name))
         return CheckoutRedirect(pre.initPoint ?: throw ApiException(ProblemCode.PAYMENT_ERROR))
     }
 

@@ -16,7 +16,14 @@ import * as zod from 'zod';
 export const GetPremiumResponse = zod.object({
   "status": zod.enum(['none', 'pending', 'authorized', 'paused', 'cancelled']),
   "nextBillingDate": zod.iso.datetime({"offset":true}).nullable(),
-  "premiumUntil": zod.iso.datetime({"offset":true}).nullable()
+  "premiumUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "interval": zod.union([zod.literal('monthly'),zod.literal('annual'),zod.literal(null)]).nullish().describe('Billing frequency of the current subscription; null without one.')
+})
+
+export const startPremiumCheckoutQueryIntervalDefault = `monthly`;
+
+export const StartPremiumCheckoutQueryParams = zod.object({
+  "interval": zod.enum(['monthly', 'annual']).default(startPremiumCheckoutQueryIntervalDefault).describe('monthly (default, R$ 14,90 every month) or annual (R$ 149,00 every 12 months)')
 })
 
 export const StartPremiumCheckoutHeader = zod.object({
@@ -34,7 +41,8 @@ export const CancelPremiumHeader = zod.object({
 export const CancelPremiumResponse = zod.object({
   "status": zod.enum(['none', 'pending', 'authorized', 'paused', 'cancelled']),
   "nextBillingDate": zod.iso.datetime({"offset":true}).nullable(),
-  "premiumUntil": zod.iso.datetime({"offset":true}).nullable()
+  "premiumUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "interval": zod.union([zod.literal('monthly'),zod.literal('annual'),zod.literal(null)]).nullish().describe('Billing frequency of the current subscription; null without one.')
 })
 
 export const MercadoPagoWebhookQueryParams = zod.object({

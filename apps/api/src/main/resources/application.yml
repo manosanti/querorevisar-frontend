@@ -95,6 +95,7 @@ app:
     webhook-secret: ${MP_WEBHOOK_SECRET:<SEM_TOKEN>}
     premium-plan-id: ${MP_PREMIUM_PLAN_ID:<PREENCHER>}
     premium-price-cents: ${MP_PREMIUM_PRICE_CENTS:1490}
+    premium-annual-price-cents: ${MP_PREMIUM_ANNUAL_PRICE_CENTS:14900}
     back-url-success: ${MP_BACK_URL_SUCCESS:${app.app-url}/conta?pagamento=ok}
     back-url-pending: ${MP_BACK_URL_PENDING:${app.app-url}/conta?pagamento=pendente}
     back-url-failure: ${MP_BACK_URL_FAILURE:${app.app-url}/conta?pagamento=erro}

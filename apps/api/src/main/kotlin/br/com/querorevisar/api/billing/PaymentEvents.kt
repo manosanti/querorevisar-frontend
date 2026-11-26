@@ -115,7 +115,7 @@ class PaymentEvents(
         val status = pre.status.ifBlank { previous }
         subscriptions.update(sub.id, status, if (status == "cancelled") null else pre.nextPaymentDate ?: sub.nextBillingAt, now)
         when {
-            status == "authorized" && previous != "authorized" -> activate(sub.userId, now)
+            status == "authorized" && previous != "authorized" -> activate(sub.userId, now, sub.months)
             status == "cancelled" && previous != "cancelled" -> {
                 val until = profiles.find(sub.userId)?.premiumUntil
                 authUsers.email(sub.userId)?.let { mail.send(MailTemplates.premiumCancelled(it, until, props.appUrl)) }
@@ -124,12 +124,12 @@ class PaymentEvents(
     }
 
     /** Plan premium, premium_until at least one month ahead. */
-    fun activate(userId: UUID, now: Instant) {
+    fun activate(userId: UUID, now: Instant, months: Long = 1) {
         var until: Instant? = null
         val wasPremium = tx.execute {
             val profile = profiles.lock(userId)
             val was = profile.isPremium(now)
-            val candidate = plusMonths(now, 1)
+            val candidate = plusMonths(now, months)
             until = listOfNotNull(profile.premiumUntil, candidate).max()
             jdbc.sql("update profiles set plan = 'premium', premium_until = :p, updated_at = :t where user_id = :u")
                 .param("p", until!!.odt()).param("t", now.odt()).param("u", userId).update()
@@ -143,7 +143,7 @@ class PaymentEvents(
         }
     }
 
-    /** `subscription_authorized_payment`: an approved monthly charge extends premium_until and adds the bonus. */
+    /** `subscription_authorized_payment`: an approved charge extends premium_until by the plan period (1 or 12 months) and adds the bonus. */
     fun handleAuthorizedPayment(id: String) {
         val ap = gateway.getAuthorizedPayment(id)
         if (ap.paymentStatus != "approved") {
@@ -159,7 +159,7 @@ class PaymentEvents(
         val activatedNow = tx.execute {
             val profile = profiles.lock(sub.userId)
             val was = profile.isPremium(now)
-            val until = listOfNotNull(profile.premiumUntil, plusMonths(ap.debitDate ?: now, 1)).max()
+            val until = listOfNotNull(profile.premiumUntil, plusMonths(ap.debitDate ?: now, sub.months)).max()
             jdbc.sql("update profiles set plan = 'premium', premium_until = :p, updated_at = :t where user_id = :u")
                 .param("p", until.odt()).param("t", now.odt()).param("u", sub.userId).update()
             // The fallback job may already have paid this month's bonus when the webhook was late.

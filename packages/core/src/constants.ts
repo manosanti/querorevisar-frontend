@@ -25,6 +25,9 @@ export const KEY_ITEMS_LIMIT = 6;
 
 /** ✏️ Premium price and monthly credits. */
 export const PREMIUM_PRICE_CENTS = 1490;
+/** Annual Premium: 12 months for the price of 10 (R$ 149,00, "−17%"). Same value as MP_PREMIUM_ANNUAL_PRICE_CENTS. */
+export const PREMIUM_ANNUAL_MONTHS_CHARGED = 10;
+export const PREMIUM_ANNUAL_PRICE_CENTS = PREMIUM_PRICE_CENTS * PREMIUM_ANNUAL_MONTHS_CHARGED;
 export const PREMIUM_MONTHLY_CREDITS = 2;
 
 /** ✏️ Single credit price. */

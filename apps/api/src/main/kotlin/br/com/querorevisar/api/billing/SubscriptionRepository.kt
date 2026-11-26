@@ -18,16 +18,20 @@ data class SubscriptionRow(
     val nextBillingAt: Instant?,
     val createdAt: Instant,
     val updatedAt: Instant,
-)
+    /** monthly | annual */
+    val billingInterval: String = "monthly",
+) {
+    val months: Long get() = if (billingInterval == "annual") 12 else 1
+}
 
 @Repository
 class SubscriptionRepository(private val jdbc: JdbcClient) {
     fun insert(s: SubscriptionRow) {
         jdbc.sql(
-            """insert into subscriptions(id, user_id, provider, provider_id, status, next_billing_at, created_at, updated_at)
-               values (:id, :u, 'mercadopago', :p, :s, :n, :t, :t)""",
+            """insert into subscriptions(id, user_id, provider, provider_id, status, next_billing_at, created_at, updated_at, billing_interval)
+               values (:id, :u, 'mercadopago', :p, :s, :n, :t, :t, :i)""",
         ).param("id", s.id).param("u", s.userId).param("p", s.providerId).param("s", s.status)
-            .param("n", s.nextBillingAt?.odt()).param("t", s.createdAt.odt()).update()
+            .param("n", s.nextBillingAt?.odt()).param("t", s.createdAt.odt()).param("i", s.billingInterval).update()
     }
 
     fun find(userId: UUID, id: UUID): SubscriptionRow? =
@@ -61,5 +65,6 @@ class SubscriptionRepository(private val jdbc: JdbcClient) {
         nextBillingAt = rs.instant("next_billing_at"),
         createdAt = rs.instantOrThrow("created_at"),
         updatedAt = rs.instantOrThrow("updated_at"),
+        billingInterval = rs.getString("billing_interval"),
     )
 }

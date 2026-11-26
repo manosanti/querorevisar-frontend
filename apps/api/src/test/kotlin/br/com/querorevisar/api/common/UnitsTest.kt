@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
 import org.springframework.mock.env.MockEnvironment
 import java.util.Base64
 
@@ -43,6 +44,85 @@ class UnitsTest {
         assertThrows(IllegalStateException::class.java) { StartupGuard.check(none) }
     }
 
+    private fun prodEnv(vararg overrides: Pair<String, String?>): MockEnvironment {
+        val base = mapOf(
+            "app.push.mode" to "live",
+            "app.email.mode" to "live",
+            "app.payments.access-token" to "APP_USR-real",
+            "app.payments.webhook-secret" to "whsec",
+            "DATABASE_DIRECT_URL" to "postgresql://u:p@h:5432/postgres",
+            "app.internal.audience" to "https://qr-api.run.app",
+            "app.internal.service-account" to "qr-scheduler@p.iam.gserviceaccount.com",
+            "app.internal.token" to "<SEM_TOKEN>",
+            "app.app-url" to "https://app.querorevisar.com.br",
+            "app.api-url" to "https://qr-api.run.app",
+            "app.web-origins" to "https://app.querorevisar.com.br",
+        ) + overrides.toMap()
+        val env = MockEnvironment()
+        base.forEach { (k, v) -> if (v != null) env.setProperty(k, v) }
+        env.setActiveProfiles("prod")
+        return env
+    }
+
+    @Test
+    fun `prod starts with a complete configuration`() {
+        StartupGuard.check(prodEnv())
+    }
+
+    @Test
+    fun `prod refuses to start and lists everything that is missing`() {
+        val env = MockEnvironment()
+        env.setActiveProfiles("prod")
+        val ex = assertThrows(IllegalStateException::class.java) { StartupGuard.check(env) }
+        val msg = ex.message!!
+        listOf(
+            "PUSH_MODE", "EMAIL_MODE", "MP_ACCESS_TOKEN", "MP_WEBHOOK_SECRET", "DATABASE_DIRECT_URL",
+            "INTERNAL_JOBS_AUDIENCE", "INTERNAL_JOBS_SERVICE_ACCOUNT", "APP_URL", "API_URL", "WEB_ORIGINS",
+        ).forEach { assertTrue(msg.contains(it), "missing $it in: $msg") }
+    }
+
+    @Test
+    fun `prod rejects each incomplete setting`() {
+        val cases = mapOf(
+            "PUSH_MODE" to prodEnv("app.push.mode" to "log"),
+            "EMAIL_MODE" to prodEnv("app.email.mode" to "log"),
+            "MP_ACCESS_TOKEN" to prodEnv("app.payments.access-token" to "<SEM_TOKEN>"),
+            "MP_WEBHOOK_SECRET" to prodEnv("app.payments.webhook-secret" to ""),
+            "DATABASE_DIRECT_URL" to prodEnv("DATABASE_DIRECT_URL" to null),
+            "INTERNAL_JOBS_AUDIENCE" to prodEnv("app.internal.audience" to "<PREENCHER>"),
+            "INTERNAL_JOBS_SERVICE_ACCOUNT" to prodEnv("app.internal.service-account" to ""),
+            "INTERNAL_TOKEN" to prodEnv("app.internal.token" to "a-very-long-token-value"),
+            "APP_URL" to prodEnv("app.app-url" to "http://localhost:5173"),
+            "API_URL" to prodEnv("app.api-url" to "http://qr-api.run.app"),
+            "WEB_ORIGINS" to prodEnv("app.web-origins" to "https://app.querorevisar.com.br,http://localhost:5173"),
+        )
+        cases.forEach { (name, env) ->
+            val ex = assertThrows(IllegalStateException::class.java, { StartupGuard.check(env) }, name)
+            assertTrue(ex.message!!.contains(name), "$name not in: ${ex.message}")
+            assertEquals(1, StartupGuard.productionProblems(env).size, name)
+        }
+    }
+
+    @Test
+    fun `local and dev start without tokens`() {
+        for (profile in listOf("local", "dev")) {
+            val env = MockEnvironment()
+            env.setActiveProfiles(profile)
+            StartupGuard.check(env)
+        }
+    }
+
+    @Test
+    fun `prod never uses the mock vehicle data`() {
+        val props = AppProperties()
+        val prod = MockEnvironment().also { it.setActiveProfiles("prod") }
+        val provider = br.com.querorevisar.api.lookups.LookupConfig().vehicleDataProvider(props, prod)
+        val q = br.com.querorevisar.api.lookups.PlateQuery("ABC1D23", false, null, java.time.Instant.now())
+        assertThrows(br.com.querorevisar.api.lookups.ProviderUnavailableException::class.java) { provider.basic(q) }
+        val local = MockEnvironment().also { it.setActiveProfiles("local") }
+        assertEquals("mock", br.com.querorevisar.api.lookups.LookupConfig().vehicleDataProvider(props, local).name)
+    }
+
     @Test
     fun `logs never carry e-mails, plates or tokens`() {
         val text = Redact.text("user joao@exemplo.com.br plate ABC1D23 token Bearer abc.def eyJhbGciOi.eyJzdWIi.c2ln")!!
@@ -51,6 +131,20 @@ class UnitsTest {
         assertTrue(text.contains("ABC1***"))
         assertFalse(text.contains("eyJhbGciOi"))
         assertFalse(text.contains("abc.def"))
+    }
+
+    @Test
+    fun `logged exceptions keep their causes, redacted, without throwing`() {
+        val ex = IllegalStateException(
+            "outer joao@exemplo.com.br",
+            RuntimeException("middle", IllegalArgumentException("inner Bearer abc.def")),
+        )
+        val safe = Redact.redacted(ex)
+        assertFalse(safe.message!!.contains("joao@"))
+        assertTrue(safe.cause!!.message!!.endsWith("RuntimeException: middle"))
+        assertFalse(safe.cause!!.cause!!.message!!.contains("abc.def"))
+        assertEquals(ex.stackTrace.toList(), safe.stackTrace.toList())
+        Redact.error(LoggerFactory.getLogger(javaClass), "test", ex)
     }
 
     @Test

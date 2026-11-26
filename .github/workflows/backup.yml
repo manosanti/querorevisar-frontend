@@ -1,4 +1,4 @@
-# F13.4 — daily backup at 03:00 America/Sao_Paulo (06:00 UTC): pg_dump of prod (direct connection),
+# F13.4 — daily backup at 03:00 America/Sao_Paulo (06:00 UTC): pg_dump of prod (Supabase Session pooler, port 5432),
 # gzip + age encryption with a public key, upload to Cloudflare R2, keep 30 days.
 name: backup
 
@@ -18,7 +18,7 @@ jobs:
   dump:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    environment: production
+    environment: backup # not "production": that one waits for manual approval, and the backup runs every day
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -26,8 +26,31 @@ jobs:
       R2_ENDPOINT: ${{ vars.R2_ENDPOINT }}
       R2_BUCKET: ${{ vars.R2_BUCKET }}
     steps:
+      - name: Check that the backup secrets exist
+        id: config
+        env:
+          DB: ${{ secrets.PROD_DATABASE_DIRECT_URL }}
+          AGE: ${{ secrets.BACKUP_AGE_PUBLIC_KEY }}
+          KEY: ${{ secrets.R2_ACCESS_KEY_ID }}
+          SECRET: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          missing=""
+          [ -n "$DB" ] && [ "$DB" != "<SEM_TOKEN>" ] || missing="$missing PROD_DATABASE_DIRECT_URL"
+          [ -n "$AGE" ] || missing="$missing BACKUP_AGE_PUBLIC_KEY"
+          [ -n "$KEY" ] || missing="$missing R2_ACCESS_KEY_ID"
+          [ -n "$SECRET" ] || missing="$missing R2_SECRET_ACCESS_KEY"
+          [ -n "$R2_ENDPOINT" ] || missing="$missing R2_ENDPOINT(var)"
+          [ -n "$R2_BUCKET" ] || missing="$missing R2_BUCKET(var)"
+          if [ -n "$missing" ]; then
+            echo "::warning title=Backup skipped::There is no production database yet, or these are not configured:$missing. Nothing was backed up."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
+        if: steps.config.outputs.ready == 'true'
       - name: Install PostgreSQL client and age
+        if: steps.config.outputs.ready == 'true'
         run: |
           sudo install -d /usr/share/postgresql-common/pgdg
           sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
@@ -35,9 +58,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq postgresql-client-17 age
       - name: Dump, compress and encrypt
+        if: steps.config.outputs.ready == 'true'
         env:
           PGDATABASE_URL: ${{ secrets.PROD_DATABASE_DIRECT_URL }}
           AGE_RECIPIENT: ${{ secrets.BACKUP_AGE_PUBLIC_KEY }}
         run: bash infra/backup/backup.sh
       - name: Upload to R2 and prune backups older than 30 days
+        if: steps.config.outputs.ready == 'true'
         run: bash infra/backup/upload.sh

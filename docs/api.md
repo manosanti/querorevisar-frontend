@@ -66,11 +66,11 @@ Base: `${API_URL}`. JSON em camelCase. Autenticação `Authorization: Bearer <JW
 
 ## Premium (Mercado Pago)
 
-| Método | Rota                         | Descrição                                               |
-| ------ | ---------------------------- | ------------------------------------------------------- |
-| POST   | /v1/billing/premium/checkout | → `{ initPoint }` (redirecionar)                        |
-| POST   | /v1/billing/premium/cancel   | cancela a assinatura; plano continua até `premiumUntil` |
-| GET    | /v1/billing/premium          | `{ status, nextBillingDate, premiumUntil }`             |
+| Método | Rota                         | Descrição                                                                       |
+| ------ | ---------------------------- | ------------------------------------------------------------------------------- |
+| POST   | /v1/billing/premium/checkout | `?interval=monthly\|annual` (padrão `monthly`) → `{ initPoint }` (redirecionar) |
+| POST   | /v1/billing/premium/cancel   | cancela a assinatura; plano continua até `premiumUntil`                         |
+| GET    | /v1/billing/premium          | `{ status, nextBillingDate, premiumUntil, interval }`                           |
 
 ## Créditos
 

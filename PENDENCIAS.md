@@ -2,12 +2,14 @@
 
 Tudo aqui depende de você. Enquanto estiver `<SEM_TOKEN>` ou `<PREENCHER>`, a integração roda em modo mock e o app continua funcionando.
 
+O roteiro ordenado até o lançamento, com decisões, contas, segredos e provas, está em [docs/fila-de-lancamento.md](docs/fila-de-lancamento.md). Este arquivo guarda o inventário do que depende do dono; em caso de dúvida sobre a ordem, vale a fila.
+
 Legenda: 🔒 segredo (nunca no repositório) · ✏️ decisão ou dado não sigiloso · ⛔ bloqueia o lançamento
 
 ## Domínio e marca
 
-- [ ] ✏️⛔ Domínio final (ex.: querorevisar.com.br). Usado em `WEB_ORIGINS`, `APP_URL`, `LANDING_URL`, e-mails e back_url do Mercado Pago.
-- [ ] ✏️ E-mail remetente (ex.: alertas@<domínio>) e e-mail de suporte.
+- [x] ✏️⛔ Domínio final: `querorevisar.com.br` (decidido em 26/11/2026; a compra é o item R1 de `docs/fila-de-lancamento.md`). Usado em `WEB_ORIGINS`, `APP_URL`, `LANDING_URL`, e-mails e back_url do Mercado Pago.
+- [ ] ✏️ E-mail remetente (sugestão: `alertas@querorevisar.com.br` e `suporte@querorevisar.com.br`) e e-mail de suporte.
 - [ ] ✏️⛔ Texto da Política de privacidade e dos Termos de uso (LGPD).
 - [ ] ✏️ CNPJ ou CPF do vendedor (necessário para a conta do Mercado Pago e para os termos).
 
@@ -21,6 +23,13 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 - [ ] 🔒 `DATABASE_URL` (Transaction pooler, 6543) e `DATABASE_DIRECT_URL` (Session pooler, 5432) de cada projeto, para o Cloud Run e o backup. Localmente os dados continuam no Postgres embutido.
 - [ ] ✏️ No painel: Google (depende do OAuth Client), SMTP da Resend (sem ele o Supabase só manda e-mail para membros da organização, com limite baixo), Redirect URLs com o domínio.
 
+- [ ] ✏️ E-mails do Supabase Auth em português (item J4 da fila), para revisar antes de colar no painel (modelos em `infra/supabase/templates/`, ligados no `infra/supabase/config.toml` do ambiente local). Os textos são novos, sem protótipo:
+  - Confirmação (`confirmacao.html`): assunto "Confirme o seu e-mail no QueroRevisar"; "Confirme o seu e-mail"; "Falta só um passo para criar a sua conta no QueroRevisar. Confirme o e-mail {{ .Email }} para guardar os seus veículos e registros."; botão "Confirmar e-mail"; "Ou digite este código no app:"; "Se você não criou uma conta no QueroRevisar, pode ignorar este e-mail."
+  - Link ou código de acesso (`acesso.html`): assunto "Seu acesso ao QueroRevisar"; "Use o botão abaixo para entrar na sua conta. O link vale por pouco tempo e só funciona uma vez."; botão "Entrar no QueroRevisar"; "Se você não pediu para entrar, pode ignorar este e-mail. Ninguém acessa a sua conta sem esse link ou código."
+  - Troca de e-mail (`troca-email.html`): assunto "Confirme o novo e-mail do QueroRevisar"; "Você pediu para trocar o e-mail da sua conta de {{ .Email }} para {{ .NewEmail }}."; "Confirme para concluir a troca."; botão "Confirmar novo e-mail"; "Se você não pediu essa troca, ignore este e-mail e o e-mail da conta continua o mesmo."
+  - Redefinição de senha (`redefinir-senha.html`): assunto "Redefina a sua senha do QueroRevisar"; "Recebemos um pedido para redefinir a senha da sua conta no QueroRevisar. Use o botão abaixo para escolher uma nova senha."; botão "Escolher nova senha"; "Se você não pediu, pode ignorar este e-mail. A sua senha atual continua valendo."
+  - As variáveis (`{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .Email }}`, `{{ .NewEmail }}`) vêm do que eu conheço da documentação do Supabase Auth: o ambiente desta sessão não alcançou supabase.com para reconferir, então confira em https://supabase.com/docs/guides/auth/auth-email-templates e rode `pnpm dev:all` com Docker uma vez para ver os e-mails no Inbucket.
+
 ## Google
 
 - [ ] 🔒 OAuth Client ID e Secret do Google (Google Cloud Console → Credentials) para o login com Google no Supabase.
@@ -30,6 +39,7 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 
 ## Mercado Pago
 
+- [x] ✏️ Aplicação criada em 10/10/2026: `QueroRevisar`, id `672594239844399`, Brasil, produto Assinaturas, integração própria. Painel: https://www.mercadopago.com.br/developers/panel/app/672594239844399
 - [ ] 🔒 `MP_ACCESS_TOKEN` de teste (sandbox) e de produção.
 - [ ] 🔒 `MP_PUBLIC_KEY` de teste e de produção (só se usar Bricks no futuro).
 - [ ] 🔒 `MP_WEBHOOK_SECRET` (Suas integrações → Webhooks → assinatura secreta), um por modo.
@@ -40,7 +50,7 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 
 ## FIPE
 
-- [ ] 🔒 `FIPE_API_TOKEN` (token gratuito em fipe.online). Opcional: sem ele o limite diário é menor.
+- [ ] 🔒 `FIPE_API_TOKEN` (fipe.online). Obrigatório no deploy (`qr-fipe-token` no Secret Manager): o dono já tem o token.
 
 ## Consulta veicular (placa)
 
@@ -51,7 +61,7 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 ## E-mail, push, observabilidade
 
 - [ ] 🔒 `RESEND_API_KEY` e domínio verificado na Resend.
-- [ ] 🔒 `VAPID_PRIVATE_KEY` e ✏️ `VAPID_PUBLIC_KEY` (o Claude gera o par com um script; você só guarda a privada como segredo).
+- [ ] 🔒 `VAPID_PRIVATE_KEY` e ✏️ `VAPID_PUBLIC_KEY` (o par sai de `node scripts/gen-vapid.ts`; você só guarda a privada como segredo).
 - [ ] 🔒 `SENTRY_DSN_WEB`, `SENTRY_DSN_API`, `SENTRY_AUTH_TOKEN` (source maps no CI).
 - [ ] 🔒 `POSTHOG_KEY` (pública, mas em variável) e ✏️ `POSTHOG_HOST`.
 
@@ -90,7 +100,7 @@ Os workflows em `.github/workflows/` leem **variables** (não sigilosas) e **sec
 
 - [ ] ✏️⛔ Texto final de `/privacidade` e `/termos` (`apps/landing/src/pages/privacidade.md` e `termos.md`). Hoje só há a estrutura com `<PREENCHER>` e o aviso "Texto em revisão"; as duas páginas ficam fora do Google (`noindex`, fora do sitemap) até o texto final. Ao publicar: remover `review: true` do frontmatter e as rotas de `NOINDEX_PATHS` em `apps/landing/src/lib/seo.ts`.
 - [ ] ✏️ E-mail de suporte no fim de `/ajuda` (`<PREENCHER: e-mail de suporte>`).
-- [ ] ✏️ Plano anual: o protótipo da landing tem o seletor Mensal/Anual (R$ 149/ano = 10 × R$ 14,90, "−17%", "Equivale a R$ 12,42 por mês"), mas `docs/domain.md` e o plano do Mercado Pago só têm o mensal. Criar o plano anual ou desligar `FEATURES.annualBilling` em `apps/landing/src/config.ts`.
+- [x] ✏️ Plano anual: decidido em 26/11/2026 (R$ 149/ano = 10 × R$ 14,90). Implementado na API (`?interval=annual`, `MP_PREMIUM_ANNUAL_PRICE_CENTS`), no app (Conta) e na landing. Falta testar no sandbox do Mercado Pago (V9). Texto novo no app, para revisão: botão "Assinar por R$ 149/ano · R$ 12,42 por mês" na tela Conta. O botão "Assinar" da landing ainda não leva o anual escolhido ao app (o app abre o checkout mensal por padrão).
 - [ ] ✏️ Botão "Apple" do protótipo da landing está escondido (`FEATURES.appleLogin`, decisão D07). Ligar junto com a flag `apple_login`.
 - [ ] ✏️ "175 itens" (faixa de números e plano grátis) é o texto do protótipo; `data/catalog.json` tem 196 itens hoje. Confirmar o número.
 - [ ] ✏️ Textos novos sem protótipo, para revisão: banner "Cookies de análise" ("Usamos cookies de análise para entender como o site é usado. Nenhum dado pessoal é enviado…", "Recusar", "Aceitar"), bloco "Rever escolha" em `/privacidade`, página 404 ("Página não encontrada"), título "Grátis e Premium" em `/precos`, "Fale com a gente" em `/ajuda`, link "Pular para o conteúdo" (acessibilidade).

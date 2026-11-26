@@ -12,6 +12,6 @@
  */
 
 export type MercadoPagoWebhookParams = {
-'data.id'?: string;
-type?: string;
+  'data.id'?: string;
+  type?: string;
 };

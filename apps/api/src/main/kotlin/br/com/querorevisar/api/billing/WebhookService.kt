@@ -37,10 +37,12 @@ class WebhookService(
     fun receive(dataId: String?, type: String?, signature: String?, requestId: String?, body: Map<String, Any?>?): Outcome {
         val secret = props.payments.webhookSecret
         val id = dataId ?: ((body?.get("data") as? Map<*, *>)?.get("id"))?.toString()
-        if (!Secrets.isSet(secret) ||
-            !WebhookSignature.verify(signature, requestId, id, secret, clock.instant(), props.payments.webhookTolerance)
-        ) {
-            log.warn("Rejected Mercado Pago webhook: invalid signature")
+        if (!Secrets.isSet(secret)) {
+            log.warn("Rejected Mercado Pago webhook: MP_WEBHOOK_SECRET not set")
+            return Outcome.INVALID_SIGNATURE
+        }
+        if (!WebhookSignature.verify(signature, requestId, id, secret, clock.instant(), props.payments.webhookTolerance)) {
+            log.warn("Rejected Mercado Pago webhook: invalid signature ({})", rejectionReason(signature, requestId, id))
             return Outcome.INVALID_SIGNATURE
         }
         val eventType = type ?: body?.get("type")?.toString()
@@ -59,6 +61,16 @@ class WebhookService(
             if (processed) return Outcome.DUPLICATE
         }
         return process(eventId, eventType, id)
+    }
+
+    /** Why x-signature failed, for the log. Never receives the secret; logs no header, id or ts value. */
+    private fun rejectionReason(signature: String?, requestId: String?, dataId: String?): String {
+        val ts = WebhookSignature.parse(signature)?.first ?: return "x-signature missing or malformed"
+        val signedAt = WebhookSignature.signedAt(ts) ?: return "ts is not a number"
+        val skew = Duration.between(signedAt, clock.instant()).abs()
+        if (skew > props.payments.webhookTolerance) return "ts ${skew.seconds}s away from the clock"
+        return "HMAC differs, check MP_WEBHOOK_SECRET; x-request-id ${if (requestId.isNullOrEmpty()) "absent" else "present"}, " +
+            "data.id ${if (dataId.isNullOrEmpty()) "absent" else "present"}"
     }
 
     private fun process(eventId: String, type: String, dataId: String): Outcome = try {

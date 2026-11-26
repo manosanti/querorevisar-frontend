@@ -1,6 +1,7 @@
 // Launch queue check (docs/fila-de-lancamento.md).
 // Every name the deploy reads must be written in the queue as `NAME`: the GitHub vars/secrets, the Cloud Run
-// --set-env-vars/--set-secrets keys and the Secret Manager names, all taken from .github/workflows.
+// env-vars file keys (the jq block between `# env-vars:begin` and `# env-vars:end`), the --set-secrets keys and the
+// Secret Manager names, all taken from .github/workflows.
 // Prints the queue progress. With --final it also fails while any item is still open.
 // Usage: node scripts/check-launch-queue.ts [--final]
 import { readdirSync, readFileSync } from 'node:fs';
@@ -19,6 +20,9 @@ const workflows = readdirSync(workflowsDir)
 
 const needed = new Set<string>();
 for (const [, name] of workflows.matchAll(/\b(?:vars|secrets)\.([A-Z][A-Z0-9_]*)/g)) needed.add(name);
+for (const [, block] of workflows.matchAll(/# env-vars:begin\n([\s\S]*?)# env-vars:end/g)) {
+  for (const [, name] of (block ?? '').matchAll(/^\s+([A-Z][A-Z0-9_]*):\s/gm)) needed.add(name ?? '');
+}
 for (const [, list] of workflows.matchAll(/--set-(?:env-vars|secrets)=(.+?)\s*\\?$/gm)) {
   for (const pair of list.split(',')) {
     const [key = '', value = ''] = pair.split(/=(.*)/s, 2).map(part => part.trim());

@@ -399,7 +399,13 @@ paths:
     post:
       tags: [billing]
       operationId: startPremiumCheckout
-      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - name: interval
+          in: query
+          required: false
+          description: monthly (default, R$ 14,90 every month) or annual (R$ 149,00 every 12 months)
+          schema: { type: string, enum: [monthly, annual], default: monthly }
       responses:
         '200':
           description: Mercado Pago link to redirect to
@@ -1018,6 +1024,10 @@ components:
         status: { type: string, enum: [none, pending, authorized, paused, cancelled] }
         nextBillingDate: { type: [string, 'null'], format: date-time }
         premiumUntil: { type: [string, 'null'], format: date-time }
+        interval:
+          description: Billing frequency of the current subscription; null without one.
+          type: [string, 'null']
+          enum: [monthly, annual, null]
 
     CheckoutRedirect:
       type: object

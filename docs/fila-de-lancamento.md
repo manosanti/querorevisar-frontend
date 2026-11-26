@@ -31,11 +31,11 @@ Legenda: 👤 você · 🤖 Claude · 👥 juntos.
 Pronto quando: a decisão está escrita no próprio item, no lugar do `?`.
 
 - [x] **D1 · Domínio.** Decisão: `querorevisar.com.br` (26/11/2026). A compra é o item R1.
-- [ ] **D2 · Quem vende.** CNPJ ou CPF, nome ou razão social e endereço. Usados no Registro.br, no Mercado Pago, nos termos e no rodapé. Decisão: ?
-- [ ] **D3 · Consulta por placa no lançamento.** (a) Lançar sem consultas pagas. A FIPE continua grátis. A oferta do Premium perde "cadastro por placa" e "2 créditos de consulta por mês", que dependem do mesmo fornecedor. (b) Contratar um fornecedor de `docs/vehicle-data.md`. Decisão: ?
-- [ ] **D4 · Plano anual (R$ 149/ano, anunciado na landing).** Criar no app e no Mercado Pago ou tirar da landing. Decisão: ?
-- [ ] **D5 · Login com Google no lançamento.** Sim (item 3I) ou não (o botão sai, item C8). Decisão: ?
-- [ ] **D6 · Preços e créditos.** Premium R$ 14,90/mês. Crédito avulso R$ 4,90. Pacotes: 5 = R$ 21,90, 12 = R$ 47,90 e 30 = R$ 104,90. Créditos por consulta: laudo 6, leilão 3, restrições 2, débitos 2, dados da placa 1. Os créditos não expiram. Confirmar ou mudar. Decisão: ?
+- [ ] **D2 · Quem vende.** CNPJ ou CPF, nome ou razão social e endereço. Usados no Registro.br, no Mercado Pago, nos termos e no rodapé. Decisão (26/11/2026): ainda não será apresentado; fica pendente (bloqueia R1, 3F, J1, J2 e C10).
+- [x] **D3 · Consulta por placa no lançamento.** (a) Lançar sem consultas pagas. A FIPE continua grátis. A oferta do Premium perde "cadastro por placa" e "2 créditos de consulta por mês", que dependem do mesmo fornecedor. (b) Contratar um fornecedor de `docs/vehicle-data.md`. Decisão (26/11/2026): opção (b), fornecedor ainda a escolher pelo dono. A consulta é paga: sem plano, o usuário paga em créditos; no Premium, usa primeiro os 2 créditos mensais. Até o contrato, a produção recusa a consulta (C5).
+- [x] **D4 · Plano anual (R$ 149/ano, anunciado na landing).** Criar no app e no Mercado Pago ou tirar da landing. Decisão (26/11/2026): criar o plano anual no app e no Mercado Pago (C9, feito no código).
+- [x] **D5 · Login com Google no lançamento.** Sim (item 3I) ou não (o botão sai, item C8). Decisão (26/11/2026): sim, Google no lançamento (item 3I). O C8 não é necessário.
+- [x] **D6 · Preços e créditos.** Premium R$ 14,90/mês. Crédito avulso R$ 4,90. Pacotes: 5 = R$ 21,90, 12 = R$ 47,90 e 30 = R$ 104,90. Créditos por consulta: laudo 6, leilão 3, restrições 2, débitos 2, dados da placa 1. Os créditos não expiram. Confirmar ou mudar. Decisão (26/11/2026): manter os valores por enquanto; o dono fará os cálculos e ajustará depois. O C13 não é necessário agora.
 - [ ] **D7 · E-mails.** Remetente (sugestão: `alertas@querorevisar.com.br`) e suporte (sugestão: `suporte@querorevisar.com.br`, recebido pelo item R4). Decisão: ?
 - [ ] **D8 · Repositório.** Continua público ou vira privado. No plano grátis, um repositório privado limita o GitHub Actions a 2.000 min/mês. Decisão: ?
 - [ ] **D9 · Teste mensal de restauração.** Chave age só para o teste, guardada no GitHub, ou restauração local uma vez por mês (nesse caso o agendamento do `restore-test.yml` é desligado). Decisão: ?
@@ -45,11 +45,11 @@ Pronto quando: a decisão está escrita no próprio item, no lugar do `?`.
 
 Pronto quando, para todos os itens: commit no GitHub e CI verde. Se o item tiver um teste próprio, ele aparece no item.
 
-- [ ] **C1 · CI da API.** O Gradle não encontra o plugin GraalVM 1.1.8. Mesclar o PR #19, que sobe para 1.1.19, refazer o #20 e revisar os PRs #1 a #5 e #8. Pronto quando: `./gradlew :apps:api:check` passa e os PRs mesclados estão verdes.
-- [ ] **C2 · Trabalho parado.** Commit do diagnóstico de assinatura do webhook e da correção do `Redact.error`, e push dos 3 commits locais. Pronto quando: `git status -sb` mostra a branch igual à `origin` e sem alterações.
-- [ ] **C3 · Domínio no repositório.** Atualizar `docs/PLAN.json`, `env/*.example` e `PENDENCIAS.md` com os endereços do [Anexo A](#anexo-a-endereços). Pronto quando: `grep -rn "querorevisar.<PREENCHER>" docs env` não acha nada.
-- [ ] **C4 · Deploy passa tudo de que a API precisa.** `--set-env-vars` apaga toda variável fora da lista. Hoje faltam `PUSH_MODE=live`, `EMAIL_MODE=live`, `EMAIL_FROM`, `VAPID_PUBLIC_KEY`, `VAPID_SUBJECT`, `INTERNAL_JOBS_SERVICE_ACCOUNT` e `DATABASE_DIRECT_URL`, e sem isso push e e-mail ficam só no log. Também entram: `--service-account` com a conta de execução própria (3C), `INTERNAL_TOKEN` só no dev (para disparar os jobs na etapa 5), `VEHICLE_DATA_MODE` conforme D3 e `ADS_MODE` com padrão `off` no build. Pronto quando: `node scripts/check-launch-queue.ts` passa com os nomes novos.
-- [ ] **C5 · Produção não sobe incompleta.** No profile `prod`, a API se recusa a iniciar nestes casos:
+- [x] **C1 · CI da API.** O Gradle não encontra o plugin GraalVM 1.1.8. Mesclar o PR #19, que sobe para 1.1.19, refazer o #20 e revisar os PRs #1 a #5 e #8. Pronto quando: `./gradlew :apps:api:check` passa e os PRs mesclados estão verdes. _Feito em 26/11/2026: os updates dos PRs #19 e #20 foram trazidos para a branch `claude/etapa-1-codigo` (a API passa em `check`; `pnpm lint`, `typecheck` e `test` passam). Os PRs #1 a #5 (actions) e #8 (TypeScript 6) continuam abertos e não foram tocados._
+- [x] **C2 · Trabalho parado.** Commit do diagnóstico de assinatura do webhook e da correção do `Redact.error`, e push dos 3 commits locais. Pronto quando: `git status -sb` mostra a branch igual à `origin` e sem alterações.
+- [x] **C3 · Domínio no repositório.** Atualizar `docs/PLAN.json`, `env/*.example` e `PENDENCIAS.md` com os endereços do [Anexo A](#anexo-a-endereços). Pronto quando: `grep -rn "querorevisar.<PREENCHER>" docs env` não acha nada.
+- [x] **C4 · Deploy passa tudo de que a API precisa.** `--set-env-vars` apaga toda variável fora da lista. Hoje faltam `PUSH_MODE=live`, `EMAIL_MODE=live`, `EMAIL_FROM`, `VAPID_PUBLIC_KEY`, `VAPID_SUBJECT`, `INTERNAL_JOBS_SERVICE_ACCOUNT` e `DATABASE_DIRECT_URL`, e sem isso push e e-mail ficam só no log. Também entram: `--service-account` com a conta de execução própria (3C), `INTERNAL_TOKEN` só no dev (para disparar os jobs na etapa 5), `VEHICLE_DATA_MODE` conforme D3 e `ADS_MODE` com padrão `off` no build. Pronto quando: `node scripts/check-launch-queue.ts` passa com os nomes novos.
+- [x] **C5 · Produção não sobe incompleta.** No profile `prod`, a API se recusa a iniciar nestes casos:
   - push ou e-mail fora do modo real;
   - Mercado Pago sem credencial ou sem o segredo do webhook;
   - `DATABASE_DIRECT_URL` vazio;
@@ -59,20 +59,20 @@ Pronto quando, para todos os itens: commit no GitHub e CI verde. Se o item tiver
 
   Além disso, a consulta por placa nunca usa os dados fictícios em produção. Pronto quando: os testes novos do `StartupGuard` passam.
 
-- [ ] **C6 · Consulta por placa conforme D3.**
+- [ ] **C6 · Consulta por placa conforme D3.** _D3 = (b): falta o dono escolher o fornecedor; só então vale o item (b). Enquanto isso, a produção recusa a consulta (C5)._
   - (a) Em produção, a API recusa a consulta e a venda de pacotes, e o app e a landing tiram a oferta de consultas, o "cadastro por placa" e os créditos mensais do Premium.
   - (b) Integração do fornecedor em `LiveVehicleDataProvider`, com testes WireMock sobre as respostas de exemplo dele.
 
   Pronto quando: o teste do caminho escolhido passa.
 
-- [ ] **C7 · Backup sem alarme falso.** `backup.yml` e `restore-test.yml` terminam verdes, com aviso, enquanto não houver banco de produção. O backup sai do environment `production` e vai para um environment `backup`, porque com aprovação manual ele ficaria esperando alguém aprovar todo dia. Pronto quando: uma execução manual sem segredos termina verde com o aviso.
-- [ ] **C8 · Google conforme D5.** Se a decisão for "não", o botão sai do app e da landing. Pronto quando: o e2e do login passa sem o botão.
-- [ ] **C9 · Plano anual conforme D4.** Desligar `FEATURES.annualBilling` ou criar o plano anual (API, Mercado Pago e app).
+- [ ] **C7 · Backup sem alarme falso.** `backup.yml` e `restore-test.yml` terminam verdes, com aviso, enquanto não houver banco de produção. O backup sai do environment `production` e vai para um environment `backup`, porque com aprovação manual ele ficaria esperando alguém aprovar todo dia. Pronto quando: uma execução manual sem segredos termina verde com o aviso. _Estado (26/11/2026): código pronto e a verificação de segredos foi simulada localmente (sai o aviso e `ready=false`). Falta a execução manual no GitHub (Actions → backup → Run workflow), que só existe depois que estes workflows chegarem à branch padrão; por isso o item continua aberto._
+- [x] **C8 · Google conforme D5.** _Não necessário: D5 = sim, o botão fica._ Se a decisão for "não", o botão sai do app e da landing. Pronto quando: o e2e do login passa sem o botão.
+- [x] **C9 · Plano anual conforme D4.** Criado: API (`?interval=annual`, migração V3, `MP_PREMIUM_ANNUAL_PRICE_CENTS`), app (botão na Conta) e landing (preço de `@qr/core`). Pronto quando: o teste `annual premium lasts 12 months` passa; a prova no Mercado Pago real é o V9 e o F4.
 - [ ] **C10 · Identificação de quem vende** (depois de D2). Nome, CNPJ ou CPF, endereço e e-mail no rodapé da landing (Decreto 7.962/2013). Pronto quando: aparece em todas as páginas do build da landing.
-- [ ] **C11 · Chaves VAPID.** Um script gera o par sem dependência externa. A chave pública vai para `VAPID_PUBLIC_KEY` e a privada para `qr-vapid-private`.
-- [ ] **C12 · E-mails do Supabase em português.** Modelos de confirmação, código ou link de acesso, troca de e-mail e redefinição de senha em `infra/supabase/templates/`, para colar no painel (3A). Os textos são novos, então passam pela sua revisão (J4).
-- [ ] **C13 · Preços conforme D6** (só se algum valor mudar). `packages/core`, `CREDIT_UNIT_PRICE_CENTS`, `MP_PREMIUM_PRICE_CENTS` e a landing com os mesmos valores. Pronto quando: os testes de preço passam e a landing mostra o que o app cobra.
-- [ ] **C14 · Documentos.** `PENDENCIAS.md` e `docs/checklist-lancamento.md` apontando para esta fila.
+- [x] **C11 · Chaves VAPID.** Um script gera o par sem dependência externa. A chave pública vai para `VAPID_PUBLIC_KEY` e a privada para `qr-vapid-private`.
+- [x] **C12 · E-mails do Supabase em português.** Modelos de confirmação, código ou link de acesso, troca de e-mail e redefinição de senha em `infra/supabase/templates/`, para colar no painel (3A). Os textos são novos, então passam pela sua revisão (J4; a lista está em `PENDENCIAS.md`). _Não verificado: sem Docker aqui, o Supabase local não subiu, e as variáveis vêm da documentação conhecida (supabase.com estava fora da rede da sessão)._
+- [x] **C13 · Preços conforme D6** _(não necessário agora: D6 manteve os valores)_ (só se algum valor mudar). `packages/core`, `CREDIT_UNIT_PRICE_CENTS`, `MP_PREMIUM_PRICE_CENTS` e a landing com os mesmos valores. Pronto quando: os testes de preço passam e a landing mostra o que o app cobra.
+- [x] **C14 · Documentos.** `PENDENCIAS.md` e `docs/checklist-lancamento.md` apontando para esta fila.
 
 ## 2. Domínio e DNS (👤)
 
@@ -342,11 +342,11 @@ Todos precisam existir antes do primeiro deploy, com `<SEM_TOKEN>` enquanto não
 | `qr-sentry-api`                        | `SENTRY_DSN`                      | 3G ou `<SEM_TOKEN>`                          |
 | `qr-dev-internal-token` (C4)           | `INTERNAL_TOKEN` (só dev)         | 32 caracteres aleatórios ou mais (bloco D4)  |
 | `qr-vehicle-data-api-key` (C4, D3 = b) | `VEHICLE_DATA_API_KEY`            | chave do fornecedor                          |
-| `qr-fipe-token` (C4, opcional)         | `FIPE_API_TOKEN`                  | token grátis do fipe.online                  |
+| `qr-fipe-token` (C4)                   | `FIPE_API_TOKEN`                  | token do fipe.online (o dono já tem)         |
 
 ### B4. Variáveis da API no Cloud Run
 
-Quem define é o workflow. Não edite pelo console do Cloud Run: o próximo deploy apaga a alteração (`--set-env-vars` substitui tudo).
+Quem define é o workflow (as variáveis vão num arquivo gerado no passo, por causa do `EMAIL_FROM`, que tem espaço e `<>`). Não edite pelo console do Cloud Run: o próximo deploy apaga a alteração (`--set-env-vars` substitui tudo).
 
 | Nome                                 | Produção                        | Dev                     |
 | ------------------------------------ | ------------------------------- | ----------------------- |
@@ -367,7 +367,7 @@ Quem define é o workflow. Não edite pelo console do Cloud Run: o próximo depl
 | `VEHICLE_DATA_MODE` (C4)             | conforme D3                     | conforme D3             |
 | `INTERNAL_TOKEN` (C4)                | nunca                           | `qr-dev-internal-token` |
 
-Segredos montados pelo `--set-secrets` (valores no B3): `DATABASE_URL`, `DATABASE_DIRECT_URL` (C4), `SUPABASE_SERVICE_ROLE_KEY`, `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `VAPID_PRIVATE_KEY`, `RESEND_API_KEY` e `SENTRY_DSN`.
+Segredos montados pelo `--set-secrets` (valores no B3): `DATABASE_URL`, `DATABASE_DIRECT_URL` (C4), `SUPABASE_SERVICE_ROLE_KEY`, `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `VAPID_PRIVATE_KEY`, `RESEND_API_KEY`, `SENTRY_DSN`, `FIPE_API_TOKEN` (C4) e, só no dev, `INTERNAL_TOKEN` (C4).
 
 ## Anexo C: o que esta fila não garante sozinha
 

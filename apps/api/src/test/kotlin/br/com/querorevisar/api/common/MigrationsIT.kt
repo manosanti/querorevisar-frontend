@@ -17,7 +17,7 @@ class MigrationsIT {
             .locations("classpath:db/migration", "classpath:db/auth-stub")
             .load()
         val result = flyway.migrate()
-        assertEquals(3, result.migrationsExecuted)
+        assertEquals(4, result.migrationsExecuted)
         assertEquals(0, flyway.migrate().migrationsExecuted)
 
         DriverManager.getConnection(url, TestDb.server.username, TestDb.server.password).use { c ->

@@ -40,6 +40,35 @@ jobs:
           docker run --rm -v "$PWD/apps/api/src/main/resources/db/migration:/flyway/sql" flyway/flyway:latest \
             -url="${{ secrets.PROD_DATABASE_JDBC_URL }}" -user="${{ secrets.PROD_DATABASE_USER }}" -password="${{ secrets.PROD_DATABASE_PASSWORD }}" \
             -connectRetries=3 migrate
+      - name: Cloud Run environment file (EMAIL_FROM has spaces and <>, so it is written as JSON, which is valid YAML)
+        env:
+          APP_URL: ${{ vars.PROD_APP_URL }}
+          API_URL: ${{ vars.PROD_API_URL }}
+          SUPABASE_URL: ${{ vars.PROD_SUPABASE_URL }}
+          SCHEDULER_SA: ${{ vars.GCP_SCHEDULER_SERVICE_ACCOUNT }}
+          EMAIL_FROM: ${{ vars.EMAIL_FROM || 'QueroRevisar <alertas@querorevisar.com.br>' }}
+          VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT || 'mailto:suporte@querorevisar.com.br' }}
+        run: |
+          # env-vars:begin
+          jq -n --arg app "$APP_URL" --arg api "$API_URL" --arg sb "$SUPABASE_URL" --arg sa "$SCHEDULER_SA" \
+            --arg from "$EMAIL_FROM" --arg vapid "$VAPID_PUBLIC_KEY" --arg subject "$VAPID_SUBJECT" '{
+              SPRING_PROFILES_ACTIVE: "prod",
+              PAYMENTS_MODE: "live",
+              TZ: "America/Sao_Paulo",
+              APP_URL: $app,
+              API_URL: $api,
+              WEB_ORIGINS: $app,
+              SUPABASE_URL: $sb,
+              INTERNAL_JOBS_AUDIENCE: $api,
+              INTERNAL_JOBS_SERVICE_ACCOUNT: $sa,
+              PUSH_MODE: "live",
+              EMAIL_MODE: "live",
+              EMAIL_FROM: $from,
+              VAPID_PUBLIC_KEY: $vapid,
+              VAPID_SUBJECT: $subject
+            }' > "$RUNNER_TEMP/cloud-run-env.yaml"
+          # env-vars:end
       - name: Deploy qr-api
         run: |
           gcloud run deploy qr-api \
@@ -47,8 +76,9 @@ jobs:
             --region=${{ env.REGION }} \
             --min-instances=0 --max-instances=2 --cpu-boost \
             --allow-unauthenticated \
-            --set-env-vars=SPRING_PROFILES_ACTIVE=prod,PAYMENTS_MODE=live,TZ=America/Sao_Paulo,APP_URL=${{ vars.PROD_APP_URL }},API_URL=${{ vars.PROD_API_URL }},WEB_ORIGINS=${{ vars.PROD_APP_URL }},SUPABASE_URL=${{ vars.PROD_SUPABASE_URL }},INTERNAL_JOBS_AUDIENCE=${{ vars.PROD_API_URL }} \
-            --set-secrets=DATABASE_URL=qr-prod-database-url:latest,SUPABASE_SERVICE_ROLE_KEY=qr-prod-supabase-service-role:latest,MP_ACCESS_TOKEN=qr-prod-mp-access-token:latest,MP_WEBHOOK_SECRET=qr-prod-mp-webhook-secret:latest,VAPID_PRIVATE_KEY=qr-vapid-private:latest,RESEND_API_KEY=qr-resend:latest,SENTRY_DSN=qr-sentry-api:latest
+            --service-account=${{ vars.GCP_RUNTIME_SERVICE_ACCOUNT }} \
+            --env-vars-file="$RUNNER_TEMP/cloud-run-env.yaml" \
+            --set-secrets=DATABASE_URL=qr-prod-database-url:latest,DATABASE_DIRECT_URL=qr-prod-database-direct-url:latest,SUPABASE_SERVICE_ROLE_KEY=qr-prod-supabase-service-role:latest,MP_ACCESS_TOKEN=qr-prod-mp-access-token:latest,MP_WEBHOOK_SECRET=qr-prod-mp-webhook-secret:latest,VAPID_PRIVATE_KEY=qr-vapid-private:latest,RESEND_API_KEY=qr-resend:latest,SENTRY_DSN=qr-sentry-api:latest,FIPE_API_TOKEN=qr-fipe-token:latest
       - name: Cloud Scheduler jobs (America/Sao_Paulo, OIDC with the service URL as audience)
         run: |
           upsert() {
@@ -88,7 +118,7 @@ jobs:
           VITE_VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
           VITE_SENTRY_DSN: ${{ secrets.SENTRY_DSN_WEB }}
           VITE_POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
-          VITE_ADS_MODE: ${{ vars.ADS_MODE }}
+          VITE_ADS_MODE: ${{ vars.ADS_MODE || 'off' }}
           VITE_ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
           VITE_ADSENSE_SLOT_ITENS: ${{ vars.ADSENSE_SLOT_ITENS }}
           VITE_ADSENSE_SLOT_HISTORICO: ${{ vars.ADSENSE_SLOT_HISTORICO }}
