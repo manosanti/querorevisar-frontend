@@ -52,7 +52,7 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 ## E-mail, push, observabilidade
 
 - [ ] 🔒 `RESEND_API_KEY` e domínio verificado na Resend.
-- [ ] 🔒 `VAPID_PRIVATE_KEY` e ✏️ `VAPID_PUBLIC_KEY` (o Claude gera o par com um script; você só guarda a privada como segredo).
+- [ ] 🔒 `VAPID_PRIVATE_KEY` e ✏️ `VAPID_PUBLIC_KEY` (o par sai de `node scripts/gen-vapid.ts`; você só guarda a privada como segredo).
 - [ ] 🔒 `SENTRY_DSN_WEB`, `SENTRY_DSN_API`, `SENTRY_AUTH_TOKEN` (source maps no CI).
 - [ ] 🔒 `POSTHOG_KEY` (pública, mas em variável) e ✏️ `POSTHOG_HOST`.
 

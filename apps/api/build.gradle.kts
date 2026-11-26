@@ -75,6 +75,8 @@ dependencies {
     "localdbRuntimeOnly"("io.zonky.test.postgres:embedded-postgres-binaries-darwin-arm64v8")
     "localdbRuntimeOnly"("io.zonky.test.postgres:embedded-postgres-binaries-linux-arm64v8")
 
+    // web-push declares httpclient with runtime scope; the VAPID test reads the request it builds.
+    testImplementation("org.apache.httpcomponents:httpclient:4.5.14")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
