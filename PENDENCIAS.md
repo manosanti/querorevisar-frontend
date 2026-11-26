@@ -6,8 +6,8 @@ Legenda: 🔒 segredo (nunca no repositório) · ✏️ decisão ou dado não si
 
 ## Domínio e marca
 
-- [ ] ✏️⛔ Domínio final (ex.: querorevisar.com.br). Usado em `WEB_ORIGINS`, `APP_URL`, `LANDING_URL`, e-mails e back_url do Mercado Pago.
-- [ ] ✏️ E-mail remetente (ex.: alertas@<domínio>) e e-mail de suporte.
+- [x] ✏️⛔ Domínio final: `querorevisar.com.br` (decidido em 26/11/2026; a compra é o item R1 de `docs/fila-de-lancamento.md`). Usado em `WEB_ORIGINS`, `APP_URL`, `LANDING_URL`, e-mails e back_url do Mercado Pago.
+- [ ] ✏️ E-mail remetente (sugestão: `alertas@querorevisar.com.br` e `suporte@querorevisar.com.br`) e e-mail de suporte.
 - [ ] ✏️⛔ Texto da Política de privacidade e dos Termos de uso (LGPD).
 - [ ] ✏️ CNPJ ou CPF do vendedor (necessário para a conta do Mercado Pago e para os termos).
 

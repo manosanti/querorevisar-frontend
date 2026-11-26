@@ -276,14 +276,14 @@
     "dev": {
       "banco_auth": "Projeto Supabase free nº 1 (sa-east-1)",
       "api": "Cloud Run service 'qr-api-dev', min 0, max 1",
-      "web": "Cloudflare Pages, branch main → dev.querorevisar.<PREENCHER>",
+      "web": "Cloudflare Pages, branch main → main.querorevisar-app.pages.dev",
       "pagamentos": "PAYMENTS_MODE=sandbox"
     },
     "prod": {
       "banco_auth": "Projeto Supabase free nº 2 (sa-east-1)",
       "api": "Cloud Run service 'qr-api', min 0, max 2",
-      "web": "Cloudflare Pages produção → app.querorevisar.<PREENCHER>",
-      "landing": "querorevisar.<PREENCHER>",
+      "web": "Cloudflare Pages produção → app.querorevisar.com.br",
+      "landing": "querorevisar.com.br",
       "pagamentos": "PAYMENTS_MODE=live"
     }
   },
@@ -740,7 +740,7 @@
             "Recriar reference/QueroRevisar Landing.dc.html em apps/landing com os mesmos tokens",
             "Páginas: /, /precos, /privacidade, /termos, /ajuda (Markdown)",
             "sitemap, robots, Open Graph, favicon",
-            "CTA leva para app.querorevisar.<PREENCHER>"
+            "CTA leva para app.querorevisar.com.br"
           ]
         }
       ]
