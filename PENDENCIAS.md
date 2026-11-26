@@ -21,6 +21,13 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 - [ ] 🔒 `DATABASE_URL` (Transaction pooler, 6543) e `DATABASE_DIRECT_URL` (Session pooler, 5432) de cada projeto, para o Cloud Run e o backup. Localmente os dados continuam no Postgres embutido.
 - [ ] ✏️ No painel: Google (depende do OAuth Client), SMTP da Resend (sem ele o Supabase só manda e-mail para membros da organização, com limite baixo), Redirect URLs com o domínio.
 
+- [ ] ✏️ E-mails do Supabase Auth em português (item J4 da fila), para revisar antes de colar no painel (modelos em `infra/supabase/templates/`, ligados no `infra/supabase/config.toml` do ambiente local). Os textos são novos, sem protótipo:
+  - Confirmação (`confirmacao.html`): assunto "Confirme o seu e-mail no QueroRevisar"; "Confirme o seu e-mail"; "Falta só um passo para criar a sua conta no QueroRevisar. Confirme o e-mail {{ .Email }} para guardar os seus veículos e registros."; botão "Confirmar e-mail"; "Ou digite este código no app:"; "Se você não criou uma conta no QueroRevisar, pode ignorar este e-mail."
+  - Link ou código de acesso (`acesso.html`): assunto "Seu acesso ao QueroRevisar"; "Use o botão abaixo para entrar na sua conta. O link vale por pouco tempo e só funciona uma vez."; botão "Entrar no QueroRevisar"; "Se você não pediu para entrar, pode ignorar este e-mail. Ninguém acessa a sua conta sem esse link ou código."
+  - Troca de e-mail (`troca-email.html`): assunto "Confirme o novo e-mail do QueroRevisar"; "Você pediu para trocar o e-mail da sua conta de {{ .Email }} para {{ .NewEmail }}."; "Confirme para concluir a troca."; botão "Confirmar novo e-mail"; "Se você não pediu essa troca, ignore este e-mail e o e-mail da conta continua o mesmo."
+  - Redefinição de senha (`redefinir-senha.html`): assunto "Redefina a sua senha do QueroRevisar"; "Recebemos um pedido para redefinir a senha da sua conta no QueroRevisar. Use o botão abaixo para escolher uma nova senha."; botão "Escolher nova senha"; "Se você não pediu, pode ignorar este e-mail. A sua senha atual continua valendo."
+  - As variáveis (`{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .Email }}`, `{{ .NewEmail }}`) vêm do que eu conheço da documentação do Supabase Auth: o ambiente desta sessão não alcançou supabase.com para reconferir, então confira em https://supabase.com/docs/guides/auth/auth-email-templates e rode `pnpm dev:all` com Docker uma vez para ver os e-mails no Inbucket.
+
 ## Google
 
 - [ ] 🔒 OAuth Client ID e Secret do Google (Google Cloud Console → Credentials) para o login com Google no Supabase.
