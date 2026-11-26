@@ -30,6 +30,7 @@ Projeto dev (`ldfmadfpdhwpxvhrggin`) criado em 10/10/2026 e ligado ao `pnpm dev:
 
 ## Mercado Pago
 
+- [x] ✏️ Aplicação criada em 10/10/2026: `QueroRevisar`, id `672594239844399`, Brasil, produto Assinaturas, integração própria. Painel: https://www.mercadopago.com.br/developers/panel/app/672594239844399
 - [ ] 🔒 `MP_ACCESS_TOKEN` de teste (sandbox) e de produção.
 - [ ] 🔒 `MP_PUBLIC_KEY` de teste e de produção (só se usar Bricks no futuro).
 - [ ] 🔒 `MP_WEBHOOK_SECRET` (Suas integrações → Webhooks → assinatura secreta), um por modo.
