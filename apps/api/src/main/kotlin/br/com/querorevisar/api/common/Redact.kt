@@ -20,30 +20,17 @@ object Redact {
 
     /** Logs an exception with its message redacted (stack trace kept). */
     fun error(log: Logger, message: String, ex: Throwable) {
-        val safe = RedactedException("${ex.javaClass.name}: ${text(ex.message)}")
-        safe.stackTrace = ex.stackTrace
-        var cause = ex.cause
-        var current: Throwable = safe
-        var depth = 0
-        while (cause != null && depth < 5) {
-            val c = RedactedException("${cause.javaClass.name}: ${text(cause.message)}")
-            c.stackTrace = cause.stackTrace
-            current.initCause(c)
-            current = c
-            cause = cause.cause
-            depth++
-        }
-        log.error(message, safe)
+        log.error(message, redacted(ex))
     }
 
-    private class RedactedException(message: String) : RuntimeException(message, null, false, true) {
-        private var causeSet = false
-
-        @Synchronized
-        override fun initCause(cause: Throwable?): Throwable {
-            if (causeSet) return this
-            causeSet = true
-            return super.initCause(cause)
-        }
+    /**
+     * The exception and up to 5 causes with redacted messages. Built from the deepest cause up: a cause given to the
+     * constructor (even null) can't be replaced by initCause, which threw here and hid the original error.
+     */
+    internal fun redacted(ex: Throwable, depth: Int = 0): Throwable {
+        val cause = ex.cause?.takeIf { depth < 5 }?.let { redacted(it, depth + 1) }
+        return RedactedException("${ex.javaClass.name}: ${text(ex.message)}", cause).also { it.stackTrace = ex.stackTrace }
     }
+
+    private class RedactedException(message: String, cause: Throwable?) : RuntimeException(message, cause, false, true)
 }

@@ -26,6 +26,11 @@ object WebhookSignature {
         return HexFormat.of().formatHex(mac.doFinal(message.toByteArray(Charsets.UTF_8)))
     }
 
+    fun signedAt(ts: String): Instant? {
+        val n = ts.toLongOrNull() ?: return null
+        return if (n > 100_000_000_000L) Instant.ofEpochMilli(n) else Instant.ofEpochSecond(n)
+    }
+
     fun parse(header: String?): Pair<String, String>? {
         if (header.isNullOrBlank()) return null
         val parts = header.split(',').mapNotNull { p ->
@@ -46,8 +51,7 @@ object WebhookSignature {
         tolerance: Duration = Duration.ofMinutes(10),
     ): Boolean {
         val (ts, v1) = parse(header) ?: return false
-        val tsNumber = ts.toLongOrNull() ?: return false
-        val signedAt = if (tsNumber > 100_000_000_000L) Instant.ofEpochMilli(tsNumber) else Instant.ofEpochSecond(tsNumber)
+        val signedAt = signedAt(ts) ?: return false
         if (Duration.between(signedAt, now).abs() > tolerance) return false
         val expected = v1.lowercase().toByteArray(Charsets.US_ASCII)
         return listOf(dataId, dataId?.lowercase()).distinct().any { id ->

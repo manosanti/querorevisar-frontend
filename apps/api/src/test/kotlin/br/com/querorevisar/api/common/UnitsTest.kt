@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
 import org.springframework.mock.env.MockEnvironment
 import java.util.Base64
 
@@ -51,6 +52,20 @@ class UnitsTest {
         assertTrue(text.contains("ABC1***"))
         assertFalse(text.contains("eyJhbGciOi"))
         assertFalse(text.contains("abc.def"))
+    }
+
+    @Test
+    fun `logged exceptions keep their causes, redacted, without throwing`() {
+        val ex = IllegalStateException(
+            "outer joao@exemplo.com.br",
+            RuntimeException("middle", IllegalArgumentException("inner Bearer abc.def")),
+        )
+        val safe = Redact.redacted(ex)
+        assertFalse(safe.message!!.contains("joao@"))
+        assertTrue(safe.cause!!.message!!.endsWith("RuntimeException: middle"))
+        assertFalse(safe.cause!!.cause!!.message!!.contains("abc.def"))
+        assertEquals(ex.stackTrace.toList(), safe.stackTrace.toList())
+        Redact.error(LoggerFactory.getLogger(javaClass), "test", ex)
     }
 
     @Test
